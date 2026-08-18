@@ -1,0 +1,157 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-base: #040E24;
+    --bg-surface-1: #07193D;
+    --bg-surface-2: #0B2556;
+    --bg-surface-3: #103374;
+    --border-subtle: rgba(212, 233, 255, 0.12);
+    --border-highlight: rgba(56, 189, 248, 0.4);
+    --accent-frost: #E0F2FE;
+    --accent-ice: #BAE6FD;
+    --accent-azure: #38BDF8;
+    --accent-cobalt: #0284C7;
+    --accent-royal: #1D4ED8;
+    --accent-deep: #0C2340;
+    --text-primary: #F8FAFC;
+    --text-secondary: #BAE6FD;
+    --text-tertiary: #7DD3FC;
+  }
+
+  body {
+    background: #040E24;
+    background-image: 
+      radial-gradient(ellipse at 50% 0%, #153E75 0%, #0B2556 40%, #040E24 85%);
+    background-attachment: fixed;
+    color: #F8FAFC;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+    letter-spacing: -0.01em;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  .font-space {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+
+  .font-mono-hud {
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Frost-to-Cobalt Technical Panels */
+.glass-panel {
+  background: rgba(7, 25, 61, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(212, 233, 255, 0.14);
+  border-radius: 0px;
+  box-shadow: 0 8px 32px 0 rgba(2, 10, 28, 0.6);
+}
+
+.glass-panel-heavy {
+  background: rgba(4, 17, 43, 0.95);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(212, 233, 255, 0.2);
+  border-radius: 0px;
+  box-shadow: 0 16px 48px 0 rgba(2, 8, 24, 0.8);
+}
+
+.glass-panel-interactive {
+  background: rgba(7, 25, 61, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(212, 233, 255, 0.14);
+  border-radius: 0px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel-interactive:hover {
+  background: rgba(11, 37, 86, 0.92);
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 12px 36px -4px rgba(14, 165, 233, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Minimalist Precision Grid */
+.hud-grid-pattern {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(212, 233, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(212, 233, 255, 0.035) 1px, transparent 1px);
+}
+
+/* Custom Frost-Azure Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #040E24;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #103374;
+  border-radius: 0px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #38BDF8;
+}
+
+/* Precision Sharp Corner Ticks in Frost-Azure */
+.hud-corner {
+  position: relative;
+}
+.hud-corner::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid #38BDF8;
+  border-left: 2px solid #38BDF8;
+  pointer-events: none;
+}
+.hud-corner::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 8px;
+  height: 8px;
+  border-bottom: 2px solid #38BDF8;
+  border-right: 2px solid #38BDF8;
+  pointer-events: none;
+}
+
+/* Gradient Text Utilities */
+.text-gradient-frost-azure {
+  background: linear-gradient(180deg, #FFFFFF 0%, #BAE6FD 50%, #38BDF8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-azure-cobalt {
+  background: linear-gradient(180deg, #38BDF8 0%, #0284C7 60%, #1D4ED8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
