@@ -10,17 +10,20 @@ export const SpaceBackground: React.FC = () => {
     const container = mountRef.current;
     if (!container) return;
 
+    // Check reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     // Scene Setup
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x06193E, 0.001);
+    scene.fog = new THREE.FogExp2(0x020617, 0.0012);
 
     const camera = new THREE.PerspectiveCamera(
-      60,
+      55,
       window.innerWidth / window.innerHeight,
       0.1,
       1000
     );
-    camera.position.z = 200;
+    camera.position.z = 180;
 
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -28,61 +31,71 @@ export const SpaceBackground: React.FC = () => {
       powerPreference: 'high-performance'
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     container.appendChild(renderer.domElement);
 
-    // Deep Calm Starfield (Frost White & Ice Blue)
-    const starCount = 700;
+    // Microsoft Azure & Cosmic Palette Starfield
+    const starCount = window.innerWidth < 768 ? 250 : 500;
     const starGeometry = new THREE.BufferGeometry();
     const starPositions = new Float32Array(starCount * 3);
-    const starSizes = new Float32Array(starCount);
+    const starVelocities: { x: number; y: number; z: number }[] = [];
 
     for (let i = 0; i < starCount * 3; i += 3) {
-      starPositions[i] = (Math.random() - 0.5) * 800;
-      starPositions[i + 1] = (Math.random() - 0.5) * 800;
-      starPositions[i + 2] = (Math.random() - 0.5) * 600;
-      starSizes[i / 3] = Math.random() * 1.6 + 0.6;
+      starPositions[i] = (Math.random() - 0.5) * 500;
+      starPositions[i + 1] = (Math.random() - 0.5) * 500;
+      starPositions[i + 2] = (Math.random() - 0.5) * 300;
+      starVelocities.push({
+        x: (Math.random() - 0.5) * 0.04,
+        y: (Math.random() - 0.5) * 0.04,
+        z: (Math.random() - 0.5) * 0.02
+      });
     }
 
     starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-    starGeometry.setAttribute('size', new THREE.BufferAttribute(starSizes, 1));
 
     const starMaterial = new THREE.PointsMaterial({
-      color: 0xBAE6FD,
-      size: 1.4,
+      color: 0x00BCF2,
+      size: 1.6,
       transparent: true,
-      opacity: 0.55,
-      sizeAttenuation: true
+      opacity: 0.65,
+      sizeAttenuation: true,
+      blending: THREE.AdditiveBlending
     });
 
     const starField = new THREE.Points(starGeometry, starMaterial);
     scene.add(starField);
 
-    // Frost-Cyan Accents Stars
-    const frostCount = 180;
-    const frostGeometry = new THREE.BufferGeometry();
-    const frostPositions = new Float32Array(frostCount * 3);
-
-    for (let i = 0; i < frostCount * 3; i += 3) {
-      frostPositions[i] = (Math.random() - 0.5) * 700;
-      frostPositions[i + 1] = (Math.random() - 0.5) * 700;
-      frostPositions[i + 2] = (Math.random() - 0.5) * 500;
-    }
-    frostGeometry.setAttribute('position', new THREE.BufferAttribute(frostPositions, 3));
-
-    const frostMaterial = new THREE.PointsMaterial({
-      color: 0x38BDF8,
-      size: 1.8,
-      transparent: true,
-      opacity: 0.45,
-      sizeAttenuation: true
-    });
-    const frostStars = new THREE.Points(frostGeometry, frostMaterial);
-    scene.add(frostStars);
-
-    // Calm Deep Cobalt Lighting
-    const ambientLight = new THREE.AmbientLight(0x0A2556, 1.4);
+    // Deep Calm Ambient Light
+    const ambientLight = new THREE.AmbientLight(0x0078D4, 1.2);
     scene.add(ambientLight);
+
+    // Interactive Constellation Connecting Lines
+    const maxLineConnections = window.innerWidth < 768 ? 60 : 160;
+    const linePositions = new Float32Array(maxLineConnections * 6);
+    const lineGeometry = new THREE.BufferGeometry();
+    lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+
+    const lineMaterial = new THREE.LineBasicMaterial({
+      color: 0x0078D4,
+      transparent: true,
+      opacity: 0.18,
+      blending: THREE.AdditiveBlending
+    });
+
+    const lineSegments = new THREE.LineSegments(lineGeometry, lineMaterial);
+    scene.add(lineSegments);
+
+    // Mouse Parallax
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetMouseX = 0;
+    let targetMouseY = 0;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      targetMouseX = (e.clientX / window.innerWidth - 0.5) * 30;
+      targetMouseY = (e.clientY / window.innerHeight - 0.5) * 30;
+    };
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
     // Smooth Scroll Integration
     let targetScrollY = 0;
@@ -107,15 +120,60 @@ export const SpaceBackground: React.FC = () => {
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
 
-      // Smooth scroll interpolation
+      if (prefersReducedMotion) {
+        renderer.render(scene, camera);
+        return;
+      }
+
+      // Smooth scroll & mouse interpolation
       currentScrollY += (targetScrollY - currentScrollY) * 0.05;
+      mouseX += (targetMouseX - mouseX) * 0.03;
+      mouseY += (targetMouseY - mouseY) * 0.03;
 
-      // Gentle, serene rotation
-      starField.rotation.y = 0.00012 * Date.now() * 0.05;
-      frostStars.rotation.y = 0.00015 * Date.now() * 0.05;
+      camera.position.x = mouseX * 0.4;
+      camera.position.y = -mouseY * 0.4 - currentScrollY * 0.05;
 
-      // Camera drift with scroll
-      camera.position.y = -currentScrollY * 0.07;
+      // Particle Drift
+      const positions = starGeometry.attributes.position.array as Float32Array;
+      for (let i = 0; i < starCount; i++) {
+        positions[i * 3] += starVelocities[i].x;
+        positions[i * 3 + 1] += starVelocities[i].y;
+        positions[i * 3 + 2] += starVelocities[i].z;
+
+        // Wrap around boundary bounds
+        if (Math.abs(positions[i * 3]) > 260) positions[i * 3] = -positions[i * 3] * 0.95;
+        if (Math.abs(positions[i * 3 + 1]) > 260) positions[i * 3 + 1] = -positions[i * 3 + 1] * 0.95;
+        if (Math.abs(positions[i * 3 + 2]) > 160) positions[i * 3 + 2] = -positions[i * 3 + 2] * 0.95;
+      }
+      starGeometry.attributes.position.needsUpdate = true;
+
+      // Connect Near Neighbors
+      let lineIndex = 0;
+      const connectionDistance = 45;
+
+      for (let i = 0; i < starCount && lineIndex < maxLineConnections * 6; i++) {
+        for (let j = i + 1; j < starCount && lineIndex < maxLineConnections * 6; j++) {
+          const dx = positions[i * 3] - positions[j * 3];
+          const dy = positions[i * 3 + 1] - positions[j * 3 + 1];
+          const dz = positions[i * 3 + 2] - positions[j * 3 + 2];
+          const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+          if (dist < connectionDistance) {
+            linePositions[lineIndex++] = positions[i * 3];
+            linePositions[lineIndex++] = positions[i * 3 + 1];
+            linePositions[lineIndex++] = positions[i * 3 + 2];
+
+            linePositions[lineIndex++] = positions[j * 3];
+            linePositions[lineIndex++] = positions[j * 3 + 1];
+            linePositions[lineIndex++] = positions[j * 3 + 2];
+          }
+        }
+      }
+
+      lineGeometry.attributes.position.needsUpdate = true;
+      lineGeometry.setDrawRange(0, lineIndex / 3);
+
+      starField.rotation.y = 0.00008 * Date.now() * 0.05;
 
       renderer.render(scene, camera);
     };
@@ -124,6 +182,7 @@ export const SpaceBackground: React.FC = () => {
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleResize);
       if (container && renderer.domElement) {
@@ -131,9 +190,9 @@ export const SpaceBackground: React.FC = () => {
       }
       renderer.dispose();
       starGeometry.dispose();
-      frostGeometry.dispose();
+      lineGeometry.dispose();
       starMaterial.dispose();
-      frostMaterial.dispose();
+      lineMaterial.dispose();
     };
   }, []);
 
@@ -142,7 +201,7 @@ export const SpaceBackground: React.FC = () => {
       ref={mountRef}
       className="fixed inset-0 pointer-events-none z-0 overflow-hidden"
       style={{
-        background: 'linear-gradient(180deg, #103374 0%, #0B2556 30%, #07193D 65%, #040E24 100%)'
+        background: 'radial-gradient(ellipse at 50% 15%, #071426 0%, #020617 55%, #000000 100%)'
       }}
     />
   );

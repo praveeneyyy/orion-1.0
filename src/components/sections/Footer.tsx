@@ -35,18 +35,34 @@ export const Footer: React.FC<FooterProps> = ({ onOpenRegister, onOpenStatus }) 
             {/* Col 1: Brand & Organizer */}
             <div>
               <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-8 h-8 rounded-none bg-[#0B2556] border border-[#38BDF8]/40 flex items-center justify-center text-[#38BDF8] shadow-sm">
-                  <Compass className="w-4 h-4" />
+                <div className="w-9 h-9 p-0.5 bg-[#0B2556] border border-[#38BDF8]/40 flex items-center justify-center shadow-sm">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img 
+                    src="/logo.png" 
+                    alt="ORION 1.0" 
+                    className="w-full h-full object-contain filter drop-shadow-[0_0_6px_rgba(56,189,248,0.7)]" 
+                  />
                 </div>
-                <span className="font-display font-black text-base text-white tracking-wider">
-                  ORION 1.0
-                </span>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-display font-black text-base text-white tracking-wider">
+                      ORION 1.0
+                    </span>
+                    <div className="grid grid-cols-2 gap-0.5 w-2 h-2 shrink-0 opacity-90" title="Microsoft Club">
+                      <span className="bg-[#F25022] w-0.8 h-0.8" />
+                      <span className="bg-[#7FBA00] w-0.8 h-0.8" />
+                      <span className="bg-[#00A4EF] w-0.8 h-0.8" />
+                      <span className="bg-[#FFB900] w-0.8 h-0.8" />
+                    </div>
+                  </div>
+                  <div className="text-[9px] font-mono-hud text-[#7DD3FC]">MICROSOFT CLUB SIST</div>
+                </div>
               </div>
               <p className="text-xs text-[#BAE6FD] font-sans leading-relaxed mb-4 font-normal">
                 National flagship 24-hour hackathon engineered by <strong className="text-white">Microsoft Club SIST</strong>, Sathyabama Institute of Science and Technology, Chennai.
               </p>
-              <div className="text-[10px] font-mono-hud text-[#7DD3FC]">
-                MISSION CODE: ORION-2026-SIST
+              <div className="text-[10px] font-mono-hud text-[#38BDF8] flex items-center gap-1">
+                <span>IGNITE THE GENESIS OF INNOVATION</span>
               </div>
             </div>
 

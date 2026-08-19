@@ -10,7 +10,9 @@ import {
   Users, 
   FileText,
   Sparkles,
-  CheckCircle2
+  CheckCircle2,
+  Terminal,
+  Database
 } from 'lucide-react';
 import { GlassCard } from '../common/GlassCard';
 import { INITIAL_REGISTERED_TEAMS } from '../../data/orionData';
@@ -60,22 +62,22 @@ export const TeamStatusModal: React.FC<TeamStatusModalProps> = ({ isOpen, onClos
       <div className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto">
         <GlassCard
           glowColor="cyan"
-          className="p-6 sm:p-8 border border-[#38BDF8]/40 bg-[#07193D] shadow-[0_16px_50px_rgba(2,8,24,0.9)] rounded-none text-left"
+          className="p-6 sm:p-8 border border-[#38BDF8]/50 bg-[#07193D] shadow-[0_16px_50px_rgba(2,8,24,0.9)] rounded-none text-left"
           withHudCorners={true}
         >
           {/* Header */}
           <div className="flex items-center justify-between pb-4 mb-6 border-b border-[rgba(212,233,255,0.12)]">
-            <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-none bg-[#0B2556] border border-[#38BDF8]/40 text-[#38BDF8] shadow-sm">
-                <Search className="w-4 h-4" />
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-[#0B2556] border border-[#38BDF8]/40 text-[#38BDF8] shadow-sm">
+                <Search className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-xl font-display font-black text-white">
-                  SQUAD MISSION VERIFICATION
-                </h3>
-                <div className="text-xs font-mono-hud text-[#38BDF8] font-bold">
-                  LOOKUP BY TEAM ID, NAME OR LEADER EMAIL
+                <div className="text-[10px] font-mono-hud text-[#38BDF8] font-bold uppercase tracking-wider">
+                  <span>LIVE SQUAD VERIFICATION</span>
                 </div>
+                <h3 className="text-xl sm:text-2xl font-display font-black text-white">
+                  SQUAD STATUS LOOKUP
+                </h3>
               </div>
             </div>
 
@@ -110,11 +112,11 @@ export const TeamStatusModal: React.FC<TeamStatusModalProps> = ({ isOpen, onClos
             </div>
 
             <div className="flex items-center gap-2 mt-2.5 text-[10px] font-mono-hud text-[#7DD3FC]">
-              <span>SAMPLE IDS:</span>
+              <span className="text-[#38BDF8]">SAMPLE IDS:</span>
               <button
                 type="button"
                 onClick={() => handleSampleClick('ORION-9012')}
-                className="text-[#38BDF8] hover:underline font-bold"
+                className="text-white hover:text-[#38BDF8] underline font-bold"
               >
                 ORION-9012
               </button>
@@ -122,7 +124,7 @@ export const TeamStatusModal: React.FC<TeamStatusModalProps> = ({ isOpen, onClos
               <button
                 type="button"
                 onClick={() => handleSampleClick('ORION-8421')}
-                className="text-[#38BDF8] hover:underline font-bold"
+                className="text-white hover:text-[#38BDF8] underline font-bold"
               >
                 ORION-8421
               </button>
@@ -130,7 +132,7 @@ export const TeamStatusModal: React.FC<TeamStatusModalProps> = ({ isOpen, onClos
               <button
                 type="button"
                 onClick={() => handleSampleClick('ORION-6590')}
-                className="text-[#38BDF8] hover:underline font-bold"
+                className="text-white hover:text-[#38BDF8] underline font-bold"
               >
                 ORION-6590
               </button>
@@ -140,7 +142,11 @@ export const TeamStatusModal: React.FC<TeamStatusModalProps> = ({ isOpen, onClos
           {hasSearched && (
             <div className="animate-in fade-in zoom-in-95 duration-200">
               {result ? (
-                <div className="p-5 rounded-none bg-[#040E24] border border-[#38BDF8]/40 space-y-4 shadow-lg">
+                <div className="p-5 rounded-none bg-[#040E24] border border-[#38BDF8]/40 space-y-4 shadow-lg relative">
+                  <span className="absolute top-2 right-2 font-mono-hud text-[7px] text-emerald-400 font-bold bg-[#07193D] px-1.5 py-0.5 border border-emerald-400/40">
+                    [CHECKSUM: VALID]
+                  </span>
+
                   <div className="flex items-center justify-between pb-3 border-b border-[rgba(212,233,255,0.1)]">
                     <div>
                       <span className="text-[10px] font-mono-hud text-[#7DD3FC]">TEAM DOSSIER</span>

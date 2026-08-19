@@ -1,35 +1,16 @@
 'use client';
 
-import React, { useState } from 'react';
-import dynamic from 'next/dynamic';
+import React from 'react';
 import { 
   Rocket, 
   Search, 
-  Sparkles, 
   MapPin, 
-  Layers, 
-  Compass, 
-  Globe, 
-  Award,
-  ChevronRight
+  ChevronRight 
 } from 'lucide-react';
 import { CountdownTimer } from '../common/CountdownTimer';
-import { SplitFlapText } from '../common/SplitFlapText';
-import { ElectricBorder } from '../common/ElectricBorder';
 import { ScrollReveal } from '../common/ScrollReveal';
 import { sound } from '../../audio/soundEffects';
 import { EVENT_METRICS } from '../../data/orionData';
-
-// Dynamic 3D Scene Imports
-const OrionConstellation3D = dynamic(
-  () => import('../3d/OrionConstellation3D').then((mod) => mod.OrionConstellation3D),
-  { ssr: false, loading: () => <div className="w-full h-full flex items-center justify-center font-mono-hud text-xs text-[#7DD3FC]">ALIGNING CONSTELLATION MESH...</div> }
-);
-
-const OrionShip3D = dynamic(
-  () => import('../3d/OrionShip3D').then((mod) => mod.OrionShip3D),
-  { ssr: false, loading: () => <div className="w-full h-full flex items-center justify-center font-mono-hud text-xs text-[#7DD3FC]">INITIALIZING PROBE TELEMETRY...</div> }
-);
 
 interface HeroSectionProps {
   onOpenRegister: () => void;
@@ -38,8 +19,6 @@ interface HeroSectionProps {
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenRegister, onOpenStatus, onExplorePrizes }) => {
-  const [active3DMode, setActive3DMode] = useState<'constellation' | 'ship'>('constellation');
-
   const handleStatusClick = () => {
     sound.playClick();
     if (onOpenStatus) {
@@ -49,24 +28,52 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenRegister, onOpen
     }
   };
 
+  const highlightPills = [
+    { label: "PRIZE POOL", value: EVENT_METRICS.prizePool, color: "text-[#22D3EE]" },
+    { label: "ROUND 1 FLAT FEE", value: `${EVENT_METRICS.round1Fee} / SQUAD`, color: "text-emerald-400" },
+    { label: "ONLINE DEADLINE", value: "SEP 08, 2026", color: "text-[#00BCF2]" },
+    { label: "OFFLINE FINALE", value: "SEP 18, 2026", color: "text-white" }
+  ];
+
   return (
-    <section className="relative min-h-screen pt-28 pb-16 px-4 flex flex-col justify-center items-center z-10 overflow-hidden">
+    <section className="relative min-h-screen pt-28 pb-20 px-4 flex flex-col justify-center items-center z-10 overflow-hidden">
       
-      {/* Top Meta Beacon */}
+      {/* Top Microsoft Club Governance Beacon */}
       <ScrollReveal direction="down" delay={50} duration={600} className="max-w-4xl mx-auto text-center mb-6">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-none bg-[#07193D]/95 border border-[#38BDF8]/40 text-xs font-mono-hud text-[#38BDF8] shadow-[0_0_15px_rgba(56,189,248,0.25)]">
-          <span className="w-2 h-2 bg-[#38BDF8] animate-pulse" />
-          <span className="font-semibold tracking-wider">MICROSOFT CLUB SIST // ORION 1.0</span>
+        <div className="inline-flex items-center gap-2.5 px-4 py-1.5 bg-[#0B1220] border border-[#00BCF2]/40 text-xs font-mono-hud text-[#22D3EE] shadow-[0_0_25px_rgba(0,188,242,0.25)] backdrop-blur-md">
+          <div className="grid grid-cols-2 gap-0.5 w-2.5 h-2.5" title="Microsoft Club">
+            <span className="bg-[#F25022] w-1 h-1" />
+            <span className="bg-[#7FBA00] w-1 h-1" />
+            <span className="bg-[#00A4EF] w-1 h-1" />
+            <span className="bg-[#FFB900] w-1 h-1" />
+          </div>
+          <span className="font-bold tracking-wider">MICROSOFT STUDENT HACKATHON // MICROSOFT CLUB SIST</span>
           <span className="text-slate-600 hidden sm:inline">|</span>
           <span className="hidden sm:flex items-center gap-1 text-[#BAE6FD]">
-            <MapPin className="w-3 h-3 text-[#38BDF8]" />
+            <MapPin className="w-3 h-3 text-[#00BCF2]" />
             SIST CHENNAI
+          </span>
+          <span className="text-slate-600 hidden md:inline">|</span>
+          <span className="hidden md:inline text-[10px] text-emerald-400 font-bold bg-[#020617] px-2 py-0.5 border border-emerald-400/40">
+            24H OFFLINE SPRINT
           </span>
         </div>
       </ScrollReveal>
 
-      {/* Main Monumental Headline */}
-      <ScrollReveal direction="up" delay={150} duration={700} className="max-w-5xl mx-auto text-center mb-6">
+      {/* Official Emblem & Main Keynote Headline */}
+      <ScrollReveal direction="up" delay={150} duration={700} className="max-w-5xl mx-auto text-center mb-8">
+        
+        {/* Glowing Official Emblem */}
+        <div className="mb-4 relative inline-block group">
+          <div className="absolute -inset-6 bg-gradient-to-r from-[#0078D4]/25 via-[#00BCF2]/35 to-[#22D3EE]/25 rounded-full blur-3xl pointer-events-none group-hover:scale-110 transition-transform duration-700" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img 
+            src="/logo.png" 
+            alt="ORION 1.0 - Microsoft Club SIST" 
+            className="relative w-36 sm:w-48 md:w-56 h-auto object-contain mx-auto filter drop-shadow-[0_0_35px_rgba(0,188,242,0.85)] hover:scale-105 transition-transform duration-500"
+          />
+        </div>
+
         <h1 className="text-4xl sm:text-7xl md:text-8xl lg:text-9xl font-display font-black tracking-tight leading-[0.92] text-white">
           BUILD BEYOND <br />
           <span className="text-gradient-frost-azure">
@@ -74,146 +81,56 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenRegister, onOpen
           </span>
         </h1>
 
-        <p className="mt-5 text-sm sm:text-base md:text-lg text-[#BAE6FD] max-w-2xl mx-auto font-sans leading-relaxed font-normal">
-          The premier nationwide 24-hour hackathon by <strong className="text-white font-semibold">Microsoft Club SIST</strong>. 
-          Pioneering next-generation intelligence across oceanography, cryptography, forestry, and open innovation.
+        <div className="mt-4 text-xs sm:text-sm md:text-base font-mono-hud text-[#22D3EE] tracking-[0.25em] uppercase font-bold flex items-center justify-center gap-2">
+          <span className="text-[#0078D4]">◆</span>
+          <span>IGNITE THE GENESIS OF INNOVATION</span>
+          <span className="text-[#0078D4]">◆</span>
+        </div>
+
+        <p className="mt-4 text-sm sm:text-base md:text-lg text-[#BAE6FD] max-w-2xl mx-auto font-sans leading-relaxed font-normal">
+          <strong className="text-white font-semibold">Microsoft provides the technology. ORION provides the mission. Participants build the future.</strong> <br />
+          The premier nationwide 24-hour hackathon by <strong className="text-white font-semibold">Microsoft Club SIST</strong>.
         </p>
       </ScrollReveal>
 
-      {/* Split-Flap Departure Board */}
-      <ScrollReveal direction="up" delay={250} duration={650} className="mb-10 flex flex-col items-center">
-        <div className="text-[10px] font-mono-hud text-[#7DD3FC] mb-2 uppercase tracking-widest flex items-center gap-1.5">
-          <Layers className="w-3 h-3 text-[#38BDF8]" />
-          <span>MISSION TELEMETRY DISPATCH</span>
-        </div>
-        <div className="p-3 rounded-none bg-[#040E24]/90 border border-[rgba(212,233,255,0.16)] shadow-[0_8px_32px_rgba(2,10,28,0.7)]">
-          <SplitFlapText
-            words={[
-              'ORION 1.0 READY',
-              'POOL ₹1,00,000',
-              'TEAM FEE ₹100',
-              'TOP 70 TO SIST',
-              'AUGUST 28 2026',
-              'SIST CHENNAI'
-            ]}
-            flipDuration={0.1}
-            stagger={0.04}
-            cycleDelay={2200}
-            charset="alphanumeric"
-            flipsPerChar={6}
-            tileColor="#07193D"
-            textColor="#F8FAFC"
-            tileRadius={0}
-            gap={4}
-            fontSize={22}
-            loop={true}
-            padTo={16}
-          />
+      {/* Modern Key Metrics Ribbon */}
+      <ScrollReveal direction="up" delay={250} duration={650} className="w-full max-w-4xl mb-10">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {highlightPills.map((pill, idx) => (
+            <div 
+              key={idx}
+              className="p-3 bg-[#0B1220]/90 border border-[rgba(0,188,242,0.18)] hover:border-[#00BCF2]/70 transition-all text-center shadow-lg hover:-translate-y-0.5"
+            >
+              <div className="text-[10px] font-mono-hud text-[#94A3B8] tracking-wider mb-0.5 font-semibold">
+                {pill.label}
+              </div>
+              <div className={`text-base sm:text-lg font-mono-hud font-black ${pill.color}`}>
+                {pill.value}
+              </div>
+            </div>
+          ))}
         </div>
       </ScrollReveal>
 
-      {/* 3D WebGL Interactive Mission Hologram */}
-      <ScrollReveal direction="zoom" delay={300} duration={750} className="w-full max-w-5xl mb-10">
-        <ElectricBorder
-          color="#38BDF8"
-          speed={0.8}
-          chaos={0.08}
-          thickness={1.5}
-          className="w-full shadow-2xl"
-        >
-          <div className="w-full h-[320px] sm:h-[400px] md:h-[460px] bg-[#040E24]/95 backdrop-blur-xl relative overflow-hidden flex flex-col justify-between p-4 sm:p-6">
-            
-            {/* 3D Scene Controls & HUD Meta */}
-            <div className="flex items-center justify-between z-20">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-[#0B2556] border border-[#38BDF8]/40 text-[#38BDF8] shadow-sm">
-                  <Compass className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-xs font-mono-hud text-white font-bold">
-                    {active3DMode === 'constellation' ? 'ORION INTERACTIVE STELLAR MAP' : 'ORION DEEP-SPACE EXPLORER PROBE'}
-                  </div>
-                  <div className="text-[10px] font-mono-hud text-[#7DD3FC]">
-                    INTERACTIVE THREE.JS WEBGL RENDERER // DRAG TO ROTATE
-                  </div>
-                </div>
-              </div>
-
-              {/* 3D Scene Mode Switcher */}
-              <div className="flex items-center gap-1.5 bg-[#07193D] p-1 border border-[rgba(212,233,255,0.14)] rounded-none">
-                <button
-                  onClick={() => {
-                    sound.playHover();
-                    setActive3DMode('constellation');
-                  }}
-                  className={`px-2.5 py-1 text-[10px] font-mono-hud transition-all cursor-pointer ${
-                    active3DMode === 'constellation'
-                      ? 'bg-[#38BDF8] text-[#040E24] font-bold shadow-sm'
-                      : 'text-[#BAE6FD] hover:text-white'
-                  }`}
-                >
-                  CONSTELLATION
-                </button>
-                <button
-                  onClick={() => {
-                    sound.playHover();
-                    setActive3DMode('ship');
-                  }}
-                  className={`px-2.5 py-1 text-[10px] font-mono-hud transition-all cursor-pointer ${
-                    active3DMode === 'ship'
-                      ? 'bg-[#38BDF8] text-[#040E24] font-bold shadow-sm'
-                      : 'text-[#BAE6FD] hover:text-white'
-                  }`}
-                >
-                  EXPLORER PROBE
-                </button>
-              </div>
-            </div>
-
-            {/* 3D Canvas Viewport */}
-            <div className="absolute inset-0 z-10">
-              {active3DMode === 'constellation' ? <OrionConstellation3D /> : <OrionShip3D />}
-            </div>
-
-            {/* Bottom 3D Viewport Telemetry */}
-            <div className="flex items-center justify-between text-[10px] font-mono-hud text-[#7DD3FC] z-20 border-t border-[rgba(212,233,255,0.1)] pt-2">
-              <div className="flex items-center gap-3">
-                <span className="flex items-center gap-1 text-[#38BDF8]">
-                  <Globe className="w-3 h-3" />
-                  ORBIT: SIST_GEO_01
-                </span>
-                <span className="hidden sm:inline">•</span>
-                <span className="hidden sm:inline">COORDINATES: 12.8718° N, 80.2206° E</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 bg-emerald-400 animate-pulse" />
-                <span className="text-slate-300">TELEMETRY NOMINAL</span>
-              </div>
-            </div>
-
-          </div>
-        </ElectricBorder>
-      </ScrollReveal>
-
-      {/* Action Buttons & Launch Links */}
-      <ScrollReveal direction="up" delay={350} duration={600} className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-md mb-12">
+      {/* Action Buttons */}
+      <ScrollReveal direction="up" delay={300} duration={600} className="flex flex-col sm:flex-row items-center gap-3.5 w-full max-w-md mb-12">
         <button
           onClick={() => {
             sound.playLaunchWarp();
             onOpenRegister();
           }}
-          className="btn-sheen btn-glow-cyan w-full sm:w-auto flex-1 py-3.5 px-6 rounded-none font-display font-bold text-xs tracking-wider text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] hover:opacity-95 transition-all shadow-lg flex items-center justify-center gap-2 group active:scale-95 cursor-pointer"
+          className="btn-sheen btn-glow-cyan w-full sm:w-auto flex-1 py-4 px-7 font-display font-bold text-xs tracking-wider text-[#020617] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#00BCF2] hover:opacity-95 transition-all shadow-lg flex items-center justify-center gap-2 group active:scale-95 cursor-pointer"
         >
-          <Rocket className="w-4 h-4 text-[#040E24]" />
-          <span>LAUNCH REGISTRATION — ₹100</span>
-          <ChevronRight className="w-4 h-4 text-[#040E24] group-hover:translate-x-1 transition-transform" />
+          <Rocket className="w-4 h-4 text-[#020617]" />
+          <span>ENTER THE MISSION — ₹100</span>
+          <ChevronRight className="w-4 h-4 text-[#020617] group-hover:translate-x-1 transition-transform" />
         </button>
 
         <button
           onClick={handleStatusClick}
-          className="w-full sm:w-auto py-3.5 px-5 rounded-none font-mono-hud text-xs text-[#BAE6FD] hover:text-white border border-[rgba(212,233,255,0.16)] bg-[#07193D] hover:bg-[#0B2556] hover:border-[#38BDF8]/40 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+          className="w-full sm:w-auto py-4 px-6 font-mono-hud text-xs text-[#94A3B8] hover:text-white border border-[rgba(0,188,242,0.2)] bg-[#0B1220] hover:bg-[#071426] hover:border-[#00BCF2]/60 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-md"
         >
-          <Search className="w-3.5 h-3.5 text-[#38BDF8]" />
+          <Search className="w-3.5 h-3.5 text-[#22D3EE]" />
           <span>SQUAD LOOKUP</span>
         </button>
       </ScrollReveal>

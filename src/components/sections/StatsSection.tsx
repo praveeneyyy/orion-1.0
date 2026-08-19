@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Trophy, CreditCard, Users, ShieldCheck } from 'lucide-react';
+import { Trophy, CreditCard, Users, ShieldCheck, Award, Sparkles } from 'lucide-react';
 import { GlassCard } from '../common/GlassCard';
 import { ScrollReveal } from '../common/ScrollReveal';
 import { AnimatedCounter } from '../common/AnimatedCounter';
@@ -15,7 +15,8 @@ export const StatsSection: React.FC = () => {
       label: "TOTAL CASH PRIZE POOL",
       subtext: "1st: ₹25k • 2nd: ₹15k • 3rd: ₹10k + Bounties",
       glowColor: "cyan" as const,
-      accentText: "text-[#38BDF8]"
+      accentText: "text-[#38BDF8]",
+      badge: "REWARD ORBIT"
     },
     {
       icon: CreditCard,
@@ -23,7 +24,8 @@ export const StatsSection: React.FC = () => {
       label: "ROUND 1 FLAT TEAM FEE",
       subtext: "Flat fee for 2 to 6 member squads",
       glowColor: "cyan" as const,
-      accentText: "text-emerald-400"
+      accentText: "text-emerald-400",
+      badge: "ROUND 1 ACCESS"
     },
     {
       icon: ShieldCheck,
@@ -31,7 +33,8 @@ export const StatsSection: React.FC = () => {
       label: "FINALIST SQUADS TO SIST",
       subtext: "Shortlisted for 24-hour offline mission arena",
       glowColor: "violet" as const,
-      accentText: "text-[#60A5FA]"
+      accentText: "text-[#60A5FA]",
+      badge: "OFFLINE FINALE"
     },
     {
       icon: Users,
@@ -39,7 +42,8 @@ export const StatsSection: React.FC = () => {
       label: "MEMBERS PER SQUAD",
       subtext: "Cross-institutional & multidisciplinary squads",
       glowColor: "amber" as const,
-      accentText: "text-[#BAE6FD]"
+      accentText: "text-[#BAE6FD]",
+      badge: "CREW SIZE"
     }
   ];
 
@@ -57,16 +61,16 @@ export const StatsSection: React.FC = () => {
             >
               <GlassCard
                 glowColor={stat.glowColor}
-                className="p-6 border border-[rgba(212,233,255,0.14)] hover:border-[#38BDF8]/60 flex flex-col justify-between h-full group bg-[#07193D]/90 rounded-none shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_36px_rgba(4,14,36,0.8)]"
+                className="p-6 sm:p-7 border border-[rgba(212,233,255,0.14)] hover:border-[#38BDF8]/60 flex flex-col justify-between h-full group bg-[#07193D]/90 rounded-none shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_36px_rgba(4,14,36,0.8)]"
                 withHudCorners={true}
               >
                 <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className={`p-2 rounded-none bg-[#0B2556] border border-[#38BDF8]/40 ${stat.accentText} group-hover:scale-110 group-hover:border-[#38BDF8] group-hover:shadow-[0_0_12px_rgba(56,189,248,0.4)] transition-all shadow-sm`}>
+                  <div className="flex items-center justify-between mb-4 pb-2.5 border-b border-[rgba(212,233,255,0.1)]">
+                    <div className={`p-2.5 bg-[#0B2556] border border-[#38BDF8]/40 ${stat.accentText} group-hover:scale-110 group-hover:border-[#38BDF8] group-hover:shadow-[0_0_15px_rgba(56,189,248,0.4)] transition-all shadow-sm`}>
                       <stat.icon className="w-4 h-4" />
                     </div>
-                    <span className="text-[10px] font-mono-hud text-[#7DD3FC] tracking-wider">
-                      SYS-0{idx + 1}
+                    <span className="text-[10px] font-mono-hud text-[#38BDF8] bg-[#040E24] px-2 py-0.5 border border-[#38BDF8]/30 font-bold tracking-wider">
+                      {stat.badge}
                     </span>
                   </div>
 
@@ -76,12 +80,19 @@ export const StatsSection: React.FC = () => {
                 </div>
 
                 <div>
-                  <h3 className="text-xs font-display font-bold tracking-wider text-[#F8FAFC] uppercase mb-1">
+                  <h3 className="text-xs font-display font-bold tracking-wider text-[#F8FAFC] uppercase mb-1.5">
                     {stat.label}
                   </h3>
-                  <p className="text-xs font-sans text-[#7DD3FC] leading-relaxed font-normal">
+                  <p className="text-xs font-sans text-[#7DD3FC] leading-relaxed font-normal mb-4">
                     {stat.subtext}
                   </p>
+
+                  <div className="w-full h-1 bg-[#040E24] border border-[rgba(212,233,255,0.1)] overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-[#38BDF8] to-[#60A5FA] group-hover:w-full transition-all duration-500"
+                      style={{ width: `${(idx + 1) * 25}%` }}
+                    />
+                  </div>
                 </div>
               </GlassCard>
             </ScrollReveal>

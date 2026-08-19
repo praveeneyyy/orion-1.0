@@ -24,10 +24,10 @@ export const GlassCard: React.FC<GlassCardProps> = ({
   const [isHovered, setIsHovered] = useState(false);
 
   const glowColorMap = {
-    cyan: 'rgba(56, 189, 248, 0.22)',
-    violet: 'rgba(96, 165, 250, 0.22)',
-    emerald: 'rgba(52, 211, 153, 0.2)',
-    amber: 'rgba(56, 189, 248, 0.22)'
+    cyan: 'rgba(56, 189, 248, 0.25)',
+    violet: 'rgba(96, 165, 250, 0.25)',
+    emerald: 'rgba(52, 211, 153, 0.22)',
+    amber: 'rgba(56, 189, 248, 0.25)'
   };
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
@@ -48,14 +48,25 @@ export const GlassCard: React.FC<GlassCardProps> = ({
       onMouseMove={handleMouseMove}
       style={style}
       className={`
-        relative overflow-hidden transition-all duration-200
+        relative overflow-hidden transition-all duration-300
         bg-[#07193D]/90 backdrop-blur-xl border border-[rgba(212,233,255,0.14)] rounded-none
-        hover:border-[#38BDF8]/50 hover:bg-[#0B2556]/95
+        hover:border-[#38BDF8]/60 hover:bg-[#0B2556]/95
         ${withHudCorners ? 'hud-corner' : ''}
         ${className}
       `}
     >
-      {/* Subtle dynamic mouse spotlight */}
+      {/* High-tech top edge accent line */}
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#38BDF8]/40 to-transparent opacity-50 group-hover:opacity-100 transition-opacity pointer-events-none" />
+
+      {/* Cybernetic Micro Crosshairs */}
+      {withHudCorners && (
+        <>
+          <span className="absolute top-1.5 right-1.5 font-mono-hud text-[7px] text-[#38BDF8]/40 select-none pointer-events-none">+</span>
+          <span className="absolute bottom-1.5 left-1.5 font-mono-hud text-[7px] text-[#38BDF8]/40 select-none pointer-events-none">+</span>
+        </>
+      )}
+
+      {/* Dynamic mouse spotlight */}
       <div
         className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-200"
         style={{

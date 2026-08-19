@@ -116,7 +116,7 @@ flowchart TD
 * Cross-browser touch unlock on mobile devices.
 
 ### 4.3 Two-Tier Selection Protocol & Transparent Fees
-1. **Round 1 (Online Qualifier)**: Flat **₹100** registration fee per team regardless of squad size (2 to 6 builders). Closes **August 28, 2026**.
+1. **Round 1 (Online Qualifier)**: Flat **₹100** registration fee per team regardless of squad size (2 to 6 builders). Closes **September 18, 2026**.
 2. **Round 2 (Offline Grand Finale)**: **₹200** per head confirmation fee for shortlisted **Top 70 finalist squads** for the 24-hour sprint at SIST Chennai, covering:
    * 2 Breakfasts, 2 Lunches, 1 Grand Dinner & midnight booster snacks.
    * Free on-campus hostel accommodation for outstation teams.

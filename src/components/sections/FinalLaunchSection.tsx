@@ -1,12 +1,36 @@
 'use client';
 
 import React from 'react';
-import { Rocket, ShieldCheck, Zap, Trophy, Search } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import { 
+  Rocket, 
+  Search, 
+  ChevronRight, 
+  Sparkles, 
+  CheckCircle2, 
+  ShieldCheck, 
+  Compass,
+  Radio,
+  FileCode2,
+  Cpu
+} from 'lucide-react';
 import { GlassCard } from '../common/GlassCard';
-import { Lightfall } from '../common/Lightfall';
 import { ScrollReveal } from '../common/ScrollReveal';
 import { EVENT_METRICS } from '../../data/orionData';
 import { sound } from '../../audio/soundEffects';
+
+// Dynamically import 3D Orion Constellation Viewport
+const OrionConstellation3D = dynamic(
+  () => import('../3d/OrionConstellation3D').then((mod) => mod.OrionConstellation3D),
+  { 
+    ssr: false, 
+    loading: () => (
+      <div className="w-full h-full min-h-[340px] flex items-center justify-center font-mono-hud text-xs text-[#94A3B8]">
+        INITIALIZING ORION CONSTELLATION TELEMETRY 3D...
+      </div>
+    ) 
+  }
+);
 
 interface FinalLaunchSectionProps {
   onOpenRegister: () => void;
@@ -14,84 +38,140 @@ interface FinalLaunchSectionProps {
 }
 
 export const FinalLaunchSection: React.FC<FinalLaunchSectionProps> = ({ onOpenRegister, onOpenStatus }) => {
+  const readinessSteps = [
+    { num: "01", text: "Assemble your squad (2 to 6 members)", done: true },
+    { num: "02", text: "Select 1 of 4 Flagship or Open challenges", done: true },
+    { num: "03", text: "Download standardized 5-slide PPT template", done: true },
+    { num: "04", text: "Lock in Round 1 Online entry for flat ₹100", done: true }
+  ];
+
   return (
-    <section className="py-24 px-4 relative z-10 overflow-hidden">
-      <div className="max-w-5xl mx-auto relative">
+    <section id="launchpad" className="py-24 px-4 relative z-10">
+      <div className="max-w-7xl mx-auto">
         
-        {/* Lightfall Hyperspace Background Layer */}
-        <div className="absolute -inset-4 z-0 pointer-events-none opacity-45 overflow-hidden">
-          <Lightfall
-            colors={['#FFFFFF', '#BAE6FD', '#7DD3FC', '#38BDF8', '#0284C7']}
-            backgroundColor="#040E24"
-            speed={0.4}
-            streakCount={4}
-            streakWidth={1.2}
-            streakLength={1.3}
-            glow={0.8}
-            density={0.45}
-            twinkle={0.8}
-            zoom={2.2}
-            backgroundGlow={0.35}
-            opacity={0.5}
-            mouseInteraction={true}
-            mouseStrength={0.7}
-            mouseRadius={0.9}
-            mixBlendMode="screen"
-          />
-        </div>
+        {/* Section Header */}
+        <ScrollReveal direction="up" delay={50} duration={600} className="text-center max-w-3xl mx-auto mb-14">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-[#0B1220] border border-[#00BCF2]/30 text-xs font-mono-hud text-[#22D3EE] mb-3 shadow-[0_0_15px_rgba(0,188,242,0.2)]">
+            <Radio className="w-3.5 h-3.5" />
+            <span>MISSION LAUNCHPAD // FLIGHT READINESS</span>
+          </div>
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-black text-white tracking-tight">
+            ORION <span className="text-gradient-frost-azure">STELLAR CONSOLE</span>
+          </h2>
+          <p className="text-xs md:text-sm text-[#94A3B8] mt-2.5 font-sans leading-relaxed">
+            <strong className="text-white">Microsoft provides the technology. ORION provides the mission. Participants build the future.</strong> <br className="hidden sm:inline" />
+            Interact with the 3D Orion constellation star map and launch your squadron into the ₹1,00,000 prize orbit.
+          </p>
+        </ScrollReveal>
 
-        <ScrollReveal direction="zoom" delay={100} duration={700}>
-          <GlassCard
-            glowColor="cyan"
-            className="p-8 sm:p-12 md:p-16 border border-[#38BDF8]/40 bg-[#07193D]/95 relative z-10 overflow-hidden text-center shadow-[0_16px_60px_rgba(2,8,24,0.9)] rounded-none"
-            withHudCorners={true}
-          >
-            <div className="absolute inset-0 hud-grid-pattern opacity-15 pointer-events-none" />
-
-            <div className="relative z-10 max-w-3xl mx-auto flex flex-col items-center">
-              
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-none bg-[#0B2556] border border-[#38BDF8]/40 text-xs font-mono-hud text-[#38BDF8] mb-6 shadow-sm">
-                <span className="w-1.5 h-1.5 bg-[#38BDF8] animate-ping" />
-                <span>LAUNCH SEQUENCE // ROUND 1 REGISTRATIONS ACTIVE</span>
-              </div>
-
-              <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-black text-white tracking-tight mb-4">
-                ENTER THE <span className="text-gradient-frost-azure">ORION 1.0</span> MISSION
-              </h2>
-
-              <p className="text-sm md:text-base text-[#BAE6FD] font-sans leading-relaxed mb-8 max-w-xl font-normal">
-                Join visionary builders across India. Secure your squadron slot for Round 1 today and launch towards the ₹1,00,000 prize orbit.
-              </p>
-
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full mb-8 text-left">
-                <div className="p-3.5 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.12)] hover:border-[#38BDF8]/40 transition-colors">
-                  <span className="text-[10px] font-mono-hud text-[#7DD3FC] block">PRIZE POOL</span>
-                  <span className="text-sm font-mono-hud font-bold text-[#38BDF8]">{EVENT_METRICS.prizePool}</span>
+        {/* Two-Column Interactive Mission Console */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-6xl mx-auto items-stretch text-left">
+          
+          {/* Left Column: 3D Orion Constellation Interactive Map */}
+          <ScrollReveal direction="left" delay={150} duration={650} className="lg:col-span-7 h-full">
+            <GlassCard
+              glowColor="cyan"
+              className="p-6 sm:p-7 border border-[rgba(0,188,242,0.25)] bg-[#0B1220]/95 rounded-none h-full flex flex-col justify-between shadow-2xl"
+              withHudCorners={true}
+            >
+              <div>
+                <div className="flex items-center justify-between pb-3 mb-4 border-b border-[rgba(0,188,242,0.12)]">
+                  <div className="flex items-center gap-2">
+                    <Compass className="w-4 h-4 text-[#00BCF2]" />
+                    <span className="text-xs font-mono-hud text-white font-bold">
+                      ORION CONSTELLATION 3D // SPATIAL RADAR
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono-hud text-[#22D3EE] bg-[#071426] px-2 py-0.5 border border-[#00BCF2]/40 font-semibold">
+                    INTERACTIVE 3D
+                  </span>
                 </div>
-                <div className="p-3.5 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.12)] hover:border-[#38BDF8]/40 transition-colors">
-                  <span className="text-[10px] font-mono-hud text-[#7DD3FC] block">ROUND 1 FEE</span>
-                  <span className="text-sm font-mono-hud font-bold text-emerald-400">{EVENT_METRICS.round1Fee} FLAT</span>
-                </div>
-                <div className="p-3.5 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.12)] hover:border-[#38BDF8]/40 transition-colors">
-                  <span className="text-[10px] font-mono-hud text-[#7DD3FC] block">FINALE ARENA</span>
-                  <span className="text-sm font-mono-hud font-bold text-white">TOP 70 SQUADS</span>
-                </div>
-                <div className="p-3.5 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.12)] hover:border-[#38BDF8]/40 transition-colors">
-                  <span className="text-[10px] font-mono-hud text-[#7DD3FC] block">CREW CAPACITY</span>
-                  <span className="text-sm font-mono-hud font-bold text-white">2–6 MEMBERS</span>
+
+                <div className="w-full h-72 sm:h-80 md:h-[340px] relative overflow-hidden bg-[#020617] border border-[rgba(0,188,242,0.15)] mb-4">
+                  <OrionConstellation3D />
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-md">
+              <div className="flex items-center justify-between text-[10px] font-mono-hud text-[#94A3B8] pt-2 border-t border-[rgba(0,188,242,0.1)]">
+                <span>CONSTELLATION: ORION (THE HUNTER)</span>
+                <span className="text-[#22D3EE] font-semibold">COORDINATES: RA 05h 35m • DEC −05° 23′</span>
+              </div>
+            </GlassCard>
+          </ScrollReveal>
+
+          {/* Right Column: Mission Dispatch & Readiness Checklist */}
+          <ScrollReveal direction="right" delay={200} duration={650} className="lg:col-span-5 h-full">
+            <GlassCard
+              glowColor="violet"
+              className="p-6 sm:p-8 border border-[rgba(0,188,242,0.22)] bg-[#0B1220]/95 rounded-none h-full flex flex-col justify-between shadow-2xl"
+              withHudCorners={true}
+            >
+              <div>
+                <div className="flex items-center justify-between pb-3 mb-5 border-b border-[rgba(0,188,242,0.12)]">
+                  <div className="flex items-center gap-2">
+                    <Rocket className="w-4 h-4 text-[#00BCF2]" />
+                    <span className="text-xs font-mono-hud text-white font-bold">
+                      SQUADRON LAUNCH PROTOCOL
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono-hud text-emerald-400 bg-[#071426] px-2 py-0.5 border border-emerald-400/40 font-bold">
+                    ROUND 1 OPEN
+                  </span>
+                </div>
+
+                <h3 className="text-xl sm:text-2xl font-display font-black text-white mb-2">
+                  MISSION READINESS CHECKLIST
+                </h3>
+
+                <p className="text-xs text-[#94A3B8] font-sans leading-relaxed mb-5 font-normal">
+                  Verify your squadron parameters before launching into Round 1 of ORION 1.0:
+                </p>
+
+                {/* Readiness Step Items */}
+                <div className="space-y-2.5 mb-6">
+                  {readinessSteps.map((step, idx) => (
+                    <div 
+                      key={idx}
+                      className="p-3 bg-[#071426] border border-[rgba(0,188,242,0.12)] hover:border-[#00BCF2]/50 transition-colors flex items-center justify-between gap-3"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-[10px] font-mono-hud text-[#22D3EE] font-bold">
+                          {step.num}
+                        </span>
+                        <span className="text-xs font-sans text-[#F8FAFC]">
+                          {step.text}
+                        </span>
+                      </div>
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    </div>
+                  ))}
+                </div>
+
+                {/* Metric Summary Pill */}
+                <div className="grid grid-cols-2 gap-2 mb-6 text-center">
+                  <div className="p-2.5 bg-[#020617] border border-[rgba(0,188,242,0.15)]">
+                    <span className="text-[9px] font-mono-hud text-[#94A3B8] block">PRIZE POOL</span>
+                    <span className="text-xs font-mono-hud font-bold text-[#22D3EE]">{EVENT_METRICS.prizePool}</span>
+                  </div>
+                  <div className="p-2.5 bg-[#020617] border border-[rgba(0,188,242,0.15)]">
+                    <span className="text-[9px] font-mono-hud text-[#94A3B8] block">ONLINE DEADLINE</span>
+                    <span className="text-xs font-mono-hud font-bold text-[#00BCF2]">SEP 08, 2026</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-2.5 pt-4 border-t border-[rgba(0,188,242,0.12)]">
                 <button
                   onClick={() => {
                     sound.playLaunchWarp();
                     onOpenRegister();
                   }}
-                  className="btn-sheen btn-glow-cyan w-full sm:w-auto px-8 py-4 rounded-none font-display font-bold text-xs tracking-wider text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] hover:opacity-95 transition-all shadow-md flex items-center justify-center gap-2 group active:scale-95 cursor-pointer"
+                  className="btn-sheen btn-glow-cyan w-full py-3.5 px-4 font-display font-bold text-xs tracking-wider text-[#020617] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#00BCF2] hover:opacity-95 transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-95 group"
                 >
-                  <Rocket className="w-4 h-4 text-[#040E24]" />
-                  <span>INITIATE ROUND 1 LAUNCH — ₹100</span>
+                  <Rocket className="w-4 h-4 text-[#020617]" />
+                  <span>COMMISSION SQUADRON — ₹100</span>
+                  <ChevronRight className="w-4 h-4 text-[#020617] group-hover:translate-x-1 transition-transform" />
                 </button>
 
                 <button
@@ -99,33 +179,18 @@ export const FinalLaunchSection: React.FC<FinalLaunchSectionProps> = ({ onOpenRe
                     sound.playClick();
                     onOpenStatus();
                   }}
-                  className="w-full sm:w-auto px-6 py-4 rounded-none font-mono-hud text-xs text-[#BAE6FD] hover:text-white border border-[rgba(212,233,255,0.16)] bg-[#07193D] hover:bg-[#0B2556] hover:border-[#38BDF8]/40 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+                  className="w-full py-2.5 px-4 bg-[#071426] hover:bg-[#0B2556] border border-[rgba(0,188,242,0.2)] hover:border-[#00BCF2]/60 text-xs font-mono-hud text-[#BAE6FD] hover:text-white transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
                 >
-                  <Search className="w-3.5 h-3.5 text-[#38BDF8]" />
-                  <span>CHECK TEAM STATUS</span>
+                  <Search className="w-3.5 h-3.5 text-[#22D3EE]" />
+                  <span>VERIFY SQUAD DOSSIER STATUS</span>
                 </button>
               </div>
 
-              <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-xs font-mono-hud text-[#7DD3FC]">
-                <span className="flex items-center gap-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5 text-[#38BDF8]" />
-                  OFFICIAL SATHYABAMA CERTIFICATION
-                </span>
-                <span className="text-slate-600">•</span>
-                <span className="flex items-center gap-1.5">
-                  <Zap className="w-3.5 h-3.5 text-[#38BDF8]" />
-                  MICROSOFT CLUB SIST GOVERNANCE
-                </span>
-                <span className="text-slate-600">•</span>
-                <span className="flex items-center gap-1.5">
-                  <Trophy className="w-3.5 h-3.5 text-[#38BDF8]" />
-                  ₹1,00,000 TOTAL REWARDS
-                </span>
-              </div>
+            </GlassCard>
+          </ScrollReveal>
 
-            </div>
-          </GlassCard>
-        </ScrollReveal>
+        </div>
+
       </div>
     </section>
   );

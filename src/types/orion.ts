@@ -71,3 +71,25 @@ export interface StarNodeData {
   size: number;
   color: string;
 }
+
+export interface MicrosoftTech {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  capabilities: string[];
+  icon: string;
+  badge: string;
+  accent: string;
+}
+
+export interface JudgingCriterion {
+  number: string;
+  name: string;
+  weight: number;
+  weightLabel: string;
+  description: string;
+  keyFactors: string[];
+  color: string;
+}
+

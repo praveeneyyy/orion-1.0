@@ -2,14 +2,15 @@
 
 import React, { useState } from 'react';
 import { 
-  Terminal, 
   Sparkles, 
   ArrowUpRight, 
   Waves, 
   ShieldCheck, 
   TreePine, 
   Cpu, 
-  Layers
+  Layers,
+  CheckCircle2,
+  ChevronDown
 } from 'lucide-react';
 import { GlassCard } from '../common/GlassCard';
 import { ScrollReveal } from '../common/ScrollReveal';
@@ -22,219 +23,229 @@ interface ChallengeArenaProps {
 }
 
 export const ChallengeArena: React.FC<ChallengeArenaProps> = ({ onOpenProblemModal }) => {
-  const [activeFilter, setActiveFilter] = useState<'all' | 'flagship' | 'open'>('all');
+  const [selectedId, setSelectedId] = useState<string>(PROBLEM_STATEMENTS[0].id);
+
+  const selectedProblem = PROBLEM_STATEMENTS.find((p) => p.id === selectedId) || PROBLEM_STATEMENTS[0];
 
   const domainIcons: Record<string, React.FC<{ className?: string }>> = {
     floatchat: Waves,
     lexvault: ShieldCheck,
     sylvasense: TreePine,
+    'open-innovation': Cpu
   };
 
-  const openInnovationTracks = [
-    { title: "Generative & Agentic AI", desc: "Autonomous multi-agent systems, multimodal RAG, and edge inference pipelines." },
-    { title: "Web3 & Decentralized Systems", desc: "Zero-Knowledge proofs, verifiable computation, DeFi protocols, and decentralized ID." },
-    { title: "Cybersecurity & Cryptography", desc: "Automated vulnerability mitigation, post-quantum crypto, and hardware security modules." },
-    { title: "IoT, Robotics & Hardware", desc: "Embedded telemetry controllers, autonomous rovers, drones, and edge robotics." },
-    { title: "Healthcare & BioInformatics", desc: "Clinical diagnostic vision, genomics pipelines, EHR zero-leakage, and telemetry." },
-    { title: "Space Tech & Geospatial", desc: "Orbital flight mechanics, multi-spectral satellite processing, and telemetry mapping." }
-  ];
+  const Icon = domainIcons[selectedProblem.id] || Cpu;
 
   return (
     <section id="challenges" className="py-24 px-4 relative z-10">
       <div className="max-w-7xl mx-auto">
         
         {/* Section Header */}
-        <ScrollReveal direction="up" delay={50} duration={600} className="text-center max-w-2xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-none bg-[#07193D] border border-[rgba(212,233,255,0.14)] text-xs font-mono-hud text-[#38BDF8] mb-3 shadow-sm">
-            <Terminal className="w-3.5 h-3.5" />
-            <span>ENGINEERING DOSSIERS // PROBLEM STATEMENTS</span>
+        <ScrollReveal direction="up" delay={50} duration={600} className="text-center max-w-3xl mx-auto mb-12">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-[#0B1220] border border-[#00BCF2]/30 text-xs font-mono-hud text-[#22D3EE] mb-3 shadow-[0_0_15px_rgba(0,188,242,0.2)]">
+            <Cpu className="w-3.5 h-3.5" />
+            <span>MISSION SPECIFICATIONS // PROBLEM STATEMENTS</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-black text-white">
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-black text-white tracking-tight">
             CHALLENGE <span className="text-gradient-frost-azure">ARENA</span>
           </h2>
-          <p className="text-xs md:text-sm text-[#BAE6FD] mt-2.5 font-sans leading-relaxed">
-            Tackle deep-tech flagship engineering challenges or build breakthrough solutions across open-innovation tracks.
+          <p className="text-xs md:text-sm text-[#94A3B8] mt-2.5 font-sans leading-relaxed">
+            Select an engineering challenge below to inspect mission objectives, technical architecture, and submission deliverables.
           </p>
-
-          <div className="flex items-center justify-center gap-2 mt-6 flex-wrap">
-            <button
-              onClick={() => {
-                sound.playHover();
-                setActiveFilter('all');
-              }}
-              className={`px-4 py-2 rounded-none text-xs font-mono-hud transition-all cursor-pointer active:scale-95 ${
-                activeFilter === 'all' 
-                  ? 'bg-[#38BDF8] text-[#040E24] font-bold shadow-[0_0_15px_rgba(56,189,248,0.4)]' 
-                  : 'bg-[#0B2556] text-[#BAE6FD] hover:text-white border border-[rgba(212,233,255,0.12)] hover:border-[#38BDF8]/40'
-              }`}
-            >
-              ALL MISSIONS (04)
-            </button>
-            <button
-              onClick={() => {
-                sound.playHover();
-                setActiveFilter('flagship');
-              }}
-              className={`px-4 py-2 rounded-none text-xs font-mono-hud transition-all cursor-pointer active:scale-95 ${
-                activeFilter === 'flagship' 
-                  ? 'bg-[#38BDF8] text-[#040E24] font-bold shadow-[0_0_15px_rgba(56,189,248,0.4)]' 
-                  : 'bg-[#0B2556] text-[#BAE6FD] hover:text-white border border-[rgba(212,233,255,0.12)] hover:border-[#38BDF8]/40'
-              }`}
-            >
-              FLAGSHIP DOSSIERS (03)
-            </button>
-            <button
-              onClick={() => {
-                sound.playHover();
-                setActiveFilter('open');
-              }}
-              className={`px-4 py-2 rounded-none text-xs font-mono-hud transition-all cursor-pointer active:scale-95 ${
-                activeFilter === 'open' 
-                  ? 'bg-[#38BDF8] text-[#040E24] font-bold shadow-[0_0_15px_rgba(56,189,248,0.4)]' 
-                  : 'bg-[#0B2556] text-[#BAE6FD] hover:text-white border border-[rgba(212,233,255,0.12)] hover:border-[#38BDF8]/40'
-              }`}
-            >
-              OPEN TRACKS (06)
-            </button>
-          </div>
         </ScrollReveal>
 
-        {/* 3 Flagship Problem Statements */}
-        {(activeFilter === 'all' || activeFilter === 'flagship') && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-7xl mx-auto mb-12 items-stretch text-left">
-            {PROBLEM_STATEMENTS.map((prob, idx) => {
-              const Icon = domainIcons[prob.id] || Terminal;
+        {/* Futuristic Mission Selector Container */}
+        <div className="max-w-5xl mx-auto">
+          
+          {/* Mobile & Tablet Dropdown Selector */}
+          <div className="lg:hidden mb-6">
+            <label className="text-[11px] font-mono-hud text-[#22D3EE] uppercase tracking-wider block mb-2 font-bold">
+              SELECT PROBLEM STATEMENT
+            </label>
+            <div className="relative">
+              <select
+                value={selectedId}
+                onChange={(e) => {
+                  sound.playClick();
+                  setSelectedId(e.target.value);
+                }}
+                className="w-full appearance-none p-3.5 bg-[#0B1220] border border-[#00BCF2]/50 text-white text-xs font-mono-hud focus:outline-none focus:border-[#22D3EE] focus:ring-1 focus:ring-[#22D3EE] pr-10 shadow-lg cursor-pointer"
+              >
+                {PROBLEM_STATEMENTS.map((prob) => (
+                  <option key={prob.id} value={prob.id} className="bg-[#071426] text-white py-2">
+                    {prob.code}: {prob.title} — {prob.domain}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="w-4 h-4 text-[#22D3EE] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            </div>
+          </div>
+
+          {/* Desktop Interactive List / Selector Bar */}
+          <div className="hidden lg:grid grid-cols-4 gap-2.5 mb-8">
+            {PROBLEM_STATEMENTS.map((prob) => {
+              const isSelected = selectedId === prob.id;
+              const TabIcon = domainIcons[prob.id] || Cpu;
 
               return (
-                <ScrollReveal
+                <button
                   key={prob.id}
-                  direction="up"
-                  delay={idx * 120}
-                  duration={650}
-                  className="h-full"
+                  onClick={() => {
+                    sound.playHover();
+                    setSelectedId(prob.id);
+                  }}
+                  className={`text-left p-3.5 border transition-all duration-200 cursor-pointer relative group ${
+                    isSelected
+                      ? 'bg-[#0B2556] border-[#00BCF2] text-white shadow-[0_0_20px_rgba(0,188,242,0.3)] ring-1 ring-[#00BCF2]'
+                      : 'bg-[#0B1220]/90 border-[rgba(0,188,242,0.15)] hover:border-[#00BCF2]/60 hover:bg-[#071426] text-[#94A3B8] hover:text-white'
+                  }`}
                 >
-                  <GlassCard
-                    glowColor={prob.accentColor}
-                    className="p-6 sm:p-7 flex flex-col justify-between border border-[rgba(212,233,255,0.14)] hover:border-[#38BDF8]/60 bg-[#07193D]/90 rounded-none h-full transition-all duration-300 hover:-translate-y-1.5 shadow-xl"
-                    withHudCorners={true}
-                  >
-                    <div>
-                      <div className="flex items-center justify-between pb-3 mb-4 border-b border-[rgba(212,233,255,0.12)]">
-                        <span className="text-xs font-mono-hud text-[#7DD3FC] flex items-center gap-1.5 font-semibold">
-                          <Icon className="w-3.5 h-3.5 text-[#38BDF8]" />
-                          {prob.code}
-                        </span>
-                        <span className="text-[10px] font-mono-hud px-2.5 py-0.5 rounded-none border border-[#38BDF8]/40 bg-[#0B2556] text-[#38BDF8] font-semibold shadow-sm">
-                          FLAGSHIP
-                        </span>
-                      </div>
+                  {/* Top Active Indicator */}
+                  {isSelected && (
+                    <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-[#0078D4] via-[#00BCF2] to-[#22D3EE]" />
+                  )}
 
-                      <h3 className="text-2xl font-display font-black text-white tracking-tight mb-1">
-                        {prob.title}
-                      </h3>
-                      <div className="text-xs font-mono-hud font-semibold text-[#38BDF8] mb-3">
-                        {prob.domain}
-                      </div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className={`text-[10px] font-mono-hud font-bold tracking-wider ${
+                      isSelected ? 'text-[#22D3EE]' : 'text-[#94A3B8] group-hover:text-[#BAE6FD]'
+                    }`}>
+                      {prob.code}
+                    </span>
+                    <TabIcon className={`w-3.5 h-3.5 ${
+                      isSelected ? 'text-[#00BCF2]' : 'text-[#64748B] group-hover:text-[#94A3B8]'
+                    }`} />
+                  </div>
 
-                      <p className="text-xs text-[#BAE6FD] font-sans leading-relaxed line-clamp-4 mb-4 font-normal">
-                        {prob.overview}
-                      </p>
+                  <h3 className="text-xs font-display font-black text-white truncate mb-1">
+                    {prob.title}
+                  </h3>
 
-                      <div className="space-y-2 mb-6">
-                        <span className="text-[10px] font-mono-hud text-[#7DD3FC] uppercase block font-semibold">
-                          DELIVERABLE FOCUS:
-                        </span>
-                        <ul className="space-y-1.5 text-xs text-[#BAE6FD]">
-                          {prob.keyFeatures.slice(0, 2).map((feat, i) => (
-                            <li key={i} className="flex items-start gap-1.5">
-                              <span className="text-[#38BDF8] font-mono-hud text-xs">›</span>
-                              <span>{feat}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="flex flex-wrap gap-1.5 mb-6">
-                        {prob.techStack.slice(0, 3).map((tech, i) => (
-                          <span key={i} className="text-[10px] font-mono-hud bg-[#040E24] text-[#BAE6FD] px-2 py-0.5 rounded-none border border-[rgba(212,233,255,0.1)]">
-                            {tech.split('/')[0].trim()}
-                          </span>
-                        ))}
-                      </div>
-
-                      <button
-                        onClick={() => {
-                          sound.playModalOpen();
-                          onOpenProblemModal(prob);
-                        }}
-                        className="btn-sheen w-full py-2.5 px-4 rounded-none text-xs font-mono-hud font-bold transition-all flex items-center justify-center gap-2 border border-[rgba(212,233,255,0.2)] hover:border-[#38BDF8] bg-[#0B2556] hover:bg-[#103374] text-[#BAE6FD] hover:text-white cursor-pointer active:scale-95 shadow-md"
-                      >
-                        <span>INSPECT FULL DOSSIER</span>
-                        <ArrowUpRight className="w-3.5 h-3.5 text-[#38BDF8]" />
-                      </button>
-                    </div>
-                  </GlassCard>
-                </ScrollReveal>
+                  <p className="text-[10px] font-sans text-[#94A3B8] leading-tight line-clamp-2">
+                    {prob.domain}
+                  </p>
+                </button>
               );
             })}
           </div>
-        )}
 
-        {/* Open Innovation Track */}
-        {(activeFilter === 'all' || activeFilter === 'open') && (
-          <ScrollReveal direction="up" delay={200} duration={600} className="max-w-7xl mx-auto text-left">
-            <GlassCard glowColor="violet" className="p-7 sm:p-8 border border-[rgba(212,233,255,0.14)] hover:border-[#38BDF8]/40 bg-[#07193D]/90 rounded-none shadow-2xl" withHudCorners={true}>
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 mb-6 border-b border-[rgba(212,233,255,0.12)]">
-                <div className="flex items-center gap-3">
-                  <div className="p-2.5 rounded-none bg-[#0B2556] border border-[#38BDF8]/40 text-[#38BDF8] shadow-sm">
-                    <Sparkles className="w-5 h-5" />
+          {/* Active Problem Statement Detail Area */}
+          <ScrollReveal direction="up" delay={100} duration={500} className="w-full text-left">
+            <GlassCard
+              glowColor={selectedProblem.accentColor}
+              className="p-6 sm:p-8 md:p-10 border border-[#00BCF2]/40 bg-[#0B1220]/95 shadow-[0_16px_48px_rgba(2,8,24,0.85)] rounded-none relative overflow-hidden"
+              withHudCorners={true}
+            >
+              {/* Top Accent Gradient Glow */}
+              <div 
+                className="absolute -right-20 -top-20 w-48 h-48 rounded-full blur-3xl opacity-20 pointer-events-none"
+                style={{ backgroundColor: selectedProblem.accentColor === 'cyan' ? '#00BCF2' : selectedProblem.accentColor === 'emerald' ? '#10B981' : '#8B5CF6' }}
+              />
+
+              {/* Main Heading Lockup */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 mb-6 border-b border-[rgba(0,188,242,0.15)]">
+                <div>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="px-2.5 py-0.5 bg-[#071426] border border-[#00BCF2]/40 text-xs font-mono-hud text-[#22D3EE] font-bold">
+                      {selectedProblem.code}
+                    </span>
+                    <span className="text-[10px] font-mono-hud text-[#94A3B8] uppercase">
+                      {selectedProblem.classificationLevel}
+                    </span>
                   </div>
-                  <div>
-                    <span className="text-xs font-mono-hud text-[#38BDF8]">ORION-PS-04 // OPEN TRACK</span>
-                    <h3 className="text-xl sm:text-2xl font-display font-black text-white">
-                      OPEN INNOVATION ARENA
-                    </h3>
+                  
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-display font-black text-white tracking-tight">
+                    {selectedProblem.code}: {selectedProblem.title}
+                  </h3>
+                  
+                  <div className="text-xs sm:text-sm font-mono-hud text-[#22D3EE] font-semibold mt-1">
+                    {selectedProblem.domain}
                   </div>
                 </div>
-                <span className="text-xs font-mono-hud bg-[#0B2556] text-[#38BDF8] px-3 py-1 rounded-none border border-[#38BDF8]/40 font-semibold">
-                  ALL DOMAINS ACCEPTED
-                </span>
+
+                <button
+                  onClick={() => {
+                    sound.playModalOpen();
+                    onOpenProblemModal(selectedProblem);
+                  }}
+                  className="btn-sheen btn-glow-cyan self-start sm:self-auto py-2.5 px-5 font-display font-bold text-xs tracking-wider text-[#020617] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#00BCF2] hover:opacity-95 transition-all shadow-md flex items-center gap-2 cursor-pointer active:scale-95 shrink-0"
+                >
+                  <span>INSPECT FULL DOSSIER</span>
+                  <ArrowUpRight className="w-4 h-4 text-[#020617]" />
+                </button>
               </div>
 
-              <p className="text-xs sm:text-sm text-[#BAE6FD] font-sans leading-relaxed mb-6 font-normal">
-                Have a novel solution outside the 3 flagship problem statements? Builders are welcome to submit high-impact prototypes across emerging technology domains.
-              </p>
+              {/* Problem Statement Overview */}
+              <div className="mb-8">
+                <span className="text-[11px] font-mono-hud text-[#22D3EE] uppercase tracking-wider block mb-2 font-bold">
+                  MISSION BRIEF & PROBLEM DECONSTRUCTION
+                </span>
+                <p className="text-xs sm:text-sm text-[#F8FAFC] font-sans leading-relaxed font-normal bg-[#071426]/70 p-4 border border-[rgba(0,188,242,0.15)]">
+                  {selectedProblem.overview}
+                </p>
+              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {openInnovationTracks.map((track, i) => (
-                  <div key={i} className="p-4 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.1)] hover:border-[#38BDF8]/40 transition-colors flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center gap-2 text-xs font-display font-bold text-white mb-1.5">
-                        <Cpu className="w-3.5 h-3.5 text-[#38BDF8] shrink-0" />
-                        <span>{track.title}</span>
-                      </div>
-                      <p className="text-xs font-sans text-[#7DD3FC] leading-relaxed font-normal">
-                        {track.desc}
-                      </p>
-                    </div>
+              {/* Two Column Feature & Criteria Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                
+                {/* Key Deliverables & Features */}
+                <div className="p-5 bg-[#071426] border border-[rgba(0,188,242,0.15)]">
+                  <div className="flex items-center gap-2 text-xs font-mono-hud text-[#22D3EE] uppercase font-bold mb-3 pb-2 border-b border-[rgba(0,188,242,0.12)]">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#00BCF2]" />
+                    <span>KEY DELIVERABLES & FEATURES</span>
                   </div>
-                ))}
+                  <ul className="space-y-2">
+                    {selectedProblem.keyFeatures.map((feat, i) => (
+                      <li key={i} className="text-xs text-[#94A3B8] font-sans flex items-start gap-2">
+                        <span className="text-[#00BCF2] font-mono-hud font-bold text-xs">›</span>
+                        <span className="text-[#F8FAFC]">{feat}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Evaluation Focus */}
+                <div className="p-5 bg-[#071426] border border-[rgba(0,188,242,0.15)]">
+                  <div className="flex items-center gap-2 text-xs font-mono-hud text-[#22D3EE] uppercase font-bold mb-3 pb-2 border-b border-[rgba(0,188,242,0.12)]">
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#00BCF2]" />
+                    <span>EVALUATION BENCHMARKS</span>
+                  </div>
+                  <ul className="space-y-2">
+                    {selectedProblem.evaluationFocus.map((focus, i) => (
+                      <li key={i} className="text-xs text-[#94A3B8] font-sans flex items-start gap-2">
+                        <span className="text-[#00BCF2] font-mono-hud font-bold text-xs">›</span>
+                        <span className="text-[#F8FAFC]">{focus}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
               </div>
 
-              <div className="mt-6 pt-4 border-t border-[rgba(212,233,255,0.12)] flex items-center justify-between text-xs font-mono-hud text-[#7DD3FC]">
-                <span className="flex items-center gap-1.5 text-[#38BDF8] font-semibold">
-                  <Layers className="w-3.5 h-3.5" />
-                  ELIGIBLE FOR FULL ₹1,00,000 PRIZE POOL & MERIT BADGES
-                </span>
-                <span className="text-[#BAE6FD] hidden sm:inline">
-                  USE MANDATORY PPT TEMPLATE
-                </span>
+              {/* Recommended Tech Stack Chips */}
+              <div className="pt-4 border-t border-[rgba(0,188,242,0.15)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <span className="text-[10px] font-mono-hud text-[#94A3B8] uppercase block mb-1.5 font-bold">
+                    RECOMMENDED STACK:
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {selectedProblem.techStack.map((tech, i) => (
+                      <span key={i} className="text-[11px] font-mono-hud bg-[#020617] text-[#BAE6FD] px-2.5 py-1 border border-[rgba(0,188,242,0.2)]">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="text-[11px] font-mono-hud text-[#94A3B8] self-start sm:self-auto shrink-0 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>ELIGIBLE FOR ₹1,00,000 PRIZE POOL</span>
+                </div>
               </div>
+
             </GlassCard>
           </ScrollReveal>
-        )}
+
+        </div>
 
       </div>
     </section>

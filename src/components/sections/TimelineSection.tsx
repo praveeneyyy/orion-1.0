@@ -9,7 +9,8 @@ import {
   AlertCircle, 
   Flag,
   Sparkles,
-  MapPin
+  MapPin,
+  Radio
 } from 'lucide-react';
 import { GlassCard } from '../common/GlassCard';
 import { ScrollReveal } from '../common/ScrollReveal';
@@ -22,9 +23,9 @@ export const TimelineSection: React.FC = () => {
         
         {/* Section Header */}
         <ScrollReveal direction="up" delay={50} duration={600} className="text-center max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-none bg-[#07193D] border border-[rgba(212,233,255,0.14)] text-xs font-mono-hud text-[#38BDF8] mb-3 shadow-sm">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-none bg-[#07193D] border border-[#38BDF8]/40 text-xs font-mono-hud text-[#38BDF8] mb-3 shadow-[0_0_15px_rgba(56,189,248,0.2)]">
             <Clock className="w-3.5 h-3.5" />
-            <span>MISSION SCHEDULE // FLIGHT TRAJECTORY</span>
+            <span>MISSION SCHEDULE // FLIGHT TRAJECTORY VECTOR</span>
           </div>
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-black text-white">
             TRAJECTORY <span className="text-gradient-frost-azure">TIMELINE</span>
@@ -68,9 +69,12 @@ export const TimelineSection: React.FC = () => {
                       withHudCorners={true}
                     >
                       <div className="flex items-center justify-between pb-3 mb-3 border-b border-[rgba(212,233,255,0.1)]">
-                        <span className="text-xs font-mono-hud text-[#38BDF8] font-bold">
-                          PHASE {item.number}
-                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xs font-mono-hud text-[#38BDF8] font-bold">
+                            PHASE {item.number}
+                          </span>
+                          <span className="text-[8px] font-mono-hud text-[#7DD3FC]">[WAYPOINT]</span>
+                        </div>
                         <span className={`text-[10px] font-mono-hud px-2.5 py-0.5 rounded-none font-bold ${
                           isCurrent
                             ? 'bg-[#38BDF8] text-[#040E24] shadow-[0_0_10px_rgba(56,189,248,0.5)]'
@@ -83,8 +87,9 @@ export const TimelineSection: React.FC = () => {
                       <h3 className="text-base sm:text-lg font-display font-bold text-white mb-1">
                         {item.title}
                       </h3>
-                      <div className="text-xs font-mono-hud text-[#38BDF8] mb-3">
-                        {item.subtitle}
+                      <div className="text-xs font-mono-hud text-[#38BDF8] mb-3 flex items-center gap-1">
+                        <span>//</span>
+                        <span>{item.subtitle}</span>
                       </div>
 
                       <ul className="space-y-1.5 text-xs text-[#BAE6FD] font-sans">

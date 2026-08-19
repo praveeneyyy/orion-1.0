@@ -1,4 +1,14 @@
-import type { ProblemStatement, FAQItem, PatronProfile, OfficeBearer, TimelinePhase, RegisteredTeam, StarNodeData } from '../types/orion';
+import type { 
+  ProblemStatement, 
+  FAQItem, 
+  PatronProfile, 
+  OfficeBearer, 
+  TimelinePhase, 
+  RegisteredTeam, 
+  StarNodeData,
+  MicrosoftTech,
+  JudgingCriterion
+} from '../types/orion';
 
 export const EVENT_METRICS = {
   prizePool: "₹1,00,000",
@@ -10,8 +20,12 @@ export const EVENT_METRICS = {
   teamSizeLabel: "Members per team",
   finalistCount: "TOP 70",
   finalistCountLabel: "Teams to Offline Finale",
-  deadlineDate: "August 28, 2026",
-  deadlineIso: "2026-08-28T23:59:59+05:30",
+  deadlineDate: "September 08, 2026",
+  deadlineIso: "2026-09-08T23:59:59+05:30",
+  onlineDeadlineDate: "September 08, 2026",
+  onlineDeadlineIso: "2026-09-08T23:59:59+05:30",
+  offlineFinaleDate: "September 18, 2026",
+  offlineFinaleIso: "2026-09-18T09:00:00+05:30",
   duration: "24-Hour Offline Sprint",
   venue: "Sathyabama Institute of Science and Technology, Chennai",
   organizer: "Microsoft Club SIST",
@@ -174,6 +188,32 @@ export const PROBLEM_STATEMENTS: ProblemStatement[] = [
     datasetSources: ["ESA Sentinel-1/Sentinel-2 Open Access Hub", "NASA GEDI Spaceborne LiDAR Canopy Height Data", "Neon Forest Structural Survey Open Datasets"],
     evaluationFocus: ["Canopy instance segmentation precision (mAP/IoU)", "Biomass estimation mathematical validity", "Data fusion robustness across cloudy terrain", "Scale & inferencing throughput"],
     classificationLevel: "CLASSIFIED MISSION — OPEN TO ROUND 1"
+  },
+  {
+    id: "open-innovation",
+    code: "ORION-PS-04",
+    title: "Open Innovation Track",
+    tagline: "Autonomous AI Systems, Web3 Protocols, Cybersecurity & Next-Gen Hardware",
+    domain: "AI / Web3 / Systems / Robotics",
+    accentColor: "violet",
+    visualTheme: "Cybernetic Mesh • Quantum Systems • Multi-Domain Architecture",
+    overview: "Have a novel breakthrough outside the 3 flagship challenges? The Open Innovation Track empowers engineering squads to architect, prototype, and defend disruptive solutions across emerging fields including Generative & Agentic AI, Zero-Knowledge Web3 systems, post-quantum cybersecurity, IoT robotics, healthcare diagnostics, and space exploration.",
+    keyFeatures: [
+      "Autonomous Multi-Agent AI & Edge Inference Systems",
+      "Zero-Knowledge Proofs & Verifiable Computation Protocols",
+      "Post-Quantum Cryptography & Embedded Hardware Security",
+      "IoT Rovers, Autonomous Drones & Space Telemetry"
+    ],
+    techStack: ["React / Next.js / TypeScript", "Python / FastAPI / PyTorch", "Solidity / Web Cryptography", "ROS / Embedded C++", "Azure AI & Cloud Services"],
+    deliverables: [
+      "Working prototype demo repository and live inference link",
+      "System architecture diagram and technical specifications",
+      "Standardized 5-slide blueprint defense",
+      "Quantifiable impact and deployment viability analysis"
+    ],
+    datasetSources: ["Open Source Public Datasets", "Synthetic Test Benches", "Domain-Specific Telemetry APIs"],
+    evaluationFocus: ["Novelty & distinct value proposition", "System architecture & engineering depth", "Feasibility & commercial deployment potential", "Live technical jury defense"],
+    classificationLevel: "OPEN TRACK — ELIGIBLE FOR ₹1,00,000 PRIZE POOL"
   }
 ];
 
@@ -258,21 +298,21 @@ export const HOSPITALITY_SYSTEMS = [
 export const TIMELINE_PHASES: TimelinePhase[] = [
   {
     number: "01",
-    title: "MISSION REGISTRATIONS & OPEN INNOVATION",
-    subtitle: "Round 1 Online Launchpad",
-    date: "Active Now — Closes Aug 28, 2026",
+    title: "MISSION REGISTRATIONS & ONLINE SUBMISSION",
+    subtitle: "Round 1 Online Qualifier",
+    date: "Active Now — Closes Sep 08, 2026",
     status: "active",
     highlights: [
       "Flat ₹100 registration fee per team (2–6 members)",
       "Choose from 3 Flagship Problem Statements OR Open Innovation tracks (AI, Web3, Systems, Cloud, Healthcare, Hardware)",
-      "Prepare and upload mandatory standardized PPT / PDF submission"
+      "Prepare and upload mandatory standardized PPT / PDF blueprint before September 08, 2026"
     ]
   },
   {
     number: "02",
-    title: "ONLINE SCREENING & EVALUATION",
+    title: "ONLINE SCREENING & JURY EVALUATION",
     subtitle: "Rigorous Technical Filter",
-    date: "August 29 – September 02, 2026",
+    date: "September 09 – September 12, 2026",
     status: "upcoming",
     highlights: [
       "Jury review across Innovation, Feasibility, Technical Depth & Impact",
@@ -284,7 +324,7 @@ export const TIMELINE_PHASES: TimelinePhase[] = [
     number: "03",
     title: "THE CUT — TOP 70 FINALISTS ANNOUNCED",
     subtitle: "Elite Shortlist Notification",
-    date: "September 03, 2026",
+    date: "September 13, 2026",
     status: "upcoming",
     highlights: [
       "Official publication of Top 70 Finalist Teams",
@@ -296,7 +336,7 @@ export const TIMELINE_PHASES: TimelinePhase[] = [
     number: "04",
     title: "PHASE 2 CONFIRMATION & LOGISTICS LOCK",
     subtitle: "Finalist Slot Confirmation",
-    date: "September 04 – September 10, 2026",
+    date: "September 14 – September 16, 2026",
     status: "upcoming",
     highlights: [
       "₹200 per head finalist confirmation fee",
@@ -308,13 +348,155 @@ export const TIMELINE_PHASES: TimelinePhase[] = [
     number: "05",
     title: "24H OFFLINE GRAND FINALE",
     subtitle: "The Final Frontier at SIST Chennai",
-    date: "September 2026 • Sathyabama Campus",
+    date: "September 18, 2026 • SIST Chennai Campus",
     status: "upcoming",
     highlights: [
       "24-hour continuous coding sprint in dedicated mission arena",
       "Live on-the-spot problem twists and mentor checkpoints",
       "Grand jury defense on stage & ₹1,00,000 prize distribution"
     ]
+  }
+];
+
+export const MICROSOFT_ECOSYSTEM_TECHNOLOGIES: MicrosoftTech[] = [
+  {
+    id: "azure-ai",
+    name: "Azure OpenAI & AI Foundry",
+    category: "Intelligent Systems",
+    description: "Enterprise-grade multimodal LLMs, GPT-4o vision, custom embeddings, and Agentic AI orchestrations with built-in safety guardrails.",
+    capabilities: [
+      "Multimodal GPT-4o & Phi-3 SLMs",
+      "Azure AI Search & Vector RAG Pipeline",
+      "Cognitive Services & Computer Vision APIs"
+    ],
+    icon: "Cpu",
+    badge: "MICROSOFT AI",
+    accent: "#0078D4"
+  },
+  {
+    id: "github-copilot",
+    name: "GitHub & GitHub Copilot",
+    category: "Developer Acceleration",
+    description: "The world's standard for collaborative version control, automated CI/CD GitHub Actions, and AI-pair programming across all code stacks.",
+    capabilities: [
+      "AI Code Synthesizer & Autonomous Agent PRs",
+      "GitHub Codespaces Cloud Development Environments",
+      "Automated Security & Secret Scanning"
+    ],
+    icon: "Code2",
+    badge: "GITHUB ECOSYSTEM",
+    accent: "#00BCF2"
+  },
+  {
+    id: "azure-cloud",
+    name: "Azure Cloud & Serverless",
+    category: "Scalable Infrastructure",
+    description: "High-throughput cloud primitives, event-driven Azure Functions, Cosmos DB distributed state, and scalable Kubernetes clusters.",
+    capabilities: [
+      "Global Low-Latency Edge Deployment",
+      "Azure Cosmos DB Multi-Model Database",
+      "Container Apps & AKS Microservices"
+    ],
+    icon: "Cloud",
+    badge: "AZURE CLOUD",
+    accent: "#22D3EE"
+  },
+  {
+    id: "vscode-tools",
+    name: "Visual Studio Code & Dev Tools",
+    category: "Developer Core",
+    description: "Extensible polyglot IDE ecosystem empowering seamless debugging, Dev Containers, WSL2 Linux bridging, and cloud telemetry.",
+    capabilities: [
+      "Integrated Live Share Collaboration",
+      "Docker & Remote Container Workflows",
+      "Cross-Platform Extension Marketplace"
+    ],
+    icon: "Terminal",
+    badge: "MICROSOFT TOOLS",
+    accent: "#0078D4"
+  },
+  {
+    id: "dotnet-stack",
+    name: ".NET 9 & Open Source Stack",
+    category: "High-Performance Runtimes",
+    description: "Blazing fast, cross-platform enterprise backend frameworks, C# 13, ASP.NET Core web APIs, and native cloud microservices.",
+    capabilities: [
+      "Sub-Millisecond HTTP Request Throughput",
+      "Native AOT Compilation & Minimal Memory Footprint",
+      "Modern WebAssembly Blazor Frontends"
+    ],
+    icon: "Layers",
+    badge: ".NET PLATFORM",
+    accent: "#8B5CF6"
+  },
+  {
+    id: "power-telemetry",
+    name: "Power Platform & Cloud Telemetry",
+    category: "Data & Workflow Automation",
+    description: "Enterprise workflow automation, Azure Monitor diagnostics, and real-time mission telemetry pipelines for mission-critical deployments.",
+    capabilities: [
+      "Power Automate Integration Webhooks",
+      "Application Insights Real-Time Diagnostics",
+      "Enterprise Identity via Microsoft Entra ID"
+    ],
+    icon: "Activity",
+    badge: "ENTERPRISE MESH",
+    accent: "#00BCF2"
+  }
+];
+
+export const JUDGING_CRITERIA: JudgingCriterion[] = [
+  {
+    number: "01",
+    name: "Technical Innovation & Novelty",
+    weight: 30,
+    weightLabel: "30%",
+    description: "Uniqueness of the technical solution, novelty of the algorithmic or architectural approach, and creative problem deconstruction.",
+    keyFactors: [
+      "Originality of concept vs existing solutions",
+      "Creative utilization of modern tech stacks & APIs",
+      "Distinctive value proposition and ingenuity"
+    ],
+    color: "#00BCF2"
+  },
+  {
+    number: "02",
+    name: "System Architecture & Engineering Depth",
+    weight: 30,
+    weightLabel: "30%",
+    description: "Robustness of system design, code quality, modularity, data pipelines, scalability, latency benchmarks, and threat resistance.",
+    keyFactors: [
+      "End-to-end architecture & block diagram clarity",
+      "Effective data flow, state management & security",
+      "Technical complexity handled with elegance"
+    ],
+    color: "#0078D4"
+  },
+  {
+    number: "03",
+    name: "Feasibility & Real-World Impact",
+    weight: 20,
+    weightLabel: "20%",
+    description: "Practical utility in production, user adoption feasibility, deployment viability, and quantifiable societal or enterprise impact.",
+    keyFactors: [
+      "Clear commercial or environmental impact",
+      "Practical deployment & operational cost model",
+      "Realistic mitigation of potential edge-case failures"
+    ],
+    color: "#22D3EE"
+  },
+  {
+    number: "04",
+    name: "Presentation, Pitch & Live Defense",
+    weight: 20,
+    weightLabel: "20%",
+    description: "Adherence to the mandatory standardized 5-slide template, clarity of technical explanation, demo effectiveness, and live jury defense.",
+    keyFactors: [
+      "Strict adherence to official 5-slide structure",
+      "Crisp articulation of architecture & sprint roadmap",
+      "Convincing responses during technical Q&A"
+    ],
+    color: "#8B5CF6"
   }
 ];
 

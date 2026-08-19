@@ -1,24 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { Navbar } from '@/components/common/Navbar';
-import { MissionHUD } from '@/components/common/MissionHUD';
 import { ClickSpark } from '@/components/common/ClickSpark';
 import { LoadingScreen } from '@/components/common/LoadingScreen';
 import { HeroSection } from '@/components/sections/HeroSection';
 import { StatsSection } from '@/components/sections/StatsSection';
-import { PrizeSection } from '@/components/sections/PrizeSection';
-import { PhasesSection } from '@/components/sections/PhasesSection';
 import { ChallengeArena } from '@/components/sections/ChallengeArena';
+import { MicrosoftEcosystemSection } from '@/components/sections/MicrosoftEcosystemSection';
+import { PhasesSection } from '@/components/sections/PhasesSection';
 import { SubmissionSection } from '@/components/sections/SubmissionSection';
+import { JudgingCriteriaSection } from '@/components/sections/JudgingCriteriaSection';
+import { PrizeSection } from '@/components/sections/PrizeSection';
 import { HospitalitySection } from '@/components/sections/HospitalitySection';
 import { TimelineSection } from '@/components/sections/TimelineSection';
-import { FAQSection } from '@/components/sections/FAQSection';
 import { LeadershipSection } from '@/components/sections/LeadershipSection';
 import { MissionCommandSection } from '@/components/sections/MissionCommandSection';
-import { FinalLaunchSection } from '@/components/sections/FinalLaunchSection';
 import { VenueSection } from '@/components/sections/VenueSection';
+import { FAQSection } from '@/components/sections/FAQSection';
+import { FinalLaunchSection } from '@/components/sections/FinalLaunchSection';
 import { Footer } from '@/components/sections/Footer';
 import { RegisterModal } from '@/components/modals/RegisterModal';
 import { TeamStatusModal } from '@/components/modals/TeamStatusModal';
@@ -49,11 +50,35 @@ export default function Home() {
     setIsRegisterOpen(true);
   };
 
+  // Scroll to top and reset hash on page load/refresh
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if ('scrollRestoration' in window.history) {
+        window.history.scrollRestoration = 'manual';
+      }
+
+      // Force instant scroll to top on refresh
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+
+      // If reloaded with a hash (#challenges, etc.), reset URL to root
+      if (window.location.hash) {
+        window.history.replaceState(null, '', window.location.pathname);
+      }
+
+      const handleBeforeUnload = () => {
+        window.scrollTo(0, 0);
+      };
+
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }
+  }, []);
+
   return (
-    <ClickSpark sparkColor="#38BDF8" sparkSize={14} sparkRadius={26} sparkCount={10} duration={420}>
-      <div className="relative min-h-screen bg-[#040E24] text-slate-100 selection:bg-[#38BDF8]/30 selection:text-[#BAE6FD]">
+    <ClickSpark sparkColor="#00BCF2" sparkSize={14} sparkRadius={26} sparkCount={10} duration={420}>
+      <div className="relative min-h-screen bg-[#020617] text-slate-100 selection:bg-[#00BCF2]/30 selection:text-[#BAE6FD]">
         
-        {/* Animated Aerospace Telemetry Loading Screen */}
+        {/* Animated Aerospace Loading Screen */}
         {isLoading && (
           <LoadingScreen onComplete={() => setIsLoading(false)} />
         )}
@@ -65,8 +90,6 @@ export default function Home() {
           onOpenStatus={() => setIsStatusOpen(true)}
         />
 
-        <MissionHUD />
-
         <main className="relative z-10 flex flex-col">
           <HeroSection 
             onOpenRegister={() => setIsRegisterOpen(true)}
@@ -77,22 +100,24 @@ export default function Home() {
           />
 
           <StatsSection />
-          <PrizeSection />
-          <PhasesSection />
           <ChallengeArena 
             onOpenProblemModal={(prob) => setSelectedProblem(prob)}
           />
+          <MicrosoftEcosystemSection />
+          <PhasesSection />
           <SubmissionSection />
+          <JudgingCriteriaSection />
+          <PrizeSection />
           <HospitalitySection />
           <TimelineSection />
-          <FAQSection />
           <LeadershipSection />
           <MissionCommandSection />
+          <VenueSection />
+          <FAQSection />
           <FinalLaunchSection 
             onOpenRegister={() => setIsRegisterOpen(true)}
             onOpenStatus={() => setIsStatusOpen(true)}
           />
-          <VenueSection />
         </main>
 
         <Footer 

@@ -19,20 +19,20 @@ export const metadata: Metadata = {
   creator: 'Microsoft Club SIST',
   publisher: 'Sathyabama Institute of Science and Technology',
   icons: {
-    icon: '/favicon.svg',
-    apple: '/favicon.svg',
+    icon: '/icon.png',
+    apple: '/apple-icon.png',
   },
   openGraph: {
-    title: 'ORION 1.0 — BUILD BEYOND THE STARS',
+    title: 'ORION 1.0 — IGNITE THE GENESIS OF INNOVATION',
     description: '24-Hour Offline Hackathon at Sathyabama Institute of Science and Technology, Chennai. Organized by Microsoft Club SIST. ₹1,00,000 Prize Pool.',
     url: 'https://orion.sathyabama.ac.in',
     siteName: 'ORION 1.0 Hackathon',
     images: [
       {
-        url: '/favicon.svg',
-        width: 800,
-        height: 800,
-        alt: 'ORION 1.0 Constellation Logo',
+        url: '/logo.png',
+        width: 1024,
+        height: 1024,
+        alt: 'ORION 1.0 Official Logo - Microsoft Club SIST',
       },
     ],
     locale: 'en_US',
