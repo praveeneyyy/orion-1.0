@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import confetti from 'canvas-confetti';
 import { 
   X, 
   Rocket, 
@@ -10,7 +11,9 @@ import {
   Users, 
   FileText,
   Lock,
-  Sparkles
+  Sparkles,
+  Copy,
+  Check
 } from 'lucide-react';
 import { GlassCard } from '../common/GlassCard';
 import { PROBLEM_STATEMENTS, EVENT_METRICS } from '../../data/orionData';
@@ -33,15 +36,27 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, o
   const [memberCount, setMemberCount] = useState(4);
   const [submitted, setSubmitted] = useState(false);
   const [generatedTeamId, setGeneratedTeamId] = useState('');
+  const [copiedId, setCopiedId] = useState(false);
 
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    sound.playLaunchWarp();
+    sound.playSuccessFanfare();
     const newId = `ORION-${Math.floor(1000 + Math.random() * 9000)}`;
     setGeneratedTeamId(newId);
     setSubmitted(true);
+
+    try {
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#38BDF8', '#BAE6FD', '#FFFFFF', '#60A5FA', '#34D399']
+      });
+    } catch {
+      // Ignore
+    }
 
     if (onSuccessRegister) {
       onSuccessRegister({
@@ -58,25 +73,32 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, o
     }
   };
 
+  const handleCopyId = () => {
+    sound.playClick();
+    navigator.clipboard.writeText(generatedTeamId);
+    setCopiedId(true);
+    setTimeout(() => setCopiedId(false), 2500);
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
       <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <GlassCard
           glowColor="cyan"
-          className="p-6 sm:p-8 border border-[rgba(212,233,255,0.16)] bg-[#07193D] shadow-2xl rounded-none text-left"
+          className="p-6 sm:p-8 border border-[#38BDF8]/40 bg-[#07193D] shadow-[0_16px_50px_rgba(2,8,24,0.9)] rounded-none text-left"
           withHudCorners={true}
         >
           {/* Header */}
           <div className="flex items-center justify-between pb-4 mb-6 border-b border-[rgba(212,233,255,0.12)]">
             <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-none bg-[#0B2556] border border-[#38BDF8]/40 text-[#38BDF8]">
+              <div className="p-2 rounded-none bg-[#0B2556] border border-[#38BDF8]/40 text-[#38BDF8] shadow-sm">
                 <Rocket className="w-4 h-4" />
               </div>
               <div>
                 <h3 className="text-xl font-display font-black text-white">
                   ROUND 1 SQUAD REGISTRATION
                 </h3>
-                <div className="text-xs font-mono-hud text-[#38BDF8]">
+                <div className="text-xs font-mono-hud text-[#38BDF8] font-bold">
                   FLAT ₹100 TEAM LAUNCHPAD // 2–6 BUILDERS
                 </div>
               </div>
@@ -87,15 +109,15 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, o
                 sound.playModalClose();
                 onClose();
               }}
-              className="p-1.5 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.12)] text-[#BAE6FD] hover:text-white transition-colors cursor-pointer"
+              className="p-1.5 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.12)] hover:border-[#38BDF8]/50 text-[#BAE6FD] hover:text-white transition-colors cursor-pointer active:scale-95"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
           {submitted ? (
-            <div className="text-center py-8 space-y-5">
-              <div className="w-16 h-16 rounded-none bg-[#040E24] border border-[#38BDF8] flex items-center justify-center text-[#38BDF8] mx-auto shadow-lg">
+            <div className="text-center py-8 space-y-5 animate-in fade-in zoom-in-95 duration-200">
+              <div className="w-16 h-16 rounded-none bg-[#040E24] border border-[#38BDF8] flex items-center justify-center text-[#38BDF8] mx-auto shadow-[0_0_20px_rgba(56,189,248,0.4)]">
                 <CheckCircle2 className="w-8 h-8" />
               </div>
 
@@ -108,14 +130,23 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, o
                 </h4>
               </div>
 
-              <div className="p-4 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.14)] max-w-sm mx-auto">
+              <div className="p-4 rounded-none bg-[#040E24] border border-[#38BDF8]/40 max-w-sm mx-auto shadow-lg">
                 <div className="text-[10px] font-mono-hud text-[#7DD3FC] mb-1">ASSIGNED MISSION DOSSIER ID</div>
-                <div className="text-2xl font-mono-hud font-black text-[#38BDF8] tracking-widest">
-                  {generatedTeamId}
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-2xl font-mono-hud font-black text-[#38BDF8] tracking-widest">
+                    {generatedTeamId}
+                  </span>
+                  <button
+                    onClick={handleCopyId}
+                    className="p-1.5 rounded-none bg-[#0B2556] border border-[#38BDF8]/40 text-[#BAE6FD] hover:text-white hover:border-[#38BDF8] transition-colors cursor-pointer"
+                    title="Copy Team ID"
+                  >
+                    {copiedId ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-[#38BDF8]" />}
+                  </button>
                 </div>
               </div>
 
-              <p className="text-xs font-sans text-[#BAE6FD] max-w-md mx-auto leading-relaxed">
+              <p className="text-xs font-sans text-[#BAE6FD] max-w-md mx-auto leading-relaxed font-normal">
                 Confirmation dispatch transmitted to <strong className="text-white">{leaderEmail}</strong>. Prepare your standardized PPT submission using the mandatory blueprint.
               </p>
 
@@ -125,7 +156,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, o
                   onClose();
                   setSubmitted(false);
                 }}
-                className="px-8 py-3 rounded-none font-display font-bold text-xs tracking-wider text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] hover:opacity-95 transition-all shadow-md cursor-pointer"
+                className="btn-sheen btn-glow-cyan px-8 py-3 rounded-none font-display font-bold text-xs tracking-wider text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] hover:opacity-95 transition-all shadow-md cursor-pointer active:scale-95"
               >
                 RETURN TO MISSION DASHBOARD
               </button>
@@ -252,7 +283,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, o
               <div className="pt-2">
                 <button
                   type="submit"
-                  className="w-full py-3.5 px-6 rounded-none font-display font-bold text-xs tracking-wider text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] hover:opacity-95 transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                  className="btn-sheen btn-glow-cyan w-full py-3.5 px-6 rounded-none font-display font-bold text-xs tracking-wider text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] hover:opacity-95 transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-95"
                 >
                   <Rocket className="w-4 h-4 text-[#040E24]" />
                   <span>PROCEED TO SQUAD CHECKOUT — ₹100</span>

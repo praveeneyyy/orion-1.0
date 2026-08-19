@@ -15,6 +15,8 @@ import {
 } from 'lucide-react';
 import { GlassCard } from '../common/GlassCard';
 import { ElectricBorder } from '../common/ElectricBorder';
+import { ScrollReveal } from '../common/ScrollReveal';
+import { AnimatedCounter } from '../common/AnimatedCounter';
 import { PRIZE_TIERS, SPECIAL_TRACK_BOUNTIES, EVENT_METRICS } from '../../data/orionData';
 
 // Dynamic 3D Trophy Showcase
@@ -31,27 +33,27 @@ export const PrizeSection: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-none bg-[#07193D] border border-[rgba(212,233,255,0.14)] text-xs font-mono-hud text-[#38BDF8] mb-3">
+        <ScrollReveal direction="up" delay={50} duration={600} className="text-center max-w-2xl mx-auto mb-14">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-none bg-[#07193D] border border-[rgba(212,233,255,0.14)] text-xs font-mono-hud text-[#38BDF8] mb-3 shadow-sm">
             <Trophy className="w-3.5 h-3.5" />
             <span>MISSION REWARDS & BOUNTIES // CASH POOL</span>
           </div>
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-black text-white">
-            ₹1,00,000 <span className="text-gradient-frost-azure">PRIZE ORBIT</span>
+            <AnimatedCounter value="₹1,00,000" duration={1800} /> <span className="text-gradient-frost-azure">PRIZE ORBIT</span>
           </h2>
           <p className="text-xs md:text-sm text-[#BAE6FD] mt-2.5 font-sans leading-relaxed">
             Honoring elite technical execution, architectural robustness, and disruptive engineering across student and developer squads.
           </p>
-        </div>
+        </ScrollReveal>
 
         {/* 3D Trophy Showcase Hologram */}
-        <div className="max-w-2xl mx-auto mb-16">
+        <ScrollReveal direction="zoom" delay={150} duration={700} className="max-w-2xl mx-auto mb-16">
           <ElectricBorder
             color="#38BDF8"
             speed={0.6}
             chaos={0.06}
             thickness={1.5}
-            className="w-full"
+            className="w-full shadow-2xl"
           >
             <div className="p-4 sm:p-6 bg-[#07193D]/95 backdrop-blur-xl border border-[rgba(212,233,255,0.16)] flex flex-col items-center text-center">
               <div className="text-xs font-mono-hud text-[#38BDF8] font-bold mb-1 flex items-center gap-1.5">
@@ -66,7 +68,7 @@ export const PrizeSection: React.FC = () => {
               </div>
             </div>
           </ElectricBorder>
-        </div>
+        </ScrollReveal>
 
         {/* 3 Podium Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mb-16 items-stretch text-left">
@@ -74,63 +76,70 @@ export const PrizeSection: React.FC = () => {
             const isFirst = idx === 0;
 
             return (
-              <GlassCard
+              <ScrollReveal
                 key={idx}
-                glowColor={isFirst ? 'cyan' : 'violet'}
-                className={`p-6 sm:p-8 flex flex-col justify-between border bg-[#07193D]/90 rounded-none ${
-                  isFirst 
-                    ? 'border-[#38BDF8]/60 bg-gradient-to-b from-[#0B2556] to-[#07193D] shadow-2xl' 
-                    : 'border-[rgba(212,233,255,0.14)]'
-                }`}
-                withHudCorners={true}
+                direction="up"
+                delay={idx * 120}
+                duration={650}
+                className="h-full"
               >
-                <div>
-                  <div className="flex items-center justify-between pb-4 mb-5 border-b border-[rgba(212,233,255,0.12)]">
-                    <span className="text-xs font-mono-hud text-[#7DD3FC]">
-                      ORION-TIER-0{idx + 1}
-                    </span>
-                    <span className={`text-[10px] font-mono-hud px-2 py-0.5 rounded-none font-bold ${
-                      isFirst 
-                        ? 'bg-[#38BDF8] text-[#040E24]' 
-                        : 'bg-[#0B2556] text-[#BAE6FD] border border-[rgba(212,233,255,0.14)]'
-                    }`}>
-                      {tier.badge}
-                    </span>
+                <GlassCard
+                  glowColor={isFirst ? 'cyan' : 'violet'}
+                  className={`p-6 sm:p-8 flex flex-col justify-between border bg-[#07193D]/90 rounded-none h-full transition-all duration-300 hover:-translate-y-1.5 ${
+                    isFirst 
+                      ? 'border-[#38BDF8]/70 bg-gradient-to-b from-[#0B2556] to-[#07193D] shadow-[0_0_35px_rgba(56,189,248,0.25)]' 
+                      : 'border-[rgba(212,233,255,0.14)] hover:border-[#38BDF8]/40 shadow-xl'
+                  }`}
+                  withHudCorners={true}
+                >
+                  <div>
+                    <div className="flex items-center justify-between pb-4 mb-5 border-b border-[rgba(212,233,255,0.12)]">
+                      <span className="text-xs font-mono-hud text-[#7DD3FC]">
+                        ORION-TIER-0{idx + 1}
+                      </span>
+                      <span className={`text-[10px] font-mono-hud px-2.5 py-0.5 rounded-none font-bold ${
+                        isFirst 
+                          ? 'bg-[#38BDF8] text-[#040E24] shadow-[0_0_10px_rgba(56,189,248,0.5)]' 
+                          : 'bg-[#0B2556] text-[#BAE6FD] border border-[rgba(212,233,255,0.14)]'
+                      }`}>
+                        {tier.badge}
+                      </span>
+                    </div>
+
+                    <div className="text-xs font-mono-hud text-[#38BDF8] font-bold mb-1">
+                      {tier.label}
+                    </div>
+                    <h3 className="text-4xl sm:text-5xl font-mono-hud font-black text-white tracking-tight mb-4">
+                      <AnimatedCounter value={tier.amount} duration={1600} />
+                    </h3>
+
+                    <div className="space-y-2.5 mb-6">
+                      <span className="text-[10px] font-mono-hud text-[#7DD3FC] uppercase block font-semibold">
+                        INCLUDED MISSION GRANTS & PERKS:
+                      </span>
+                      <ul className="space-y-2">
+                        {tier.perks.map((perk, pIdx) => (
+                          <li key={pIdx} className="text-xs font-sans text-[#BAE6FD] flex items-start gap-2">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-[#38BDF8] shrink-0 mt-0.5" />
+                            <span>{perk}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
 
-                  <div className="text-xs font-mono-hud text-[#38BDF8] font-bold mb-1">
-                    {tier.label}
+                  <div className="pt-4 border-t border-[rgba(212,233,255,0.12)] text-[10px] font-mono-hud text-[#7DD3FC] flex items-center justify-between">
+                    <span>DISBURSED AT VALEDICTORY</span>
+                    <span className="text-white font-bold">{tier.rank}</span>
                   </div>
-                  <h3 className="text-4xl sm:text-5xl font-mono-hud font-black text-white tracking-tight mb-4">
-                    {tier.amount}
-                  </h3>
-
-                  <div className="space-y-2.5 mb-6">
-                    <span className="text-[10px] font-mono-hud text-[#7DD3FC] uppercase block font-semibold">
-                      INCLUDED MISSION GRANTS & PERKS:
-                    </span>
-                    <ul className="space-y-2">
-                      {tier.perks.map((perk, pIdx) => (
-                        <li key={pIdx} className="text-xs font-sans text-[#BAE6FD] flex items-start gap-2">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-[#38BDF8] shrink-0 mt-0.5" />
-                          <span>{perk}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-[rgba(212,233,255,0.12)] text-[10px] font-mono-hud text-[#7DD3FC] flex items-center justify-between">
-                  <span>DISBURSED AT VALEDICTORY</span>
-                  <span className="text-white font-bold">{tier.rank}</span>
-                </div>
-              </GlassCard>
+                </GlassCard>
+              </ScrollReveal>
             );
           })}
         </div>
 
         {/* Special Track Bounties & Badges Grid */}
-        <div className="max-w-6xl mx-auto text-left">
+        <ScrollReveal direction="up" delay={200} duration={600} className="max-w-6xl mx-auto text-left">
           <div className="flex items-center gap-2 mb-6">
             <Sparkles className="w-4 h-4 text-[#38BDF8]" />
             <h3 className="text-xs sm:text-sm font-mono-hud text-[#F8FAFC] font-bold tracking-widest uppercase">
@@ -146,11 +155,11 @@ export const PrizeSection: React.FC = () => {
                 <GlassCard
                   key={idx}
                   glowColor="cyan"
-                  className="p-5 border border-[rgba(212,233,255,0.12)] bg-[#07193D]/90 rounded-none flex flex-col justify-between"
+                  className="p-5 border border-[rgba(212,233,255,0.12)] hover:border-[#38BDF8]/50 bg-[#07193D]/90 rounded-none flex flex-col justify-between transition-all duration-200 hover:-translate-y-1 shadow-md"
                   withHudCorners={true}
                 >
                   <div>
-                    <div className="p-2 w-fit rounded-none bg-[#0B2556] border border-[#38BDF8]/40 text-[#38BDF8] mb-3">
+                    <div className="p-2 w-fit rounded-none bg-[#0B2556] border border-[#38BDF8]/40 text-[#38BDF8] mb-3 shadow-sm">
                       <Icon className="w-4 h-4" />
                     </div>
 
@@ -158,7 +167,7 @@ export const PrizeSection: React.FC = () => {
                       {bounty.title}
                     </h4>
 
-                    <p className="text-xs text-[#BAE6FD] font-sans leading-relaxed mb-3">
+                    <p className="text-xs text-[#BAE6FD] font-sans leading-relaxed mb-3 font-normal">
                       {bounty.description}
                     </p>
                   </div>
@@ -170,7 +179,7 @@ export const PrizeSection: React.FC = () => {
               );
             })}
           </div>
-        </div>
+        </ScrollReveal>
 
       </div>
     </section>

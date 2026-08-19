@@ -10,7 +10,8 @@ import {
   Database, 
   ShieldCheck, 
   FileText,
-  Rocket
+  Rocket,
+  Sparkles
 } from 'lucide-react';
 import { GlassCard } from '../common/GlassCard';
 import type { ProblemStatement } from '../../types/orion';
@@ -31,7 +32,6 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
   onSelectTrack,
   onSelectForRegister
 }) => {
-  // If problem is null, don't show
   if (!problem) return null;
 
   const handleSelect = () => {
@@ -42,21 +42,21 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
       <div className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto">
         <GlassCard
           glowColor={problem.accentColor}
-          className="p-6 sm:p-8 border border-[rgba(212,233,255,0.16)] bg-[#07193D] shadow-2xl rounded-none text-left"
+          className="p-6 sm:p-8 border border-[#38BDF8]/40 bg-[#07193D] shadow-[0_16px_50px_rgba(2,8,24,0.9)] rounded-none text-left"
           withHudCorners={true}
         >
           {/* Header */}
           <div className="flex items-center justify-between pb-4 mb-6 border-b border-[rgba(212,233,255,0.12)]">
             <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-none bg-[#0B2556] border border-[#38BDF8]/40 text-[#38BDF8]">
+              <div className="p-2 rounded-none bg-[#0B2556] border border-[#38BDF8]/40 text-[#38BDF8] shadow-sm">
                 <Terminal className="w-4 h-4" />
               </div>
               <div>
-                <span className="text-[10px] font-mono-hud text-[#38BDF8]">
+                <span className="text-[10px] font-mono-hud text-[#38BDF8] font-bold">
                   {problem.code} // CLASSIFIED ENGINEERING DOSSIER
                 </span>
                 <h3 className="text-2xl font-display font-black text-white">
@@ -70,7 +70,7 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
                 sound.playModalClose();
                 onClose();
               }}
-              className="p-1.5 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.12)] text-[#BAE6FD] hover:text-white transition-colors cursor-pointer"
+              className="p-1.5 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.12)] hover:border-[#38BDF8]/50 text-[#BAE6FD] hover:text-white transition-colors cursor-pointer active:scale-95"
             >
               <X className="w-4 h-4" />
             </button>
@@ -92,7 +92,7 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
               <span className="text-[10px] font-mono-hud text-[#7DD3FC] uppercase block mb-1.5 font-semibold">
                 PROBLEM OVERVIEW & CONTEXT:
               </span>
-              <p className="text-xs sm:text-sm text-[#BAE6FD] font-sans leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#BAE6FD] font-sans leading-relaxed font-normal">
                 {problem.overview}
               </p>
             </div>
@@ -144,12 +144,13 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
 
             {/* Footer Action */}
             <div className="pt-4 border-t border-[rgba(212,233,255,0.12)] flex flex-col sm:flex-row items-center justify-between gap-3">
-              <div className="text-xs font-mono-hud text-[#7DD3FC]">
-                ELIGIBLE FOR ₹1,00,000 PRIZE ORBIT
+              <div className="text-xs font-mono-hud text-[#7DD3FC] flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-[#38BDF8]" />
+                <span>ELIGIBLE FOR ₹1,00,000 PRIZE ORBIT</span>
               </div>
               <button
                 onClick={handleSelect}
-                className="w-full sm:w-auto px-6 py-3 rounded-none font-display font-bold text-xs tracking-wider text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] hover:opacity-95 transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                className="btn-sheen btn-glow-cyan w-full sm:w-auto px-6 py-3 rounded-none font-display font-bold text-xs tracking-wider text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] hover:opacity-95 transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-95"
               >
                 <Rocket className="w-4 h-4 text-[#040E24]" />
                 <span>CHOOSE THIS TRACK & REGISTER — ₹100</span>

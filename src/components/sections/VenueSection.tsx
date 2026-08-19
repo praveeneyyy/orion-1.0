@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { MapPin, Navigation, Compass, ExternalLink, Globe } from 'lucide-react';
 import { GlassCard } from '../common/GlassCard';
 import { ElectricBorder } from '../common/ElectricBorder';
+import { ScrollReveal } from '../common/ScrollReveal';
 import { EVENT_METRICS } from '../../data/orionData';
 import { sound } from '../../audio/soundEffects';
 
@@ -20,8 +21,8 @@ export const VenueSection: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-none bg-[#07193D] border border-[rgba(212,233,255,0.14)] text-xs font-mono-hud text-[#38BDF8] mb-3">
+        <ScrollReveal direction="up" delay={50} duration={600} className="text-center max-w-2xl mx-auto mb-14">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-none bg-[#07193D] border border-[rgba(212,233,255,0.14)] text-xs font-mono-hud text-[#38BDF8] mb-3 shadow-sm">
             <MapPin className="w-3.5 h-3.5" />
             <span>MISSION ARENA // GEOSPATIAL TARGET</span>
           </div>
@@ -31,18 +32,18 @@ export const VenueSection: React.FC = () => {
           <p className="text-xs md:text-sm text-[#BAE6FD] mt-2.5 font-sans leading-relaxed">
             The 24-hour offline Grand Finale will be hosted inside the state-of-the-art computing complex at SIST Chennai.
           </p>
-        </div>
+        </ScrollReveal>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-6xl mx-auto items-stretch text-left">
           
           {/* Left Column: 3D Earth Target Globe */}
-          <div className="lg:col-span-7">
+          <ScrollReveal direction="left" delay={150} duration={650} className="lg:col-span-7 h-full">
             <ElectricBorder
               color="#38BDF8"
               speed={0.6}
               chaos={0.06}
               thickness={1.5}
-              className="w-full h-full"
+              className="w-full h-full shadow-2xl"
             >
               <div className="p-6 bg-[#07193D]/95 backdrop-blur-xl border border-[rgba(212,233,255,0.16)] h-full flex flex-col justify-between rounded-none">
                 <div>
@@ -53,7 +54,7 @@ export const VenueSection: React.FC = () => {
                         GEOSPATIAL RADAR TELEMETRY // CHENNAI ORBIT
                       </span>
                     </div>
-                    <span className="text-[10px] font-mono-hud text-[#38BDF8] bg-[#0B2556] px-2 py-0.5 border border-[#38BDF8]/40 rounded-none">
+                    <span className="text-[10px] font-mono-hud text-[#38BDF8] bg-[#0B2556] px-2 py-0.5 border border-[#38BDF8]/40 rounded-none font-semibold">
                       TARGET LOCKED
                     </span>
                   </div>
@@ -65,15 +66,15 @@ export const VenueSection: React.FC = () => {
 
                 <div className="flex items-center justify-between text-[10px] font-mono-hud text-[#7DD3FC]">
                   <span>SATHYABAMA RADAR FIX: 12.8718° N, 80.2206° E</span>
-                  <span className="text-[#38BDF8]">FREE ON-CAMPUS HOSTEL FOR FINALISTS</span>
+                  <span className="text-[#38BDF8] font-semibold">FREE ON-CAMPUS HOSTEL FOR FINALISTS</span>
                 </div>
               </div>
             </ElectricBorder>
-          </div>
+          </ScrollReveal>
 
           {/* Right Column: Campus Details & Navigation */}
-          <div className="lg:col-span-5">
-            <GlassCard glowColor="cyan" className="p-6 sm:p-8 border border-[rgba(212,233,255,0.14)] bg-[#07193D]/90 rounded-none h-full flex flex-col justify-between" withHudCorners={true}>
+          <ScrollReveal direction="right" delay={200} duration={650} className="lg:col-span-5 h-full">
+            <GlassCard glowColor="cyan" className="p-6 sm:p-8 border border-[rgba(212,233,255,0.14)] hover:border-[#38BDF8]/50 bg-[#07193D]/90 rounded-none h-full flex flex-col justify-between shadow-xl" withHudCorners={true}>
               <div>
                 <div className="flex items-center gap-2 pb-3 mb-5 border-b border-[rgba(212,233,255,0.12)]">
                   <Compass className="w-4 h-4 text-[#38BDF8]" />
@@ -89,15 +90,15 @@ export const VenueSection: React.FC = () => {
                 </p>
 
                 <div className="space-y-3 mb-6">
-                  <div className="p-3 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.1)]">
+                  <div className="p-3 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.1)] hover:border-[#38BDF8]/30 transition-colors">
                     <div className="text-[10px] font-mono-hud text-[#7DD3FC]">TRANSIT VIA AIR:</div>
                     <div className="text-xs text-white font-sans">Chennai International Airport (MAA) ~ 22 km</div>
                   </div>
-                  <div className="p-3 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.1)]">
+                  <div className="p-3 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.1)] hover:border-[#38BDF8]/30 transition-colors">
                     <div className="text-[10px] font-mono-hud text-[#7DD3FC]">TRANSIT VIA RAIL:</div>
                     <div className="text-xs text-white font-sans">Chennai Central (MAS) / Tambaram ~ 25 km</div>
                   </div>
-                  <div className="p-3 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.1)]">
+                  <div className="p-3 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.1)] hover:border-[#38BDF8]/30 transition-colors">
                     <div className="text-[10px] font-mono-hud text-[#7DD3FC]">ARENA FACILITY:</div>
                     <div className="text-xs text-white font-sans">School of Computing Central Auditorium & LAN Labs</div>
                   </div>
@@ -110,7 +111,7 @@ export const VenueSection: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => sound.playClick()}
-                  className="w-full py-3 px-4 rounded-none font-display font-bold text-xs tracking-wider text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] hover:opacity-95 transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer"
+                  className="btn-sheen btn-glow-cyan w-full py-3 px-4 rounded-none font-display font-bold text-xs tracking-wider text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] hover:opacity-95 transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer active:scale-95"
                 >
                   <Navigation className="w-3.5 h-3.5 text-[#040E24]" />
                   <span>OPEN IN GOOGLE MAPS</span>
@@ -118,7 +119,7 @@ export const VenueSection: React.FC = () => {
                 </a>
               </div>
             </GlassCard>
-          </div>
+          </ScrollReveal>
 
         </div>
 

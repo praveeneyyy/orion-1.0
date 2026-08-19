@@ -5,9 +5,23 @@ class SoundSynthesizer {
   private ctx: AudioContext | null = null;
   private isMuted: boolean = false;
   private ambientGain: GainNode | null = null;
+  private isUnlocked: boolean = false;
 
   constructor() {
-    // AudioContext initializes on first user gesture
+    if (typeof window !== 'undefined') {
+      const unlock = () => {
+        if (!this.isUnlocked) {
+          this.initContext();
+          this.isUnlocked = true;
+          window.removeEventListener('click', unlock);
+          window.removeEventListener('touchstart', unlock);
+          window.removeEventListener('keydown', unlock);
+        }
+      };
+      window.addEventListener('click', unlock, { passive: true });
+      window.addEventListener('touchstart', unlock, { passive: true });
+      window.addEventListener('keydown', unlock, { passive: true });
+    }
   }
 
   private initContext() {
@@ -24,12 +38,18 @@ class SoundSynthesizer {
 
   public setEnabled(enabled: boolean) {
     this.isMuted = !enabled;
+    if (enabled) {
+      this.initContext();
+    }
   }
 
   public toggleMute(): boolean {
     this.isMuted = !this.isMuted;
-    if (this.isMuted && this.ambientGain) {
-      this.ambientGain.gain.setValueAtTime(0, this.ctx?.currentTime || 0);
+    if (!this.isMuted) {
+      this.initContext();
+    }
+    if (this.isMuted && this.ambientGain && this.ctx) {
+      this.ambientGain.gain.setValueAtTime(0, this.ctx.currentTime);
     }
     return this.isMuted;
   }
@@ -59,7 +79,7 @@ class SoundSynthesizer {
       osc.start();
       osc.stop(this.ctx.currentTime + 0.04);
     } catch {
-      // Ignore
+      // Ignore audio failure
     }
   }
 
@@ -170,6 +190,37 @@ class SoundSynthesizer {
 
       osc.start(now);
       osc.stop(now + 0.7);
+    } catch {
+      // Ignore
+    }
+  }
+
+  public playSuccessFanfare() {
+    if (this.isMuted) return;
+    try {
+      this.initContext();
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime;
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+
+      notes.forEach((freq, index) => {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        const noteStart = now + index * 0.08;
+
+        osc.type = index === 3 ? 'sawtooth' : 'triangle';
+        osc.frequency.setValueAtTime(freq, noteStart);
+
+        gain.gain.setValueAtTime(0.05, noteStart);
+        gain.gain.exponentialRampToValueAtTime(0.0001, noteStart + 0.35);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(noteStart);
+        osc.stop(noteStart + 0.35);
+      });
     } catch {
       // Ignore
     }

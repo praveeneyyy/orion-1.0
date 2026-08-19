@@ -9,7 +9,8 @@ import {
   AlertCircle, 
   Users, 
   FileText,
-  Sparkles
+  Sparkles,
+  CheckCircle2
 } from 'lucide-react';
 import { GlassCard } from '../common/GlassCard';
 import { INITIAL_REGISTERED_TEAMS } from '../../data/orionData';
@@ -45,25 +46,34 @@ export const TeamStatusModal: React.FC<TeamStatusModalProps> = ({ isOpen, onClos
     setHasSearched(true);
   };
 
+  const handleSampleClick = (sampleId: string) => {
+    sound.playHover();
+    setQuery(sampleId);
+    const cleanQuery = sampleId.trim().toLowerCase();
+    const found = teams.find(t => t.teamId.toLowerCase() === cleanQuery);
+    setResult(found || null);
+    setHasSearched(true);
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
       <div className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto">
         <GlassCard
           glowColor="cyan"
-          className="p-6 sm:p-8 border border-[rgba(212,233,255,0.16)] bg-[#07193D] shadow-2xl rounded-none text-left"
+          className="p-6 sm:p-8 border border-[#38BDF8]/40 bg-[#07193D] shadow-[0_16px_50px_rgba(2,8,24,0.9)] rounded-none text-left"
           withHudCorners={true}
         >
           {/* Header */}
           <div className="flex items-center justify-between pb-4 mb-6 border-b border-[rgba(212,233,255,0.12)]">
             <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-none bg-[#0B2556] border border-[#38BDF8]/40 text-[#38BDF8]">
+              <div className="p-2 rounded-none bg-[#0B2556] border border-[#38BDF8]/40 text-[#38BDF8] shadow-sm">
                 <Search className="w-4 h-4" />
               </div>
               <div>
                 <h3 className="text-xl font-display font-black text-white">
                   SQUAD MISSION VERIFICATION
                 </h3>
-                <div className="text-xs font-mono-hud text-[#38BDF8]">
+                <div className="text-xs font-mono-hud text-[#38BDF8] font-bold">
                   LOOKUP BY TEAM ID, NAME OR LEADER EMAIL
                 </div>
               </div>
@@ -74,7 +84,7 @@ export const TeamStatusModal: React.FC<TeamStatusModalProps> = ({ isOpen, onClos
                 sound.playModalClose();
                 onClose();
               }}
-              className="p-1.5 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.12)] text-[#BAE6FD] hover:text-white transition-colors cursor-pointer"
+              className="p-1.5 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.12)] hover:border-[#38BDF8]/50 text-[#BAE6FD] hover:text-white transition-colors cursor-pointer active:scale-95"
             >
               <X className="w-4 h-4" />
             </button>
@@ -92,35 +102,35 @@ export const TeamStatusModal: React.FC<TeamStatusModalProps> = ({ isOpen, onClos
               />
               <button
                 type="submit"
-                className="px-5 py-2.5 rounded-none font-display font-bold text-xs tracking-wider text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] hover:opacity-95 transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+                className="btn-sheen btn-glow-cyan px-5 py-2.5 rounded-none font-display font-bold text-xs tracking-wider text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] hover:opacity-95 transition-all shadow-md flex items-center gap-1.5 cursor-pointer active:scale-95"
               >
                 <Search className="w-3.5 h-3.5 text-[#040E24]" />
                 <span>QUERY</span>
               </button>
             </div>
 
-            <div className="flex items-center gap-2 mt-2 text-[10px] font-mono-hud text-[#7DD3FC]">
+            <div className="flex items-center gap-2 mt-2.5 text-[10px] font-mono-hud text-[#7DD3FC]">
               <span>SAMPLE IDS:</span>
               <button
                 type="button"
-                onClick={() => setQuery('ORION-9012')}
-                className="text-[#38BDF8] hover:underline"
+                onClick={() => handleSampleClick('ORION-9012')}
+                className="text-[#38BDF8] hover:underline font-bold"
               >
                 ORION-9012
               </button>
               <span>•</span>
               <button
                 type="button"
-                onClick={() => setQuery('ORION-8421')}
-                className="text-[#38BDF8] hover:underline"
+                onClick={() => handleSampleClick('ORION-8421')}
+                className="text-[#38BDF8] hover:underline font-bold"
               >
                 ORION-8421
               </button>
               <span>•</span>
               <button
                 type="button"
-                onClick={() => setQuery('ORION-6590')}
-                className="text-[#38BDF8] hover:underline"
+                onClick={() => handleSampleClick('ORION-6590')}
+                className="text-[#38BDF8] hover:underline font-bold"
               >
                 ORION-6590
               </button>
@@ -128,9 +138,9 @@ export const TeamStatusModal: React.FC<TeamStatusModalProps> = ({ isOpen, onClos
           </form>
 
           {hasSearched && (
-            <div>
+            <div className="animate-in fade-in zoom-in-95 duration-200">
               {result ? (
-                <div className="p-5 rounded-none bg-[#040E24] border border-[#38BDF8]/40 space-y-4">
+                <div className="p-5 rounded-none bg-[#040E24] border border-[#38BDF8]/40 space-y-4 shadow-lg">
                   <div className="flex items-center justify-between pb-3 border-b border-[rgba(212,233,255,0.1)]">
                     <div>
                       <span className="text-[10px] font-mono-hud text-[#7DD3FC]">TEAM DOSSIER</span>
@@ -140,7 +150,7 @@ export const TeamStatusModal: React.FC<TeamStatusModalProps> = ({ isOpen, onClos
                     </div>
                     <span className={`text-[10px] font-mono-hud px-2.5 py-1 rounded-none font-bold ${
                       result.status.includes('Top 70')
-                        ? 'bg-[#38BDF8] text-[#040E24]'
+                        ? 'bg-[#38BDF8] text-[#040E24] shadow-[0_0_10px_rgba(56,189,248,0.4)]'
                         : 'bg-[#0B2556] text-[#BAE6FD] border border-[rgba(212,233,255,0.14)]'
                     }`}>
                       {result.status.toUpperCase()}
@@ -166,8 +176,12 @@ export const TeamStatusModal: React.FC<TeamStatusModalProps> = ({ isOpen, onClos
                     </div>
                   </div>
 
-                  <div className="pt-2 text-[10px] font-mono-hud text-[#7DD3FC] border-t border-[rgba(212,233,255,0.1)]">
-                    INSTITUTE: {result.institution}
+                  <div className="pt-2 text-[10px] font-mono-hud text-[#7DD3FC] border-t border-[rgba(212,233,255,0.1)] flex items-center justify-between">
+                    <span>INSTITUTE: {result.institution}</span>
+                    <span className="text-emerald-400 flex items-center gap-1 font-semibold">
+                      <CheckCircle2 className="w-3 h-3" />
+                      RECORD VALIDATED
+                    </span>
                   </div>
                 </div>
               ) : (

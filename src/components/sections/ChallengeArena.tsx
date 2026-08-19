@@ -12,6 +12,7 @@ import {
   Layers
 } from 'lucide-react';
 import { GlassCard } from '../common/GlassCard';
+import { ScrollReveal } from '../common/ScrollReveal';
 import { PROBLEM_STATEMENTS } from '../../data/orionData';
 import type { ProblemStatement } from '../../types/orion';
 import { sound } from '../../audio/soundEffects';
@@ -43,8 +44,8 @@ export const ChallengeArena: React.FC<ChallengeArenaProps> = ({ onOpenProblemMod
       <div className="max-w-7xl mx-auto">
         
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-none bg-[#07193D] border border-[rgba(212,233,255,0.14)] text-xs font-mono-hud text-[#38BDF8] mb-3">
+        <ScrollReveal direction="up" delay={50} duration={600} className="text-center max-w-2xl mx-auto mb-14">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-none bg-[#07193D] border border-[rgba(212,233,255,0.14)] text-xs font-mono-hud text-[#38BDF8] mb-3 shadow-sm">
             <Terminal className="w-3.5 h-3.5" />
             <span>ENGINEERING DOSSIERS // PROBLEM STATEMENTS</span>
           </div>
@@ -55,16 +56,16 @@ export const ChallengeArena: React.FC<ChallengeArenaProps> = ({ onOpenProblemMod
             Tackle deep-tech flagship engineering challenges or build breakthrough solutions across open-innovation tracks.
           </p>
 
-          <div className="flex items-center justify-center gap-2 mt-6">
+          <div className="flex items-center justify-center gap-2 mt-6 flex-wrap">
             <button
               onClick={() => {
                 sound.playHover();
                 setActiveFilter('all');
               }}
-              className={`px-3.5 py-1.5 rounded-none text-xs font-mono-hud transition-all cursor-pointer ${
+              className={`px-4 py-2 rounded-none text-xs font-mono-hud transition-all cursor-pointer active:scale-95 ${
                 activeFilter === 'all' 
-                  ? 'bg-[#38BDF8] text-[#040E24] font-bold shadow-md' 
-                  : 'bg-[#0B2556] text-[#BAE6FD] hover:text-white border border-[rgba(212,233,255,0.12)]'
+                  ? 'bg-[#38BDF8] text-[#040E24] font-bold shadow-[0_0_15px_rgba(56,189,248,0.4)]' 
+                  : 'bg-[#0B2556] text-[#BAE6FD] hover:text-white border border-[rgba(212,233,255,0.12)] hover:border-[#38BDF8]/40'
               }`}
             >
               ALL MISSIONS (04)
@@ -74,10 +75,10 @@ export const ChallengeArena: React.FC<ChallengeArenaProps> = ({ onOpenProblemMod
                 sound.playHover();
                 setActiveFilter('flagship');
               }}
-              className={`px-3.5 py-1.5 rounded-none text-xs font-mono-hud transition-all cursor-pointer ${
+              className={`px-4 py-2 rounded-none text-xs font-mono-hud transition-all cursor-pointer active:scale-95 ${
                 activeFilter === 'flagship' 
-                  ? 'bg-[#38BDF8] text-[#040E24] font-bold shadow-md' 
-                  : 'bg-[#0B2556] text-[#BAE6FD] hover:text-white border border-[rgba(212,233,255,0.12)]'
+                  ? 'bg-[#38BDF8] text-[#040E24] font-bold shadow-[0_0_15px_rgba(56,189,248,0.4)]' 
+                  : 'bg-[#0B2556] text-[#BAE6FD] hover:text-white border border-[rgba(212,233,255,0.12)] hover:border-[#38BDF8]/40'
               }`}
             >
               FLAGSHIP DOSSIERS (03)
@@ -87,88 +88,95 @@ export const ChallengeArena: React.FC<ChallengeArenaProps> = ({ onOpenProblemMod
                 sound.playHover();
                 setActiveFilter('open');
               }}
-              className={`px-3.5 py-1.5 rounded-none text-xs font-mono-hud transition-all cursor-pointer ${
+              className={`px-4 py-2 rounded-none text-xs font-mono-hud transition-all cursor-pointer active:scale-95 ${
                 activeFilter === 'open' 
-                  ? 'bg-[#38BDF8] text-[#040E24] font-bold shadow-md' 
-                  : 'bg-[#0B2556] text-[#BAE6FD] hover:text-white border border-[rgba(212,233,255,0.12)]'
+                  ? 'bg-[#38BDF8] text-[#040E24] font-bold shadow-[0_0_15px_rgba(56,189,248,0.4)]' 
+                  : 'bg-[#0B2556] text-[#BAE6FD] hover:text-white border border-[rgba(212,233,255,0.12)] hover:border-[#38BDF8]/40'
               }`}
             >
               OPEN TRACKS (06)
             </button>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* 3 Flagship Problem Statements */}
         {(activeFilter === 'all' || activeFilter === 'flagship') && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-7xl mx-auto mb-12 items-stretch text-left">
-            {PROBLEM_STATEMENTS.map((prob) => {
+            {PROBLEM_STATEMENTS.map((prob, idx) => {
               const Icon = domainIcons[prob.id] || Terminal;
 
               return (
-                <GlassCard
+                <ScrollReveal
                   key={prob.id}
-                  glowColor={prob.accentColor}
-                  className="p-6 sm:p-7 flex flex-col justify-between border border-[rgba(212,233,255,0.14)] bg-[#07193D]/90 rounded-none"
-                  withHudCorners={true}
+                  direction="up"
+                  delay={idx * 120}
+                  duration={650}
+                  className="h-full"
                 >
-                  <div>
-                    <div className="flex items-center justify-between pb-3 mb-4 border-b border-[rgba(212,233,255,0.12)]">
-                      <span className="text-xs font-mono-hud text-[#7DD3FC] flex items-center gap-1.5">
-                        <Icon className="w-3.5 h-3.5 text-[#38BDF8]" />
-                        {prob.code}
-                      </span>
-                      <span className="text-[10px] font-mono-hud px-2.5 py-0.5 rounded-none border border-[#38BDF8]/40 bg-[#0B2556] text-[#38BDF8] font-semibold">
-                        FLAGSHIP
-                      </span>
-                    </div>
-
-                    <h3 className="text-2xl font-display font-black text-white tracking-tight mb-1">
-                      {prob.title}
-                    </h3>
-                    <div className="text-xs font-mono-hud font-semibold text-[#38BDF8] mb-3">
-                      {prob.domain}
-                    </div>
-
-                    <p className="text-xs text-[#BAE6FD] font-sans leading-relaxed line-clamp-4 mb-4 font-normal">
-                      {prob.overview}
-                    </p>
-
-                    <div className="space-y-2 mb-6">
-                      <span className="text-[10px] font-mono-hud text-[#7DD3FC] uppercase block font-semibold">
-                        DELIVERABLE FOCUS:
-                      </span>
-                      <ul className="space-y-1.5 text-xs text-[#BAE6FD]">
-                        {prob.keyFeatures.slice(0, 2).map((feat, i) => (
-                          <li key={i} className="flex items-start gap-1.5">
-                            <span className="text-[#38BDF8] font-mono-hud text-xs">›</span>
-                            <span>{feat}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex flex-wrap gap-1.5 mb-6">
-                      {prob.techStack.slice(0, 3).map((tech, i) => (
-                        <span key={i} className="text-[10px] font-mono-hud bg-[#040E24] text-[#BAE6FD] px-2 py-0.5 rounded-none border border-[rgba(212,233,255,0.1)]">
-                          {tech.split('/')[0].trim()}
+                  <GlassCard
+                    glowColor={prob.accentColor}
+                    className="p-6 sm:p-7 flex flex-col justify-between border border-[rgba(212,233,255,0.14)] hover:border-[#38BDF8]/60 bg-[#07193D]/90 rounded-none h-full transition-all duration-300 hover:-translate-y-1.5 shadow-xl"
+                    withHudCorners={true}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between pb-3 mb-4 border-b border-[rgba(212,233,255,0.12)]">
+                        <span className="text-xs font-mono-hud text-[#7DD3FC] flex items-center gap-1.5 font-semibold">
+                          <Icon className="w-3.5 h-3.5 text-[#38BDF8]" />
+                          {prob.code}
                         </span>
-                      ))}
+                        <span className="text-[10px] font-mono-hud px-2.5 py-0.5 rounded-none border border-[#38BDF8]/40 bg-[#0B2556] text-[#38BDF8] font-semibold shadow-sm">
+                          FLAGSHIP
+                        </span>
+                      </div>
+
+                      <h3 className="text-2xl font-display font-black text-white tracking-tight mb-1">
+                        {prob.title}
+                      </h3>
+                      <div className="text-xs font-mono-hud font-semibold text-[#38BDF8] mb-3">
+                        {prob.domain}
+                      </div>
+
+                      <p className="text-xs text-[#BAE6FD] font-sans leading-relaxed line-clamp-4 mb-4 font-normal">
+                        {prob.overview}
+                      </p>
+
+                      <div className="space-y-2 mb-6">
+                        <span className="text-[10px] font-mono-hud text-[#7DD3FC] uppercase block font-semibold">
+                          DELIVERABLE FOCUS:
+                        </span>
+                        <ul className="space-y-1.5 text-xs text-[#BAE6FD]">
+                          {prob.keyFeatures.slice(0, 2).map((feat, i) => (
+                            <li key={i} className="flex items-start gap-1.5">
+                              <span className="text-[#38BDF8] font-mono-hud text-xs">›</span>
+                              <span>{feat}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
 
-                    <button
-                      onClick={() => {
-                        sound.playModalOpen();
-                        onOpenProblemModal(prob);
-                      }}
-                      className="w-full py-2.5 px-4 rounded-none text-xs font-mono-hud font-bold transition-all flex items-center justify-center gap-2 border border-[rgba(212,233,255,0.2)] hover:border-[#38BDF8] bg-[#0B2556] hover:bg-[#103374] text-[#BAE6FD] hover:text-white cursor-pointer"
-                    >
-                      <span>INSPECT FULL DOSSIER</span>
-                      <ArrowUpRight className="w-3.5 h-3.5 text-[#38BDF8]" />
-                    </button>
-                  </div>
-                </GlassCard>
+                    <div>
+                      <div className="flex flex-wrap gap-1.5 mb-6">
+                        {prob.techStack.slice(0, 3).map((tech, i) => (
+                          <span key={i} className="text-[10px] font-mono-hud bg-[#040E24] text-[#BAE6FD] px-2 py-0.5 rounded-none border border-[rgba(212,233,255,0.1)]">
+                            {tech.split('/')[0].trim()}
+                          </span>
+                        ))}
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          sound.playModalOpen();
+                          onOpenProblemModal(prob);
+                        }}
+                        className="btn-sheen w-full py-2.5 px-4 rounded-none text-xs font-mono-hud font-bold transition-all flex items-center justify-center gap-2 border border-[rgba(212,233,255,0.2)] hover:border-[#38BDF8] bg-[#0B2556] hover:bg-[#103374] text-[#BAE6FD] hover:text-white cursor-pointer active:scale-95 shadow-md"
+                      >
+                        <span>INSPECT FULL DOSSIER</span>
+                        <ArrowUpRight className="w-3.5 h-3.5 text-[#38BDF8]" />
+                      </button>
+                    </div>
+                  </GlassCard>
+                </ScrollReveal>
               );
             })}
           </div>
@@ -176,11 +184,11 @@ export const ChallengeArena: React.FC<ChallengeArenaProps> = ({ onOpenProblemMod
 
         {/* Open Innovation Track */}
         {(activeFilter === 'all' || activeFilter === 'open') && (
-          <div className="max-w-7xl mx-auto text-left">
-            <GlassCard glowColor="violet" className="p-7 sm:p-8 border border-[rgba(212,233,255,0.14)] bg-[#07193D]/90 rounded-none" withHudCorners={true}>
+          <ScrollReveal direction="up" delay={200} duration={600} className="max-w-7xl mx-auto text-left">
+            <GlassCard glowColor="violet" className="p-7 sm:p-8 border border-[rgba(212,233,255,0.14)] hover:border-[#38BDF8]/40 bg-[#07193D]/90 rounded-none shadow-2xl" withHudCorners={true}>
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 mb-6 border-b border-[rgba(212,233,255,0.12)]">
                 <div className="flex items-center gap-3">
-                  <div className="p-2.5 rounded-none bg-[#0B2556] border border-[#38BDF8]/40 text-[#38BDF8]">
+                  <div className="p-2.5 rounded-none bg-[#0B2556] border border-[#38BDF8]/40 text-[#38BDF8] shadow-sm">
                     <Sparkles className="w-5 h-5" />
                   </div>
                   <div>
@@ -190,7 +198,7 @@ export const ChallengeArena: React.FC<ChallengeArenaProps> = ({ onOpenProblemMod
                     </h3>
                   </div>
                 </div>
-                <span className="text-xs font-mono-hud bg-[#0B2556] text-[#38BDF8] px-3 py-1 rounded-none border border-[#38BDF8]/40">
+                <span className="text-xs font-mono-hud bg-[#0B2556] text-[#38BDF8] px-3 py-1 rounded-none border border-[#38BDF8]/40 font-semibold">
                   ALL DOMAINS ACCEPTED
                 </span>
               </div>
@@ -201,7 +209,7 @@ export const ChallengeArena: React.FC<ChallengeArenaProps> = ({ onOpenProblemMod
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {openInnovationTracks.map((track, i) => (
-                  <div key={i} className="p-4 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.1)] flex flex-col justify-between">
+                  <div key={i} className="p-4 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.1)] hover:border-[#38BDF8]/40 transition-colors flex flex-col justify-between">
                     <div>
                       <div className="flex items-center gap-2 text-xs font-display font-bold text-white mb-1.5">
                         <Cpu className="w-3.5 h-3.5 text-[#38BDF8] shrink-0" />
@@ -216,7 +224,7 @@ export const ChallengeArena: React.FC<ChallengeArenaProps> = ({ onOpenProblemMod
               </div>
 
               <div className="mt-6 pt-4 border-t border-[rgba(212,233,255,0.12)] flex items-center justify-between text-xs font-mono-hud text-[#7DD3FC]">
-                <span className="flex items-center gap-1.5 text-[#38BDF8]">
+                <span className="flex items-center gap-1.5 text-[#38BDF8] font-semibold">
                   <Layers className="w-3.5 h-3.5" />
                   ELIGIBLE FOR FULL ₹1,00,000 PRIZE POOL & MERIT BADGES
                 </span>
@@ -225,7 +233,7 @@ export const ChallengeArena: React.FC<ChallengeArenaProps> = ({ onOpenProblemMod
                 </span>
               </div>
             </GlassCard>
-          </div>
+          </ScrollReveal>
         )}
 
       </div>

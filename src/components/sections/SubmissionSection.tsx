@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import confetti from 'canvas-confetti';
 import { 
   FileText, 
   Download, 
@@ -12,14 +13,17 @@ import {
   CheckSquare, 
   FileCode,
   Layers,
-  ArrowRight
+  ArrowRight,
+  Sparkles
 } from 'lucide-react';
 import { GlassCard } from '../common/GlassCard';
+import { ScrollReveal } from '../common/ScrollReveal';
 import { PPT_TEMPLATE_RULES } from '../../data/orionData';
 import { sound } from '../../audio/soundEffects';
 
 export const SubmissionSection: React.FC = () => {
   const [activeSlide, setActiveSlide] = useState(1);
+  const [downloadSuccess, setDownloadSuccess] = useState(false);
 
   const ruleIcons: Record<string, React.FC<{ className?: string }>> = {
     FileMinus,
@@ -69,7 +73,20 @@ export const SubmissionSection: React.FC = () => {
   ];
 
   const handleDownloadTemplate = () => {
-    sound.playClick();
+    sound.playSuccessFanfare();
+    setDownloadSuccess(true);
+
+    try {
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { y: 0.7 },
+        colors: ['#38BDF8', '#BAE6FD', '#FFFFFF', '#60A5FA']
+      });
+    } catch {
+      // Ignore confetti errors if unsupported
+    }
+
     const pptxContent = `ORION 1.0 - Official Hackathon Presentation Template
 Sathyabama Institute of Science and Technology, Chennai
 Organized by Microsoft Club SIST
@@ -98,6 +115,8 @@ Good luck Builders! Reach for the stars.`;
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+
+    setTimeout(() => setDownloadSuccess(false), 4000);
   };
 
   return (
@@ -105,8 +124,8 @@ Good luck Builders! Reach for the stars.`;
       <div className="max-w-7xl mx-auto">
         
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-none bg-[#07193D] border border-[rgba(212,233,255,0.14)] text-xs font-mono-hud text-[#38BDF8] mb-3">
+        <ScrollReveal direction="up" delay={50} duration={600} className="text-center max-w-2xl mx-auto mb-14">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-none bg-[#07193D] border border-[rgba(212,233,255,0.14)] text-xs font-mono-hud text-[#38BDF8] mb-3 shadow-sm">
             <FileText className="w-3.5 h-3.5" />
             <span>ROUND 1 STANDARDIZED PROTOCOL // PPT BLUEPRINT</span>
           </div>
@@ -116,13 +135,13 @@ Good luck Builders! Reach for the stars.`;
           <p className="text-xs md:text-sm text-[#BAE6FD] mt-2.5 font-sans leading-relaxed">
             All Round 1 entries must strictly adhere to the mandatory 5-slide blueprint for standardized jury screening.
           </p>
-        </div>
+        </ScrollReveal>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-6xl mx-auto mb-16 text-left">
           
           {/* Left Column: Interactive Slide Inspector */}
-          <div className="lg:col-span-7">
-            <GlassCard glowColor="cyan" className="p-6 sm:p-7 border border-[rgba(212,233,255,0.14)] bg-[#07193D]/90 rounded-none h-full flex flex-col justify-between" withHudCorners={true}>
+          <ScrollReveal direction="left" delay={150} duration={650} className="lg:col-span-7 h-full">
+            <GlassCard glowColor="cyan" className="p-6 sm:p-7 border border-[rgba(212,233,255,0.14)] hover:border-[#38BDF8]/50 bg-[#07193D]/90 rounded-none h-full flex flex-col justify-between shadow-xl" withHudCorners={true}>
               <div>
                 <div className="flex items-center justify-between pb-3 mb-5 border-b border-[rgba(212,233,255,0.12)]">
                   <div className="flex items-center gap-2">
@@ -140,9 +159,9 @@ Good luck Builders! Reach for the stars.`;
                         sound.playHover();
                         setActiveSlide(s.num);
                       }}
-                      className={`px-3 py-1.5 rounded-none text-xs font-mono-hud transition-all cursor-pointer whitespace-nowrap ${
+                      className={`px-3.5 py-1.5 rounded-none text-xs font-mono-hud transition-all cursor-pointer whitespace-nowrap active:scale-95 ${
                         activeSlide === s.num
-                          ? 'bg-[#38BDF8] text-[#040E24] font-bold shadow-md'
+                          ? 'bg-[#38BDF8] text-[#040E24] font-bold shadow-[0_0_12px_rgba(56,189,248,0.4)]'
                           : 'bg-[#0B2556] text-[#BAE6FD] hover:text-white border border-[rgba(212,233,255,0.12)]'
                       }`}
                     >
@@ -155,17 +174,17 @@ Good luck Builders! Reach for the stars.`;
                 {(() => {
                   const current = slideBlueprints[activeSlide - 1];
                   return (
-                    <div className="p-5 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.12)] mb-6">
+                    <div className="p-5 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.12)] mb-6 transition-all">
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="text-base font-display font-bold text-white">
                           {current.title}
                         </h4>
-                        <span className="text-[10px] font-mono-hud text-[#38BDF8] bg-[#0B2556] px-2 py-0.5 border border-[#38BDF8]/40 rounded-none">
+                        <span className="text-[10px] font-mono-hud text-[#38BDF8] bg-[#0B2556] px-2 py-0.5 border border-[#38BDF8]/40 rounded-none shadow-sm">
                           {current.type}
                         </span>
                       </div>
 
-                      <p className="text-xs text-[#7DD3FC] font-sans mb-4">
+                      <p className="text-xs text-[#7DD3FC] font-sans mb-4 font-normal leading-relaxed">
                         {current.instruction}
                       </p>
 
@@ -189,23 +208,30 @@ Good luck Builders! Reach for the stars.`;
 
               {/* Download CTA Box */}
               <div className="pt-4 border-t border-[rgba(212,233,255,0.12)] flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div className="text-xs font-mono-hud text-[#7DD3FC]">
-                  Official PPTX Template (Standardized Layout)
+                <div className="text-xs font-mono-hud text-[#7DD3FC] flex items-center gap-1.5">
+                  {downloadSuccess ? (
+                    <span className="text-emerald-400 font-bold flex items-center gap-1">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      TEMPLATE DISPATCHED // READY TO EDIT
+                    </span>
+                  ) : (
+                    <span>Official PPTX Template (Standardized Layout)</span>
+                  )}
                 </div>
                 <button
                   onClick={handleDownloadTemplate}
-                  className="w-full sm:w-auto px-5 py-2.5 rounded-none font-display font-bold text-xs tracking-wider text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] hover:opacity-95 transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer"
+                  className="btn-sheen btn-glow-cyan w-full sm:w-auto px-5 py-2.5 rounded-none font-display font-bold text-xs tracking-wider text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] hover:opacity-95 transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer active:scale-95"
                 >
                   <Download className="w-3.5 h-3.5 text-[#040E24]" />
                   <span>DOWNLOAD PPT TEMPLATE</span>
                 </button>
               </div>
             </GlassCard>
-          </div>
+          </ScrollReveal>
 
           {/* Right Column: Template Rules Matrix */}
-          <div className="lg:col-span-5">
-            <GlassCard glowColor="violet" className="p-6 sm:p-7 border border-[rgba(212,233,255,0.14)] bg-[#07193D]/90 rounded-none h-full flex flex-col justify-between" withHudCorners={true}>
+          <ScrollReveal direction="right" delay={200} duration={650} className="lg:col-span-5 h-full">
+            <GlassCard glowColor="violet" className="p-6 sm:p-7 border border-[rgba(212,233,255,0.14)] hover:border-[#38BDF8]/40 bg-[#07193D]/90 rounded-none h-full flex flex-col justify-between shadow-xl" withHudCorners={true}>
               <div>
                 <div className="flex items-center gap-2 pb-3 mb-4 border-b border-[rgba(212,233,255,0.12)]">
                   <ShieldAlert className="w-4 h-4 text-[#38BDF8]" />
@@ -216,7 +242,7 @@ Good luck Builders! Reach for the stars.`;
                   {PPT_TEMPLATE_RULES.map((r, idx) => {
                     const Icon = ruleIcons[r.icon] || CheckCircle2;
                     return (
-                      <div key={idx} className="p-3 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.1)] flex items-start gap-3">
+                      <div key={idx} className="p-3 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.1)] hover:border-[#38BDF8]/40 transition-colors flex items-start gap-3">
                         <div className="p-1 rounded-none bg-[#0B2556] text-[#38BDF8] shrink-0 mt-0.5">
                           <Icon className="w-3.5 h-3.5" />
                         </div>
@@ -224,7 +250,7 @@ Good luck Builders! Reach for the stars.`;
                           <div className="text-xs font-display font-bold text-white">
                             {r.rule}
                           </div>
-                          <div className="text-[11px] font-sans text-[#7DD3FC] leading-relaxed">
+                          <div className="text-[11px] font-sans text-[#7DD3FC] leading-relaxed font-normal">
                             {r.description}
                           </div>
                         </div>
@@ -234,11 +260,11 @@ Good luck Builders! Reach for the stars.`;
                 </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-[rgba(212,233,255,0.12)] text-[10px] font-mono-hud text-[#38BDF8]">
+              <div className="mt-4 pt-3 border-t border-[rgba(212,233,255,0.12)] text-[10px] font-mono-hud text-[#38BDF8] font-bold">
                 NAMING FORMAT: TeamName_ORION1.0 (PPTX / PDF)
               </div>
             </GlassCard>
-          </div>
+          </ScrollReveal>
 
         </div>
 
