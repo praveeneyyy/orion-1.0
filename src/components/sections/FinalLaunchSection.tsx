@@ -4,15 +4,10 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 import { 
   Rocket, 
-  Search, 
   ChevronRight, 
-  Sparkles, 
   CheckCircle2, 
-  ShieldCheck, 
   Compass,
-  Radio,
-  FileCode2,
-  Cpu
+  Radio
 } from 'lucide-react';
 import { GlassCard } from '../common/GlassCard';
 import { ScrollReveal } from '../common/ScrollReveal';
@@ -34,10 +29,10 @@ const OrionConstellation3D = dynamic(
 
 interface FinalLaunchSectionProps {
   onOpenRegister: () => void;
-  onOpenStatus: () => void;
+  onOpenStatus?: () => void;
 }
 
-export const FinalLaunchSection: React.FC<FinalLaunchSectionProps> = ({ onOpenRegister, onOpenStatus }) => {
+export const FinalLaunchSection: React.FC<FinalLaunchSectionProps> = ({ onOpenRegister }) => {
   const readinessSteps = [
     { num: "01", text: "Assemble your squad (2 to 6 members)", done: true },
     { num: "02", text: "Select 1 of 4 Flagship or Open challenges", done: true },
@@ -51,16 +46,16 @@ export const FinalLaunchSection: React.FC<FinalLaunchSectionProps> = ({ onOpenRe
         
         {/* Section Header */}
         <ScrollReveal direction="up" delay={50} duration={600} className="text-center max-w-3xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-[#0B1220] border border-[#00BCF2]/30 text-xs font-mono-hud text-[#22D3EE] mb-3 shadow-[0_0_15px_rgba(0,188,242,0.2)]">
-            <Radio className="w-3.5 h-3.5" />
-            <span>MISSION LAUNCHPAD // FLIGHT READINESS</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-sans font-semibold text-blue-400 mb-4 shadow-sm">
+            <Radio className="w-4 h-4 text-blue-400" />
+            <span>Interactive 3D Constellation & Registration</span>
           </div>
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-black text-white tracking-tight">
-            ORION <span className="text-gradient-frost-azure">STELLAR CONSOLE</span>
+            Orion <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Interactive Console</span>
           </h2>
-          <p className="text-xs md:text-sm text-[#94A3B8] mt-2.5 font-sans leading-relaxed">
-            <strong className="text-white">Microsoft provides the technology. ORION provides the mission. Participants build the future.</strong> <br className="hidden sm:inline" />
-            Interact with the 3D Orion constellation star map and launch your squadron into the ₹1,00,000 prize orbit.
+          <p className="text-sm md:text-base text-slate-400 mt-3 font-sans leading-relaxed">
+            <strong className="text-white">Empowering student developers across India.</strong> <br className="hidden sm:inline" />
+            Interact with the 3D Orion constellation star map and register your team for Round 1.
           </p>
         </ScrollReveal>
 
@@ -161,28 +156,17 @@ export const FinalLaunchSection: React.FC<FinalLaunchSectionProps> = ({ onOpenRe
               </div>
 
               {/* Action Buttons */}
-              <div className="space-y-2.5 pt-4 border-t border-[rgba(0,188,242,0.12)]">
+              <div className="pt-4 border-t border-[rgba(0,188,242,0.12)]">
                 <button
                   onClick={() => {
                     sound.playLaunchWarp();
                     onOpenRegister();
                   }}
-                  className="btn-sheen btn-glow-cyan w-full py-3.5 px-4 font-display font-bold text-xs tracking-wider text-[#020617] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#00BCF2] hover:opacity-95 transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-95 group"
+                  className="btn-sheen btn-glow-cyan w-full py-4 px-4 font-display font-bold text-xs tracking-wider text-[#020617] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#00BCF2] hover:opacity-95 transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-95 group"
                 >
                   <Rocket className="w-4 h-4 text-[#020617]" />
-                  <span>COMMISSION SQUADRON — ₹100</span>
+                  <span>REGISTER YOUR TEAM — ₹100</span>
                   <ChevronRight className="w-4 h-4 text-[#020617] group-hover:translate-x-1 transition-transform" />
-                </button>
-
-                <button
-                  onClick={() => {
-                    sound.playClick();
-                    onOpenStatus();
-                  }}
-                  className="w-full py-2.5 px-4 bg-[#071426] hover:bg-[#0B2556] border border-[rgba(0,188,242,0.2)] hover:border-[#00BCF2]/60 text-xs font-mono-hud text-[#BAE6FD] hover:text-white transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
-                >
-                  <Search className="w-3.5 h-3.5 text-[#22D3EE]" />
-                  <span>VERIFY SQUAD DOSSIER STATUS</span>
                 </button>
               </div>
 

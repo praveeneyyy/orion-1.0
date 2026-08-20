@@ -2,15 +2,14 @@
 
 import React, { useState } from 'react';
 import { 
-  Sparkles, 
   ArrowUpRight, 
   Waves, 
   ShieldCheck, 
   TreePine, 
   Cpu, 
-  Layers,
   CheckCircle2,
-  ChevronDown
+  ChevronDown,
+  Layers
 } from 'lucide-react';
 import { GlassCard } from '../common/GlassCard';
 import { ScrollReveal } from '../common/ScrollReveal';
@@ -34,33 +33,46 @@ export const ChallengeArena: React.FC<ChallengeArenaProps> = ({ onOpenProblemMod
     'open-innovation': Cpu
   };
 
-  const Icon = domainIcons[selectedProblem.id] || Cpu;
-
   return (
     <section id="challenges" className="py-24 px-4 relative z-10">
       <div className="max-w-7xl mx-auto">
         
         {/* Section Header */}
         <ScrollReveal direction="up" delay={50} duration={600} className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-[#0B1220] border border-[#00BCF2]/30 text-xs font-mono-hud text-[#22D3EE] mb-3 shadow-[0_0_15px_rgba(0,188,242,0.2)]">
-            <Cpu className="w-3.5 h-3.5" />
-            <span>MISSION SPECIFICATIONS // PROBLEM STATEMENTS</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-none bg-blue-500/10 border border-blue-500/20 text-xs font-sans font-semibold text-blue-400 mb-4 shadow-sm">
+            <Cpu className="w-4 h-4 text-blue-400" />
+            <span>Flagship Hackathon Tracks</span>
           </div>
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-black text-white tracking-tight">
-            CHALLENGE <span className="text-gradient-frost-azure">ARENA</span>
+            Challenge <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Arena</span>
           </h2>
-          <p className="text-xs md:text-sm text-[#94A3B8] mt-2.5 font-sans leading-relaxed">
-            Select an engineering challenge below to inspect mission objectives, technical architecture, and submission deliverables.
+          <p className="text-sm md:text-base text-slate-400 mt-3 font-sans leading-relaxed">
+            Select a track below to inspect technical architecture, evaluation benchmarks, and submission deliverables.
           </p>
+
+          {/* Microsoft Ecosystem Integration Callout */}
+          <div className="mt-6 p-4 rounded-none bg-slate-900/80 border border-slate-800 flex flex-wrap items-center justify-center gap-3 text-xs font-sans text-slate-300">
+            <div className="flex items-center gap-2">
+              <div className="grid grid-cols-2 gap-0.5 w-3 h-3" title="Microsoft">
+                <span className="bg-[#F25022] w-1.2 h-1.2 rounded-none" />
+                <span className="bg-[#7FBA00] w-1.2 h-1.2 rounded-none" />
+                <span className="bg-[#00A4EF] w-1.2 h-1.2 rounded-none" />
+                <span className="bg-[#FFB900] w-1.2 h-1.2 rounded-none" />
+              </div>
+              <span className="font-bold text-white">Microsoft Cloud & AI Stack</span>
+            </div>
+            <span className="text-slate-600 hidden sm:inline">•</span>
+            <span className="text-slate-400">Azure AI • GitHub Copilot • Azure Cosmos DB • Microsoft Sentinel</span>
+          </div>
         </ScrollReveal>
 
-        {/* Futuristic Mission Selector Container */}
+        {/* Track Selector Container */}
         <div className="max-w-5xl mx-auto">
           
           {/* Mobile & Tablet Dropdown Selector */}
           <div className="lg:hidden mb-6">
-            <label className="text-[11px] font-mono-hud text-[#22D3EE] uppercase tracking-wider block mb-2 font-bold">
-              SELECT PROBLEM STATEMENT
+            <label className="text-xs font-sans text-slate-400 uppercase tracking-wider block mb-2 font-semibold">
+              Select Problem Track
             </label>
             <div className="relative">
               <select
@@ -69,20 +81,20 @@ export const ChallengeArena: React.FC<ChallengeArenaProps> = ({ onOpenProblemMod
                   sound.playClick();
                   setSelectedId(e.target.value);
                 }}
-                className="w-full appearance-none p-3.5 bg-[#0B1220] border border-[#00BCF2]/50 text-white text-xs font-mono-hud focus:outline-none focus:border-[#22D3EE] focus:ring-1 focus:ring-[#22D3EE] pr-10 shadow-lg cursor-pointer"
+                className="w-full appearance-none p-4 rounded-none bg-slate-900 border border-slate-800 text-white text-xs font-sans font-medium focus:outline-none focus:border-blue-500 pr-10 shadow-lg cursor-pointer"
               >
                 {PROBLEM_STATEMENTS.map((prob) => (
-                  <option key={prob.id} value={prob.id} className="bg-[#071426] text-white py-2">
+                  <option key={prob.id} value={prob.id} className="bg-slate-900 text-white py-2">
                     {prob.code}: {prob.title} — {prob.domain}
                   </option>
                 ))}
               </select>
-              <ChevronDown className="w-4 h-4 text-[#22D3EE] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <ChevronDown className="w-4 h-4 text-blue-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
           </div>
 
           {/* Desktop Interactive List / Selector Bar */}
-          <div className="hidden lg:grid grid-cols-4 gap-2.5 mb-8">
+          <div className="hidden lg:grid grid-cols-4 gap-3 mb-8">
             {PROBLEM_STATEMENTS.map((prob) => {
               const isSelected = selectedId === prob.id;
               const TabIcon = domainIcons[prob.id] || Cpu;
@@ -94,33 +106,28 @@ export const ChallengeArena: React.FC<ChallengeArenaProps> = ({ onOpenProblemMod
                     sound.playHover();
                     setSelectedId(prob.id);
                   }}
-                  className={`text-left p-3.5 border transition-all duration-200 cursor-pointer relative group ${
+                  className={`text-left p-4 rounded-none border transition-all duration-200 cursor-pointer relative group ${
                     isSelected
-                      ? 'bg-[#0B2556] border-[#00BCF2] text-white shadow-[0_0_20px_rgba(0,188,242,0.3)] ring-1 ring-[#00BCF2]'
-                      : 'bg-[#0B1220]/90 border-[rgba(0,188,242,0.15)] hover:border-[#00BCF2]/60 hover:bg-[#071426] text-[#94A3B8] hover:text-white'
+                      ? 'bg-blue-600/10 border-blue-500/60 text-white shadow-lg shadow-blue-500/10 ring-1 ring-blue-500/40'
+                      : 'bg-slate-900/60 border-slate-800/80 hover:border-slate-700 hover:bg-slate-800/60 text-slate-400 hover:text-white'
                   }`}
                 >
-                  {/* Top Active Indicator */}
-                  {isSelected && (
-                    <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-[#0078D4] via-[#00BCF2] to-[#22D3EE]" />
-                  )}
-
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className={`text-[10px] font-mono-hud font-bold tracking-wider ${
-                      isSelected ? 'text-[#22D3EE]' : 'text-[#94A3B8] group-hover:text-[#BAE6FD]'
+                  <div className="flex items-center justify-between mb-2">
+                    <span className={`text-xs font-mono font-bold ${
+                      isSelected ? 'text-blue-400' : 'text-slate-400 group-hover:text-slate-200'
                     }`}>
                       {prob.code}
                     </span>
-                    <TabIcon className={`w-3.5 h-3.5 ${
-                      isSelected ? 'text-[#00BCF2]' : 'text-[#64748B] group-hover:text-[#94A3B8]'
+                    <TabIcon className={`w-4 h-4 ${
+                      isSelected ? 'text-blue-400' : 'text-slate-500 group-hover:text-slate-300'
                     }`} />
                   </div>
 
-                  <h3 className="text-xs font-display font-black text-white truncate mb-1">
+                  <h3 className="text-sm font-display font-bold text-white truncate mb-1">
                     {prob.title}
                   </h3>
 
-                  <p className="text-[10px] font-sans text-[#94A3B8] leading-tight line-clamp-2">
+                  <p className="text-xs font-sans text-slate-400 leading-tight line-clamp-2">
                     {prob.domain}
                   </p>
                 </button>
@@ -128,36 +135,29 @@ export const ChallengeArena: React.FC<ChallengeArenaProps> = ({ onOpenProblemMod
             })}
           </div>
 
-          {/* Active Problem Statement Detail Area */}
+          {/* Active Problem Detail Area */}
           <ScrollReveal direction="up" delay={100} duration={500} className="w-full text-left">
             <GlassCard
               glowColor={selectedProblem.accentColor}
-              className="p-6 sm:p-8 md:p-10 border border-[#00BCF2]/40 bg-[#0B1220]/95 shadow-[0_16px_48px_rgba(2,8,24,0.85)] rounded-none relative overflow-hidden"
-              withHudCorners={true}
+              className="p-6 sm:p-8 md:p-10 border border-slate-800 bg-slate-900/70 shadow-2xl rounded-none relative overflow-hidden"
             >
-              {/* Top Accent Gradient Glow */}
-              <div 
-                className="absolute -right-20 -top-20 w-48 h-48 rounded-full blur-3xl opacity-20 pointer-events-none"
-                style={{ backgroundColor: selectedProblem.accentColor === 'cyan' ? '#00BCF2' : selectedProblem.accentColor === 'emerald' ? '#10B981' : '#8B5CF6' }}
-              />
-
               {/* Main Heading Lockup */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 mb-6 border-b border-[rgba(0,188,242,0.15)]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-6 border-b border-slate-800">
                 <div>
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <span className="px-2.5 py-0.5 bg-[#071426] border border-[#00BCF2]/40 text-xs font-mono-hud text-[#22D3EE] font-bold">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="px-3 py-1 rounded-none bg-blue-500/10 border border-blue-500/20 text-xs font-mono text-blue-400 font-bold">
                       {selectedProblem.code}
                     </span>
-                    <span className="text-[10px] font-mono-hud text-[#94A3B8] uppercase">
+                    <span className="text-xs font-sans text-slate-400 font-medium">
                       {selectedProblem.classificationLevel}
                     </span>
                   </div>
                   
-                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-display font-black text-white tracking-tight">
+                  <h3 className="text-2xl sm:text-3xl font-display font-black text-white tracking-tight">
                     {selectedProblem.code}: {selectedProblem.title}
                   </h3>
                   
-                  <div className="text-xs sm:text-sm font-mono-hud text-[#22D3EE] font-semibold mt-1">
+                  <div className="text-sm font-sans text-blue-400 font-semibold mt-1">
                     {selectedProblem.domain}
                   </div>
                 </div>
@@ -167,53 +167,53 @@ export const ChallengeArena: React.FC<ChallengeArenaProps> = ({ onOpenProblemMod
                     sound.playModalOpen();
                     onOpenProblemModal(selectedProblem);
                   }}
-                  className="btn-sheen btn-glow-cyan self-start sm:self-auto py-2.5 px-5 font-display font-bold text-xs tracking-wider text-[#020617] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#00BCF2] hover:opacity-95 transition-all shadow-md flex items-center gap-2 cursor-pointer active:scale-95 shrink-0"
+                  className="btn-glow-cyan self-start sm:self-auto py-3 px-5 rounded-none font-sans font-bold text-xs text-white bg-blue-600 hover:bg-blue-500 transition-all shadow-md flex items-center gap-2 cursor-pointer active:scale-98 shrink-0"
                 >
-                  <span>INSPECT FULL DOSSIER</span>
-                  <ArrowUpRight className="w-4 h-4 text-[#020617]" />
+                  <span>Inspect Full Details</span>
+                  <ArrowUpRight className="w-4 h-4 text-white" />
                 </button>
               </div>
 
-              {/* Problem Statement Overview */}
+              {/* Problem Overview */}
               <div className="mb-8">
-                <span className="text-[11px] font-mono-hud text-[#22D3EE] uppercase tracking-wider block mb-2 font-bold">
-                  MISSION BRIEF & PROBLEM DECONSTRUCTION
+                <span className="text-xs font-sans text-slate-400 uppercase tracking-wider block mb-2 font-bold">
+                  Problem Overview & Challenge Description
                 </span>
-                <p className="text-xs sm:text-sm text-[#F8FAFC] font-sans leading-relaxed font-normal bg-[#071426]/70 p-4 border border-[rgba(0,188,242,0.15)]">
+                <p className="text-sm text-slate-300 font-sans leading-relaxed font-normal bg-slate-950/60 p-5 rounded-none border border-slate-800/80">
                   {selectedProblem.overview}
                 </p>
               </div>
 
-              {/* Two Column Feature & Criteria Grid */}
+              {/* Feature & Criteria Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 
-                {/* Key Deliverables & Features */}
-                <div className="p-5 bg-[#071426] border border-[rgba(0,188,242,0.15)]">
-                  <div className="flex items-center gap-2 text-xs font-mono-hud text-[#22D3EE] uppercase font-bold mb-3 pb-2 border-b border-[rgba(0,188,242,0.12)]">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#00BCF2]" />
-                    <span>KEY DELIVERABLES & FEATURES</span>
+                {/* Key Deliverables */}
+                <div className="p-5 rounded-none bg-slate-950/60 border border-slate-800/80">
+                  <div className="flex items-center gap-2 text-xs font-sans text-blue-400 uppercase font-bold mb-3 pb-2 border-b border-slate-800">
+                    <CheckCircle2 className="w-4 h-4 text-blue-400" />
+                    <span>Key Deliverables & Features</span>
                   </div>
                   <ul className="space-y-2">
                     {selectedProblem.keyFeatures.map((feat, i) => (
-                      <li key={i} className="text-xs text-[#94A3B8] font-sans flex items-start gap-2">
-                        <span className="text-[#00BCF2] font-mono-hud font-bold text-xs">›</span>
-                        <span className="text-[#F8FAFC]">{feat}</span>
+                      <li key={i} className="text-xs text-slate-300 font-sans flex items-start gap-2">
+                        <span className="text-blue-400 font-bold">•</span>
+                        <span>{feat}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
                 {/* Evaluation Focus */}
-                <div className="p-5 bg-[#071426] border border-[rgba(0,188,242,0.15)]">
-                  <div className="flex items-center gap-2 text-xs font-mono-hud text-[#22D3EE] uppercase font-bold mb-3 pb-2 border-b border-[rgba(0,188,242,0.12)]">
-                    <ShieldCheck className="w-3.5 h-3.5 text-[#00BCF2]" />
-                    <span>EVALUATION BENCHMARKS</span>
+                <div className="p-5 rounded-none bg-slate-950/60 border border-slate-800/80">
+                  <div className="flex items-center gap-2 text-xs font-sans text-blue-400 uppercase font-bold mb-3 pb-2 border-b border-slate-800">
+                    <ShieldCheck className="w-4 h-4 text-blue-400" />
+                    <span>Evaluation Benchmarks</span>
                   </div>
                   <ul className="space-y-2">
                     {selectedProblem.evaluationFocus.map((focus, i) => (
-                      <li key={i} className="text-xs text-[#94A3B8] font-sans flex items-start gap-2">
-                        <span className="text-[#00BCF2] font-mono-hud font-bold text-xs">›</span>
-                        <span className="text-[#F8FAFC]">{focus}</span>
+                      <li key={i} className="text-xs text-slate-300 font-sans flex items-start gap-2">
+                        <span className="text-blue-400 font-bold">•</span>
+                        <span>{focus}</span>
                       </li>
                     ))}
                   </ul>
@@ -221,24 +221,24 @@ export const ChallengeArena: React.FC<ChallengeArenaProps> = ({ onOpenProblemMod
 
               </div>
 
-              {/* Recommended Tech Stack Chips */}
-              <div className="pt-4 border-t border-[rgba(0,188,242,0.15)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              {/* Recommended Stack */}
+              <div className="pt-5 border-t border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <span className="text-[10px] font-mono-hud text-[#94A3B8] uppercase block mb-1.5 font-bold">
+                  <span className="text-xs font-sans text-slate-400 block mb-2 font-semibold">
                     RECOMMENDED STACK:
                   </span>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-2">
                     {selectedProblem.techStack.map((tech, i) => (
-                      <span key={i} className="text-[11px] font-mono-hud bg-[#020617] text-[#BAE6FD] px-2.5 py-1 border border-[rgba(0,188,242,0.2)]">
+                      <span key={i} className="text-xs font-sans bg-slate-950 text-slate-300 px-3 py-1 rounded-none border border-slate-800 font-medium">
                         {tech}
                       </span>
                     ))}
                   </div>
                 </div>
 
-                <div className="text-[11px] font-mono-hud text-[#94A3B8] self-start sm:self-auto shrink-0 flex items-center gap-1.5">
+                <div className="text-xs font-sans text-slate-400 self-start sm:self-auto shrink-0 flex items-center gap-2 font-semibold">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span>ELIGIBLE FOR ₹1,00,000 PRIZE POOL</span>
+                  <span>Eligible for ₹1,00,000 Prize Pool</span>
                 </div>
               </div>
 

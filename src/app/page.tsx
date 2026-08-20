@@ -6,18 +6,12 @@ import { Navbar } from '@/components/common/Navbar';
 import { ClickSpark } from '@/components/common/ClickSpark';
 import { LoadingScreen } from '@/components/common/LoadingScreen';
 import { HeroSection } from '@/components/sections/HeroSection';
-import { StatsSection } from '@/components/sections/StatsSection';
 import { ChallengeArena } from '@/components/sections/ChallengeArena';
-import { MicrosoftEcosystemSection } from '@/components/sections/MicrosoftEcosystemSection';
-import { PhasesSection } from '@/components/sections/PhasesSection';
-import { SubmissionSection } from '@/components/sections/SubmissionSection';
-import { JudgingCriteriaSection } from '@/components/sections/JudgingCriteriaSection';
 import { PrizeSection } from '@/components/sections/PrizeSection';
-import { HospitalitySection } from '@/components/sections/HospitalitySection';
+import { GuidelinesSection } from '@/components/sections/GuidelinesSection';
 import { TimelineSection } from '@/components/sections/TimelineSection';
-import { LeadershipSection } from '@/components/sections/LeadershipSection';
-import { MissionCommandSection } from '@/components/sections/MissionCommandSection';
-import { VenueSection } from '@/components/sections/VenueSection';
+import { VenuePerksSection } from '@/components/sections/VenuePerksSection';
+import { OrganizersSection } from '@/components/sections/OrganizersSection';
 import { FAQSection } from '@/components/sections/FAQSection';
 import { FinalLaunchSection } from '@/components/sections/FinalLaunchSection';
 import { Footer } from '@/components/sections/Footer';
@@ -99,20 +93,14 @@ export default function Home() {
             }}
           />
 
-          <StatsSection />
           <ChallengeArena 
             onOpenProblemModal={(prob) => setSelectedProblem(prob)}
           />
-          <MicrosoftEcosystemSection />
-          <PhasesSection />
-          <SubmissionSection />
-          <JudgingCriteriaSection />
           <PrizeSection />
-          <HospitalitySection />
+          <GuidelinesSection />
           <TimelineSection />
-          <LeadershipSection />
-          <MissionCommandSection />
-          <VenueSection />
+          <VenuePerksSection />
+          <OrganizersSection />
           <FAQSection />
           <FinalLaunchSection 
             onOpenRegister={() => setIsRegisterOpen(true)}

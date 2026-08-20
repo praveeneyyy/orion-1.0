@@ -35,37 +35,37 @@ export const FAQSection: React.FC = () => {
         
         {/* Section Header */}
         <ScrollReveal direction="up" delay={50} duration={600} className="text-center max-w-2xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-none bg-[#07193D] border border-[rgba(212,233,255,0.14)] text-xs font-mono-hud text-[#38BDF8] mb-3 shadow-sm">
-            <HelpCircle className="w-3.5 h-3.5" />
-            <span>MISSION DEBRIEF // FREQUENTLY ASKED QUESTIONS</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-sans font-semibold text-blue-400 mb-4 shadow-sm">
+            <HelpCircle className="w-4 h-4 text-blue-400" />
+            <span>Got Questions?</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-black text-white">
-            ORION <span className="text-gradient-frost-azure">INTEL</span>
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-black text-white tracking-tight">
+            Frequently Asked <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Questions</span>
           </h2>
-          <p className="text-xs md:text-sm text-[#BAE6FD] mt-2.5 font-sans leading-relaxed">
-            Essential directives on team eligibility, standardized submission guidelines, Round 2 finalist fee, and offline hospitality.
+          <p className="text-sm md:text-base text-slate-400 mt-3 font-sans leading-relaxed">
+            Everything you need to know about team eligibility, submission rules, finalist fees, and venue hospitality.
           </p>
         </ScrollReveal>
 
         {/* Category Pills */}
-        <ScrollReveal direction="up" delay={100} duration={500} className="flex flex-wrap items-center justify-center gap-2 mb-8">
-          {categories.map((cat) => (
+        <div className="flex flex-wrap justify-center gap-2 mb-10">
+          {categories.map(cat => (
             <button
               key={cat.id}
               onClick={() => {
                 sound.playClick();
-                setCategoryFilter(cat.id as typeof categoryFilter);
+                setCategoryFilter(cat.id as any);
               }}
-              className={`px-3.5 py-1.5 rounded-none text-xs font-mono-hud transition-all cursor-pointer active:scale-95 ${
+              className={`px-4 py-2 rounded-full text-xs font-sans font-semibold transition-all cursor-pointer ${
                 categoryFilter === cat.id
-                  ? 'bg-[#38BDF8] text-[#040E24] font-bold shadow-[0_0_12px_rgba(56,189,248,0.4)]'
-                  : 'bg-[#0B2556] text-[#BAE6FD] hover:text-white border border-[rgba(212,233,255,0.12)] hover:border-[#38BDF8]/40'
+                  ? 'bg-blue-600 text-white shadow-md'
+                  : 'bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white'
               }`}
             >
               {cat.label}
             </button>
           ))}
-        </ScrollReveal>
+        </div>
 
         {/* Accordion List */}
         <div className="space-y-3">

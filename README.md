@@ -51,16 +51,17 @@ flowchart TD
         subgraph CoreUI["React Component Hierarchy"]
             PageEntry["src/app/page.tsx (State Orchestrator)"]
             NavComp["Navbar.tsx + GooeyNav.tsx"]
-            HUDComp["MissionHUD.tsx (Scroll Depth & Millisecond Clock)"]
-            HeroComp["HeroSection.tsx (CountdownTimer + SplitFlapText)"]
-            ArenaComp["ChallengeArena.tsx (4 Tracks & Filters)"]
-            BlueprintComp["SubmissionSection.tsx (Slide Inspector + Download)"]
+            HeroComp["HeroSection.tsx (CountdownTimer + Metric Pills)"]
+            ArenaComp["ChallengeArena.tsx (4 Tracks + Ecosystem Callout)"]
             PrizesComp["PrizeSection.tsx (Podium + Bounties)"]
-            LeadComp["LeadershipSection.tsx + MissionCommandSection.tsx"]
-            VenueComp["VenueSection.tsx (Coordinates & Transit)"]
+            GuidelinesComp["GuidelinesSection.tsx (Phases + Rules + Judging)"]
+            TimelineComp["TimelineSection.tsx (24H Schedule)"]
+            VenueComp["VenuePerksSection.tsx (Radar Globe + Transit + Perks)"]
+            OrganizersComp["OrganizersSection.tsx (Patrons + Convenors + Mentors)"]
+            FAQComp["FAQSection.tsx"]
             FooterComp["Footer.tsx"]
 
-            PageEntry --> NavComp & HUDComp & HeroComp & ArenaComp & BlueprintComp & PrizesComp & LeadComp & VenueComp & FooterComp
+            PageEntry --> NavComp & HeroComp & ArenaComp & PrizesComp & GuidelinesComp & TimelineComp & VenueComp & OrganizersComp & FAQComp & FooterComp
         end
 
         subgraph ModalSystem["Interactive Modals & Ephemeral State"]
@@ -115,25 +116,18 @@ flowchart TD
 * Micro-pitch hover chirps, modal chord transitions, warp-drive swooshes, and celebratory ascending fanfares.
 * Cross-browser touch unlock on mobile devices.
 
-### 4.3 Two-Tier Selection Protocol & Transparent Fees
-1. **Round 1 (Online Qualifier)**: Flat **₹100** registration fee per team regardless of squad size (2 to 6 builders). Closes **September 18, 2026**.
-2. **Round 2 (Offline Grand Finale)**: **₹200** per head confirmation fee for shortlisted **Top 70 finalist squads** for the 24-hour sprint at SIST Chennai, covering:
-   * 2 Breakfasts, 2 Lunches, 1 Grand Dinner & midnight booster snacks.
-   * Free on-campus hostel accommodation for outstation teams.
-   * Official ORION 1.0 Swag Kits (tees, stickers, badges, lanyards).
-   * 24/7 high-speed LAN, air-conditioned computing labs, and uninterrupted power backup.
+### 4.3 Consolidated & Streamlined Content Sections
+1. **Hero Section**: Key event metrics, prize pool pills, countdown timer, and registration CTAs.
+2. **Challenge Arena**: Flagship problem statement inspector with Microsoft Cloud & AI ecosystem highlights.
+3. **Prize Orbit**: ₹1,00,000 cash prizes, track bounties, and 3D trophy interactive view.
+4. **Event Guidelines**: Tabbed view combining Mission Phases, Submission Rules, and Jury Evaluation Criteria.
+5. **Timeline**: 24-hour hackathon trajectory agenda.
+6. **Venue & Perks**: Geospatial radar globe, transit intel, and finalist hospitality amenities (food, hostel, Wi-Fi, swags).
+7. **Organizers & Mentors**: Tabbed directory for Chief Patrons, Academic Convenors, Office Bearers, and Operational Core.
+8. **Intel FAQ**: Accordion FAQ debrief.
+9. **Final Launch & Footer**: Quick-launch registration CTA and mission footer.
 
-### 4.4 Standardized 5-Slide Presentation Blueprint
-All Round 1 entries must strictly follow the mandatory 5-slide blueprint:
-* **Slide 01**: Mission Title, Squad Roster & Problem Track Code.
-* **Slide 02**: Problem Deconstruction, Existing Limitations & Solution Novelty.
-* **Slide 03**: Technical System Architecture, Data Flow & Block Diagrams.
-* **Slide 04**: Implementation Roadmap, Completed Modules & Offline Sprint Plan.
-* **Slide 05**: Real-World Impact, Commercial Feasibility & Threat Model.
-
-*Includes interactive slide-by-slide inspector and one-click template downloader with confetti celebration.*
-
-### 4.5 Squad Registration & Verification Engine
+### 4.4 Squad Registration & Verification Engine
 * **Live Registration Intake**: Validates team roster metadata, assigns a unique mission code (`ORION-XXXX`), updates local state cache, and triggers victory fanfare.
 * **Mission Verification Search**: Search by Team ID, team name, or leader email with sample ID quick-pills (`ORION-9012`, `ORION-8421`, `ORION-6590`) and instant status indicators.
 
@@ -180,14 +174,13 @@ orion-1.0/
 ├── eslint.config.mjs                    # ESLint 9 flat configuration with Core Web Vitals
 ├── public/                              # Static vectors, icons, and SVG assets
 │   ├── favicon.svg                      # Custom constellation mission SVG favicon
-│   ├── file.svg                         # Document icon asset
-│   ├── globe.svg                        # Globe vector icon
+│   ├── logo.png                         # Official ORION 1.0 emblem logo
 │   └── vercel.svg                       # Vercel deployment icon
 └── src/
     ├── app/
     │   ├── globals.css                  # Design tokens, cybernetic utilities, HUD styles
     │   ├── layout.tsx                   # HTML head, metadata, OpenGraph, font preconnects
-    │   └── page.tsx                     # Main client orchestrator, state manager, section assembler
+    │   └── page.tsx                     # Main client orchestrator & 7-section layout assembler
     ├── audio/
     │   └── soundEffects.ts              # Zero-dependency Web Audio API sound synthesizer class
     ├── components/
@@ -200,35 +193,29 @@ orion-1.0/
     │   ├── common/                      # Cybernetic reusable UI components
     │   │   ├── AnimatedCounter.tsx      # Smooth numerical roll counter on scroll
     │   │   ├── ClickSpark.tsx           # HTML5 2D Canvas click particle burst
-    │   │   ├── CountdownTimer.tsx       # Live synchronized countdown to August 28, 2026
+    │   │   ├── CountdownTimer.tsx       # Live synchronized countdown timer
     │   │   ├── ElectricBorder.tsx       # 2D procedural noise-animated glowing border
     │   │   ├── GlassCard.tsx            # Spotlight glassmorphic container with HUD corners
     │   │   ├── GooeyNav.tsx             # Particle navigation tab bar
     │   │   ├── Lightfall.tsx            # OGL WebGL raymarched GLSL warp speed background
     │   │   ├── LoadingScreen.tsx        # High-tech telemetry loading screen
-    │   │   ├── MissionHUD.tsx           # Fixed telemetry overlay with scroll depth & real-time clock
     │   │   ├── Navbar.tsx               # Fixed header with active scroll spy & sound switcher
-    │   │   ├── ScrollReveal.tsx         # IntersectionObserver staggered entrance wrapper
-    │   │   └── SplitFlapText.tsx        # Departure-board character cycler component
+    │   │   └── ScrollReveal.tsx         # IntersectionObserver staggered entrance wrapper
     │   ├── modals/                      # Overlay dialog controllers
     │   │   ├── ChallengeModal.tsx       # Technical dossier viewer for flagship problems
     │   │   ├── RegisterModal.tsx        # Squad registration intake with automated ID generation
     │   │   └── TeamStatusModal.tsx      # Live dossier verification engine
-    │   └── sections/                    # Modular page section implementations
-    │       ├── ChallengeArena.tsx       # Problem statements grid with category filters
-    │       ├── FAQSection.tsx           # Accordion debrief intel with category pills
+    │   └── sections/                    # Consolidated page section implementations
+    │       ├── ChallengeArena.tsx       # Track selector with Microsoft AI/Cloud integration
+    │       ├── FAQSection.tsx           # Accordion debrief intel
     │       ├── FinalLaunchSection.tsx   # Hyperspace warp CTA section with Lightfall shader
-    │       ├── Footer.tsx               # Mission control links, contacts, return-to-top handler
-    │       ├── HeroSection.tsx          # Primary monument headline, 3D switcher, countdown
-    │       ├── HospitalitySection.tsx   # 7-card finalist hospitality and welfare breakdown
-    │       ├── LeadershipSection.tsx    # Chief Patrons, Academic Convenors & Office Bearers
-    │       ├── MissionCommandSection.tsx# Microsoft Club SIST operational core showcase
-    │       ├── PhasesSection.tsx        # Two-tier pricing & selection protocol breakdown
-    │       ├── PrizeSection.tsx         # ₹1,00,000 prize orbit, 3D trophy, track bounties
-    │       ├── StatsSection.tsx         # Key mission metrics in 4-column HUD card layout
-    │       ├── SubmissionSection.tsx    # 5-slide PPT blueprint inspector and downloader
-    │       ├── TimelineSection.tsx      # Trajectory timeline with active/upcoming phase status
-    │       └── VenueSection.tsx         # Campus details, transit options, Google Maps launcher
+    │       ├── Footer.tsx               # Mission control links & copyright
+    │       ├── GuidelinesSection.tsx    # Tabbed view: Phases, Submission Rules, & Judging Criteria
+    │       ├── HeroSection.tsx          # Primary headline, 3D probe switcher, countdown & stats
+    │       ├── OrganizersSection.tsx    # Tabbed view: Patrons, Convenors, Office Bearers & Mentors
+    │       ├── PrizeSection.tsx         # ₹1,00,000 prize orbit & 3D trophy
+    │       ├── TimelineSection.tsx      # 24-hour sprint timeline schedule
+    │       └── VenuePerksSection.tsx    # Geospatial radar globe, transit intel & finalist perks
     ├── data/
     │   └── orionData.ts                 # Problem statements, metrics, FAQ, patrons, stars, teams
     └── types/

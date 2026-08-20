@@ -17,6 +17,7 @@ interface GooeyNavProps {
   timeVariance?: number;
   colors?: number[];
   initialActiveIndex?: number;
+  activeIndex?: number;
   onItemSelect?: (item: GooeyNavItem, index: number) => void;
 }
 
@@ -29,13 +30,16 @@ export const GooeyNav: React.FC<GooeyNavProps> = ({
   timeVariance = 200,
   colors = [1, 2, 3, 4],
   initialActiveIndex = 0,
+  activeIndex,
   onItemSelect
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const navRef = useRef<HTMLUListElement | null>(null);
   const filterRef = useRef<HTMLSpanElement | null>(null);
   const textRef = useRef<HTMLSpanElement | null>(null);
-  const [activeIndex, setActiveIndex] = useState(initialActiveIndex);
+  const [internalActiveIndex, setInternalActiveIndex] = useState(initialActiveIndex);
+
+  const currentActiveIndex = activeIndex !== undefined ? activeIndex : internalActiveIndex;
 
   const noise = (n = 1) => n / 2 - Math.random() * n;
 
@@ -106,18 +110,25 @@ export const GooeyNav: React.FC<GooeyNavProps> = ({
       left: `${pos.x - containerRect.x}px`,
       top: `${pos.y - containerRect.y}px`,
       width: `${pos.width}px`,
-      height: `${pos.height}px`
+      height: `${pos.height}px`,
+      opacity: '1'
     };
     Object.assign(filterRef.current.style, styles);
     Object.assign(textRef.current.style, styles);
     textRef.current.innerText = element.innerText;
   };
 
+  const hideEffect = () => {
+    if (!filterRef.current || !textRef.current) return;
+    filterRef.current.style.opacity = '0';
+    textRef.current.style.opacity = '0';
+  };
+
   const handleClick = (e: React.MouseEvent<HTMLElement> | { currentTarget: HTMLElement }, index: number) => {
     const liEl = e.currentTarget;
-    if (activeIndex === index) return;
+    if (currentActiveIndex === index) return;
 
-    setActiveIndex(index);
+    setInternalActiveIndex(index);
     updateEffectPosition(liEl);
 
     if (onItemSelect && items[index]) {
@@ -153,29 +164,37 @@ export const GooeyNav: React.FC<GooeyNavProps> = ({
 
   useEffect(() => {
     if (!navRef.current || !containerRef.current) return;
-    const activeLi = navRef.current.querySelectorAll('li')[activeIndex];
+
+    if (currentActiveIndex < 0 || currentActiveIndex >= items.length) {
+      hideEffect();
+      return;
+    }
+
+    const activeLi = navRef.current.querySelectorAll('li')[currentActiveIndex];
     if (activeLi) {
       updateEffectPosition(activeLi);
       textRef.current?.classList.add('active');
     }
 
     const resizeObserver = new ResizeObserver(() => {
-      const currentActiveLi = navRef.current?.querySelectorAll('li')[activeIndex];
-      if (currentActiveLi) {
-        updateEffectPosition(currentActiveLi);
+      if (currentActiveIndex >= 0 && currentActiveIndex < items.length) {
+        const currentActiveLi = navRef.current?.querySelectorAll('li')[currentActiveIndex];
+        if (currentActiveLi) {
+          updateEffectPosition(currentActiveLi);
+        }
       }
     });
 
     resizeObserver.observe(containerRef.current);
     return () => resizeObserver.disconnect();
-  }, [activeIndex]);
+  }, [currentActiveIndex, items.length]);
 
   return (
     <div className="gooey-nav-container" ref={containerRef}>
       <nav>
         <ul ref={navRef}>
           {items.map((item, index) => (
-            <li key={index} className={activeIndex === index ? 'active' : ''}>
+            <li key={index} className={currentActiveIndex === index ? 'active' : ''}>
               <a 
                 href={item.href} 
                 onClick={e => {
@@ -185,7 +204,8 @@ export const GooeyNav: React.FC<GooeyNavProps> = ({
                     e.preventDefault();
                     const targetEl = document.querySelector(item.href);
                     if (targetEl) {
-                      targetEl.scrollIntoView({ behavior: 'smooth' });
+                      const offsetTop = targetEl.getBoundingClientRect().top + window.scrollY - 80;
+                      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
                     }
                   }
                 }} 

@@ -44,34 +44,34 @@ export const CountdownTimer: React.FC = () => {
   ];
 
   return (
-    <div className="w-full bg-[#07193D]/95 border border-[rgba(212,233,255,0.16)] p-3.5 sm:p-6 rounded-none shadow-2xl relative">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 mb-4 border-b border-[rgba(212,233,255,0.12)]">
+    <div className="w-full bg-[#0B1220]/75 backdrop-blur-2xl border border-white/15 border-t-white/30 p-3.5 sm:p-6 rounded-none shadow-2xl relative">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 mb-4 border-b border-white/10">
         <div className="flex items-center gap-2">
-          <Clock className="w-3.5 h-3.5 text-[#38BDF8]" />
-          <span className="text-xs font-mono-hud text-[#F8FAFC] font-bold uppercase tracking-wider">
+          <Clock className="w-4 h-4 text-[#00BCF2]" />
+          <span className="text-xs font-sans text-[#F8FAFC] font-bold uppercase tracking-wider">
             ROUND 1 LAUNCH WINDOW COUNTDOWN
           </span>
         </div>
-        <div className="inline-flex items-center gap-1.5 text-[9px] sm:text-[10px] font-mono-hud text-[#22D3EE] bg-[#020617] px-2.5 py-1 border border-[#00BCF2]/40 rounded-none font-semibold self-start sm:self-auto">
+        <div className="inline-flex items-center gap-1.5 text-[9px] sm:text-[10px] font-sans text-[#22D3EE] bg-[#071426]/90 px-2.5 py-1 border border-[#00BCF2]/40 rounded-none font-semibold self-start sm:self-auto backdrop-blur-xl">
           <ShieldAlert className="w-3 h-3 text-[#22D3EE]" />
-          <span>ROUND 1 ONLINE CLOSES: {EVENT_METRICS.deadlineDate.toUpperCase()}</span>
+          <span>ROUND 1 CLOSES: {EVENT_METRICS.deadlineDate.toUpperCase()}</span>
         </div>
       </div>
 
       <div className="grid grid-cols-4 gap-1.5 sm:gap-4 text-center">
         {timeUnits.map((unit, idx) => (
-          <div key={idx} className="flex flex-col items-center bg-[#020617] border border-[rgba(0,188,242,0.15)] p-2 sm:p-3.5 rounded-none">
-            <div className="text-xl sm:text-4xl md:text-5xl font-mono-hud font-black text-white tracking-tight tabular-nums">
+          <div key={idx} className="flex flex-col items-center bg-[#071426]/80 backdrop-blur-xl border border-white/10 p-2.5 sm:p-4 rounded-none">
+            <div className="text-xl sm:text-4xl md:text-5xl font-display font-black text-white tracking-tight tabular-nums">
               {isClient ? String(unit.value).padStart(2, '0') : '00'}
             </div>
-            <span className="text-[8px] sm:text-[10px] font-mono-hud text-[#22D3EE] tracking-widest mt-1 font-semibold">
+            <span className="text-[8px] sm:text-[10px] font-sans text-[#22D3EE] tracking-widest mt-1 font-semibold">
               {unit.label}
             </span>
           </div>
         ))}
       </div>
 
-      <div className="mt-3 flex flex-col sm:flex-row items-center justify-between text-[9px] sm:text-[10px] font-mono-hud text-[#94A3B8] pt-2 border-t border-[rgba(0,188,242,0.1)] gap-1">
+      <div className="mt-3 flex flex-col sm:flex-row items-center justify-between text-[9px] sm:text-[10px] font-sans text-[#94A3B8] pt-2 border-t border-white/10 gap-1">
         <span>ONLINE QUALIFIER DEADLINE: SEP 08, 2026 (23:59 IST)</span>
         <span className="text-[#22D3EE] font-bold">24H OFFLINE FINALE: SEP 18, 2026 @ SIST CHENNAI</span>
       </div>

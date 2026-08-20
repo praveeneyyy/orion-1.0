@@ -2,24 +2,19 @@
 
 import React from 'react';
 import { 
-  Compass, 
   ArrowUp, 
   MapPin, 
-  Mail, 
-  Terminal, 
-  Sparkles,
-  ShieldAlert
+  Mail
 } from 'lucide-react';
 import { ScrollReveal } from '../common/ScrollReveal';
-import { EVENT_METRICS } from '../../data/orionData';
 import { sound } from '../../audio/soundEffects';
 
 interface FooterProps {
   onOpenRegister: () => void;
-  onOpenStatus: () => void;
+  onOpenStatus?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenRegister, onOpenStatus }) => {
+export const Footer: React.FC<FooterProps> = ({ onOpenRegister }) => {
   const scrollToTop = () => {
     sound.playHover();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -74,10 +69,10 @@ export const Footer: React.FC<FooterProps> = ({ onOpenRegister, onOpenStatus }) 
               <ul className="space-y-2 text-xs font-sans text-[#BAE6FD]">
                 <li><a href="#challenges" className="hover:text-[#38BDF8] transition-colors">Challenge Arena (04 Tracks)</a></li>
                 <li><a href="#prizes" className="hover:text-[#38BDF8] transition-colors">₹1,00,000 Prize Pool & Bounties</a></li>
-                <li><a href="#phases" className="hover:text-[#38BDF8] transition-colors">Two-Tier Selection Protocol</a></li>
-                <li><a href="#blueprint" className="hover:text-[#38BDF8] transition-colors">PPT Submission Blueprint</a></li>
-                <li><a href="#hospitality" className="hover:text-[#38BDF8] transition-colors">Finalist Accommodation & Meals</a></li>
-                <li><a href="#leadership" className="hover:text-[#38BDF8] transition-colors">Honorary Patrons & Leadership</a></li>
+                <li><a href="#guidelines" className="hover:text-[#38BDF8] transition-colors">Two-Tier Selection Protocol</a></li>
+                <li><a href="#timeline" className="hover:text-[#38BDF8] transition-colors">Event Timeline & Milestones</a></li>
+                <li><a href="#venue" className="hover:text-[#38BDF8] transition-colors">Finalist Accommodation & Venue</a></li>
+                <li><a href="#organizers" className="hover:text-[#38BDF8] transition-colors">Honorary Patrons & Leadership</a></li>
               </ul>
             </div>
 
@@ -92,21 +87,10 @@ export const Footer: React.FC<FooterProps> = ({ onOpenRegister, onOpenStatus }) 
                     sound.playLaunchWarp();
                     onOpenRegister();
                   }}
-                  className="btn-sheen w-full py-2.5 px-3 rounded-none bg-[#0B2556] hover:bg-[#103374] border border-[#38BDF8]/40 text-xs font-mono-hud text-[#38BDF8] hover:text-white transition-all text-left flex items-center justify-between cursor-pointer active:scale-95 shadow-sm"
+                  className="btn-sheen w-full py-3 px-4 rounded-none bg-[#0B2556] hover:bg-[#103374] border border-[#38BDF8]/40 text-xs font-mono-hud text-[#38BDF8] hover:text-white transition-all text-left flex items-center justify-between cursor-pointer active:scale-95 shadow-sm font-bold"
                 >
-                  <span>ROUND 1 REGISTRATION</span>
-                  <span className="text-[10px] bg-[#38BDF8] text-[#040E24] px-1.5 py-0.2 font-bold shadow-sm">₹100</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    sound.playClick();
-                    onOpenStatus();
-                  }}
-                  className="w-full py-2.5 px-3 rounded-none bg-[#07193D] hover:bg-[#0B2556] hover:border-[#38BDF8]/40 border border-[rgba(212,233,255,0.12)] text-xs font-mono-hud text-[#BAE6FD] hover:text-white transition-all text-left flex items-center justify-between cursor-pointer active:scale-95"
-                >
-                  <span>VERIFY SQUAD DOSSIER</span>
-                  <span className="text-[10px] text-[#7DD3FC]">LOOKUP</span>
+                  <span>REGISTER TEAM</span>
+                  <span className="text-[10px] bg-[#38BDF8] text-[#040E24] px-2 py-0.5 font-bold shadow-sm">₹100</span>
                 </button>
               </div>
             </div>
@@ -136,7 +120,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenRegister, onOpenStatus }) 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-[rgba(212,233,255,0.1)] flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] font-mono-hud text-[#7DD3FC]">
           <div>
-            © 2026 ORION 1.0 • Microsoft Club SIST. All aerospace rights reserved.
+            © 2026 ORION 1.0 • Microsoft Club SIST. All rights reserved.
           </div>
 
           <div className="flex items-center gap-4">

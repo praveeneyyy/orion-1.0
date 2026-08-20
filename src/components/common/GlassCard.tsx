@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState, useCallback } from 'react';
+import React from 'react';
 
 interface GlassCardProps {
   children: React.ReactNode;
@@ -14,66 +14,23 @@ interface GlassCardProps {
 export const GlassCard: React.FC<GlassCardProps> = ({
   children,
   className = '',
-  glowColor = 'cyan',
-  withHudCorners = false,
   onClick,
   style = {}
 }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
-
-  const glowColorMap = {
-    cyan: 'rgba(56, 189, 248, 0.25)',
-    violet: 'rgba(96, 165, 250, 0.25)',
-    emerald: 'rgba(52, 211, 153, 0.22)',
-    amber: 'rgba(56, 189, 248, 0.25)'
-  };
-
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    setMousePos({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    });
-  }, []);
-
   return (
     <div
-      ref={cardRef}
       onClick={onClick}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onMouseMove={handleMouseMove}
       style={style}
       className={`
-        relative overflow-hidden transition-all duration-300
-        bg-[#07193D]/90 backdrop-blur-xl border border-[rgba(212,233,255,0.14)] rounded-none
-        hover:border-[#38BDF8]/60 hover:bg-[#0B2556]/95
-        ${withHudCorners ? 'hud-corner' : ''}
+        relative overflow-hidden transition-all duration-300 ease-out
+        bg-[#0B1220]/65 backdrop-blur-2xl border border-white/10 border-t-white/25
+        rounded-none hover:border-[#00BCF2]/60 hover:bg-[#071426]/85 shadow-2xl hover:shadow-[0_20px_48px_rgba(0,188,242,0.25)]
+        hover:-translate-y-1
         ${className}
       `}
     >
-      {/* High-tech top edge accent line */}
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#38BDF8]/40 to-transparent opacity-50 group-hover:opacity-100 transition-opacity pointer-events-none" />
-
-      {/* Cybernetic Micro Crosshairs */}
-      {withHudCorners && (
-        <>
-          <span className="absolute top-1.5 right-1.5 font-mono-hud text-[7px] text-[#38BDF8]/40 select-none pointer-events-none">+</span>
-          <span className="absolute bottom-1.5 left-1.5 font-mono-hud text-[7px] text-[#38BDF8]/40 select-none pointer-events-none">+</span>
-        </>
-      )}
-
-      {/* Dynamic mouse spotlight */}
-      <div
-        className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-200"
-        style={{
-          opacity: isHovered ? 1 : 0,
-          background: `radial-gradient(400px circle at ${mousePos.x}px ${mousePos.y}px, ${glowColorMap[glowColor]}, transparent 70%)`,
-        }}
-      />
+      {/* Top Specular Glass Highlight Line */}
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-80 transition-opacity pointer-events-none" />
 
       {/* Card Content */}
       <div className="relative z-10">

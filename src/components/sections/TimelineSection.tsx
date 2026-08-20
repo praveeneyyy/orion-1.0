@@ -2,15 +2,10 @@
 
 import React from 'react';
 import { 
-  Calendar, 
   Clock, 
-  Rocket, 
-  CheckCircle2, 
-  AlertCircle, 
-  Flag,
   Sparkles,
   MapPin,
-  Radio
+  CheckCircle2
 } from 'lucide-react';
 import { GlassCard } from '../common/GlassCard';
 import { ScrollReveal } from '../common/ScrollReveal';
@@ -23,15 +18,15 @@ export const TimelineSection: React.FC = () => {
         
         {/* Section Header */}
         <ScrollReveal direction="up" delay={50} duration={600} className="text-center max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-none bg-[#07193D] border border-[#38BDF8]/40 text-xs font-mono-hud text-[#38BDF8] mb-3 shadow-[0_0_15px_rgba(56,189,248,0.2)]">
-            <Clock className="w-3.5 h-3.5" />
-            <span>MISSION SCHEDULE // FLIGHT TRAJECTORY VECTOR</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-none bg-blue-500/10 border border-blue-500/20 text-xs font-sans font-semibold text-blue-400 mb-4 shadow-sm">
+            <Clock className="w-4 h-4 text-blue-400" />
+            <span>Hackathon Schedule & Milestones</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-black text-white">
-            TRAJECTORY <span className="text-gradient-frost-azure">TIMELINE</span>
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-black text-white tracking-tight">
+            Event <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Timeline</span>
           </h2>
-          <p className="text-xs md:text-sm text-[#BAE6FD] mt-2.5 font-sans leading-relaxed">
-            Key operational milestones from squad intake to the offline grand finale at SIST Chennai.
+          <p className="text-sm md:text-base text-slate-400 mt-3 font-sans leading-relaxed">
+            Key milestones from online registration to the 24-hour offline grand finale at SIST Chennai.
           </p>
         </ScrollReveal>
 
@@ -39,7 +34,7 @@ export const TimelineSection: React.FC = () => {
         <div className="max-w-4xl mx-auto relative text-left">
           
           {/* Vertical Trajectory Line */}
-          <div className="absolute left-4 sm:left-1/2 top-4 bottom-4 w-0.5 bg-gradient-to-b from-[#38BDF8] via-[#0284C7] to-[#103374] -translate-x-1/2 hidden sm:block shadow-[0_0_8px_rgba(56,189,248,0.4)]" />
+          <div className="absolute left-4 sm:left-1/2 top-4 bottom-4 w-0.5 bg-gradient-to-b from-[#00BCF2] via-[#0078D4] to-[#071426] -translate-x-1/2 hidden sm:block shadow-[0_0_12px_rgba(0,188,242,0.4)]" />
 
           <div className="space-y-8 relative">
             {TIMELINE_PHASES.map((item, idx) => {
@@ -61,24 +56,22 @@ export const TimelineSection: React.FC = () => {
                   <div className="w-full sm:w-[calc(50%-2rem)]">
                     <GlassCard
                       glowColor={isCurrent ? 'cyan' : 'violet'}
-                      className={`p-6 border bg-[#07193D]/90 rounded-none transition-all duration-300 hover:-translate-y-1 ${
+                      className={`p-6 border bg-[#0B1220]/90 rounded-none transition-all duration-300 hover:-translate-y-1 ${
                         isCurrent 
-                          ? 'border-[#38BDF8] shadow-[0_0_30px_rgba(56,189,248,0.25)]' 
-                          : 'border-[rgba(212,233,255,0.14)] hover:border-[#38BDF8]/40 shadow-xl'
+                          ? 'border-[#00BCF2] shadow-[0_0_30px_rgba(0,188,242,0.25)]' 
+                          : 'border-[rgba(0,188,242,0.18)] hover:border-[#00BCF2]/50 shadow-xl'
                       }`}
-                      withHudCorners={true}
                     >
-                      <div className="flex items-center justify-between pb-3 mb-3 border-b border-[rgba(212,233,255,0.1)]">
+                      <div className="flex items-center justify-between pb-3 mb-3 border-b border-[rgba(0,188,242,0.12)]">
                         <div className="flex items-center gap-1.5">
-                          <span className="text-xs font-mono-hud text-[#38BDF8] font-bold">
+                          <span className="text-xs font-sans text-[#00BCF2] font-bold">
                             PHASE {item.number}
                           </span>
-                          <span className="text-[8px] font-mono-hud text-[#7DD3FC]">[WAYPOINT]</span>
                         </div>
-                        <span className={`text-[10px] font-mono-hud px-2.5 py-0.5 rounded-none font-bold ${
+                        <span className={`text-[10px] font-sans px-2.5 py-0.5 rounded-none font-bold ${
                           isCurrent
-                            ? 'bg-[#38BDF8] text-[#040E24] shadow-[0_0_10px_rgba(56,189,248,0.5)]'
-                            : 'bg-[#0B2556] text-[#7DD3FC] border border-[rgba(212,233,255,0.1)]'
+                            ? 'bg-[#00BCF2] text-[#020617] shadow-[0_0_10px_rgba(0,188,242,0.5)]'
+                            : 'bg-[#071426] text-[#22D3EE] border border-[rgba(0,188,242,0.2)]'
                         }`}>
                           {item.date}
                         </span>
@@ -87,15 +80,14 @@ export const TimelineSection: React.FC = () => {
                       <h3 className="text-base sm:text-lg font-display font-bold text-white mb-1">
                         {item.title}
                       </h3>
-                      <div className="text-xs font-mono-hud text-[#38BDF8] mb-3 flex items-center gap-1">
-                        <span>//</span>
+                      <div className="text-xs font-sans text-[#00BCF2] mb-3 font-semibold">
                         <span>{item.subtitle}</span>
                       </div>
 
                       <ul className="space-y-1.5 text-xs text-[#BAE6FD] font-sans">
                         {item.highlights.map((h, hIdx) => (
                           <li key={hIdx} className="flex items-start gap-1.5">
-                            <span className="text-[#38BDF8] font-mono-hud text-xs">›</span>
+                            <span className="text-[#00BCF2] font-bold">›</span>
                             <span>{h}</span>
                           </li>
                         ))}
@@ -104,11 +96,11 @@ export const TimelineSection: React.FC = () => {
                   </div>
 
                   {/* Central Node Badge */}
-                  <div className="z-20 shrink-0 w-8 h-8 rounded-none bg-[#07193D] border border-[#38BDF8] flex items-center justify-center text-[#38BDF8] shadow-[0_0_15px_rgba(56,189,248,0.4)] hidden sm:flex">
+                  <div className="z-20 shrink-0 w-8 h-8 rounded-none bg-[#071426] border border-[#00BCF2] flex items-center justify-center text-[#00BCF2] shadow-[0_0_15px_rgba(0,188,242,0.5)] hidden sm:flex">
                     {isCurrent ? (
-                      <span className="w-2.5 h-2.5 bg-[#38BDF8] animate-ping" />
+                      <span className="w-2.5 h-2.5 bg-[#00BCF2] animate-ping" />
                     ) : (
-                      <span className="w-2 h-2 bg-[#38BDF8]" />
+                      <span className="w-2 h-2 bg-[#00BCF2]" />
                     )}
                   </div>
 
