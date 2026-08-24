@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { Navbar } from '@/components/common/Navbar';
 import { ClickSpark } from '@/components/common/ClickSpark';
-import { LoadingScreen } from '@/components/common/LoadingScreen';
 import { HeroSection } from '@/components/sections/HeroSection';
 import { ChallengeArena } from '@/components/sections/ChallengeArena';
 import { PrizeSection } from '@/components/sections/PrizeSection';
@@ -28,8 +27,6 @@ const SpaceBackground = dynamic(
 );
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState(true);
-
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isStatusOpen, setIsStatusOpen] = useState(false);
   const [selectedProblem, setSelectedProblem] = useState<ProblemStatement | null>(null);
@@ -72,11 +69,6 @@ export default function Home() {
     <ClickSpark sparkColor="#00BCF2" sparkSize={14} sparkRadius={26} sparkCount={10} duration={420}>
       <div className="relative min-h-screen bg-[#020617] text-slate-100 selection:bg-[#00BCF2]/30 selection:text-[#BAE6FD]">
         
-        {/* Animated Aerospace Loading Screen */}
-        {isLoading && (
-          <LoadingScreen onComplete={() => setIsLoading(false)} />
-        )}
-
         <SpaceBackground />
 
         <Navbar 
@@ -99,9 +91,9 @@ export default function Home() {
           <PrizeSection />
           <GuidelinesSection />
           <TimelineSection />
-          <VenuePerksSection />
           <OrganizersSection />
           <FAQSection />
+          <VenuePerksSection />
           <FinalLaunchSection 
             onOpenRegister={() => setIsRegisterOpen(true)}
             onOpenStatus={() => setIsStatusOpen(true)}
@@ -117,6 +109,7 @@ export default function Home() {
           isOpen={isRegisterOpen}
           onClose={() => setIsRegisterOpen(false)}
           onSuccessRegister={handleRegisterSuccess}
+          totalTeamsCount={teams.length + 140}
         />
 
         <TeamStatusModal 

@@ -25,7 +25,7 @@ export interface PatronProfile {
   name: string;
   title: string;
   organization: string;
-  roleType: 'Chief Patron' | 'Convenor' | 'Club Lead';
+  roleType: 'Chief Patron' | 'Academic Patron' | 'Convenor' | 'Club Lead' | 'Event Organizer';
   initials: string;
   avatarColor: string;
   bio?: string;
@@ -39,6 +39,8 @@ export interface OfficeBearer {
   initials: string;
   organization: string;
 }
+
+export type EventOrganizer = OfficeBearer;
 
 export interface TimelinePhase {
   number: string;
@@ -57,8 +59,61 @@ export interface RegisteredTeam {
   institution: string;
   track: string;
   membersCount: number;
-  status: 'Round 1 Pending Review' | 'Qualified - Top 70 Finalist' | 'Confirmed Finalist';
+  status: string;
   registrationDate: string;
+  members?: TeamMember[];
+  paymentStatus?: 'PENDING' | 'SUCCESS' | 'FAILED' | 'REFUNDED';
+  paymentId?: string;
+  orderId?: string;
+}
+
+export interface TeamMember {
+  id?: string;
+  team_id?: string;
+  member_number: number;
+  member_name: string;
+  member_phone: string;
+}
+
+export interface TeamRecord {
+  id: string;
+  registration_id: string;
+  team_name: string;
+  leader_name: string;
+  leader_phone: string;
+  leader_email: string;
+  institution: string;
+  problem_statement: string;
+  payment_status: 'PENDING' | 'SUCCESS' | 'FAILED' | 'REFUNDED';
+  payment_id?: string | null;
+  order_id?: string | null;
+  amount: number;
+  registration_status: 'REGISTERED' | 'PENDING' | 'REJECTED';
+  created_at: string;
+  members?: TeamMember[];
+}
+
+export interface TeamRegistrationPayload {
+  teamName: string;
+  leaderName: string;
+  leaderPhone: string;
+  leaderEmail: string;
+  institution: string;
+  problemStatement: string;
+  members: { name: string; phone: string }[];
+  declarations: {
+    accurateInfo: boolean;
+    membersBelong: boolean;
+    rulesAgreed: boolean;
+    feeUnderstood: boolean;
+    qualifierUnderstood: boolean;
+  };
+}
+
+export interface PaymentVerificationPayload {
+  orderId: string;
+  paymentId: string;
+  signature: string;
 }
 
 export interface StarNodeData {

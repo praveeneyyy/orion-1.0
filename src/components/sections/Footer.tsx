@@ -30,12 +30,12 @@ export const Footer: React.FC<FooterProps> = ({ onOpenRegister }) => {
             {/* Col 1: Brand & Organizer */}
             <div>
               <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-9 h-9 p-0.5 bg-[#0B2556] border border-[#38BDF8]/40 flex items-center justify-center shadow-sm">
+                <div className="w-10 h-10 flex items-center justify-center shrink-0">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img 
                     src="/logo.png" 
                     alt="ORION 1.0" 
-                    className="w-full h-full object-contain filter drop-shadow-[0_0_6px_rgba(56,189,248,0.7)]" 
+                    className="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(56,189,248,0.7)]" 
                   />
                 </div>
                 <div>

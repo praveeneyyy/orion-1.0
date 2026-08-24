@@ -12,6 +12,9 @@ import {
   Moon, 
   Shirt, 
   Wifi, 
+  Zap,
+  Home,
+  Flame,
   ShieldCheck, 
   CheckCircle2 
 } from 'lucide-react';
@@ -27,6 +30,9 @@ export const VenuePerksSection: React.FC = () => {
     Moon,
     Shirt,
     Wifi,
+    Zap,
+    Home,
+    Flame,
     ShieldCheck
   };
 
@@ -35,10 +41,10 @@ export const VenuePerksSection: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         
         {/* Section Header */}
-        <ScrollReveal direction="up" delay={50} duration={600} className="text-center max-w-2xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-sans font-semibold text-blue-400 mb-4 shadow-sm">
-            <MapPin className="w-4 h-4 text-blue-400" />
-            <span>Venue Location & Finalist Perks</span>
+        <ScrollReveal direction="up" delay={50} duration={600} className="text-center max-w-2xl mx-auto mb-14 select-none">
+          <div className="inline-flex items-center gap-2.5 px-4 py-1 bg-gradient-to-r from-transparent via-[#00BCF2]/10 to-transparent border-y border-[#00BCF2]/25 text-xs font-mono font-bold tracking-[0.18em] text-[#BAE6FD] uppercase mb-4 shadow-sm">
+            <MapPin className="w-3.5 h-3.5 text-[#00BCF2]" />
+            <span>VENUE INTEL // CAMPUS & HOSPITALITY</span>
           </div>
           <h2 className="text-3xl sm:text-5xl font-display font-black text-white tracking-tight">
             Venue & <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Hospitality</span>

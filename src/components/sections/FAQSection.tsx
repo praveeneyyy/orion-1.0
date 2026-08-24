@@ -34,10 +34,10 @@ export const FAQSection: React.FC = () => {
       <div className="max-w-4xl mx-auto text-left">
         
         {/* Section Header */}
-        <ScrollReveal direction="up" delay={50} duration={600} className="text-center max-w-2xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-sans font-semibold text-blue-400 mb-4 shadow-sm">
-            <HelpCircle className="w-4 h-4 text-blue-400" />
-            <span>Got Questions?</span>
+        <ScrollReveal direction="up" delay={50} duration={600} className="text-center max-w-2xl mx-auto mb-12 select-none">
+          <div className="inline-flex items-center gap-2.5 px-4 py-1 bg-gradient-to-r from-transparent via-[#00BCF2]/10 to-transparent border-y border-[#00BCF2]/25 text-xs font-mono font-bold tracking-[0.18em] text-[#BAE6FD] uppercase mb-4 shadow-sm">
+            <HelpCircle className="w-3.5 h-3.5 text-[#00BCF2]" />
+            <span>KNOWLEDGE BASE // FREQUENTLY ASKED QUESTIONS</span>
           </div>
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-black text-white tracking-tight">
             Frequently Asked <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Questions</span>

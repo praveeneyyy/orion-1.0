@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   publisher: 'Sathyabama Institute of Science and Technology',
   icons: {
     icon: '/icon.png',
-    apple: '/apple-icon.png',
+    apple: '/icon.png',
   },
   openGraph: {
     title: 'ORION 1.0 — IGNITE THE GENESIS OF INNOVATION',

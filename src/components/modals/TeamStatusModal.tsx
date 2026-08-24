@@ -29,32 +29,55 @@ export const TeamStatusModal: React.FC<TeamStatusModalProps> = ({ isOpen, onClos
   const [query, setQuery] = useState('');
   const [result, setResult] = useState<RegisteredTeam | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    sound.playClick();
-    const cleanQuery = query.trim().toLowerCase();
-    
+  const performLookup = async (searchStr: string) => {
+    const cleanQuery = searchStr.trim();
+    if (!cleanQuery) return;
+
+    setIsSearching(true);
+    setHasSearched(false);
+
+    try {
+      const response = await fetch(`/api/status?q=${encodeURIComponent(cleanQuery)}`);
+      if (response.ok) {
+        const json = await response.json();
+        if (json.found && json.data) {
+          setResult(json.data);
+          setHasSearched(true);
+          return;
+        }
+      }
+    } catch {
+      // Fallback to in-memory/passed teams array if API fails
+    }
+
+    // Local fallback check
+    const lower = cleanQuery.toLowerCase();
     const found = teams.find(
       (t) =>
-        t.teamId.toLowerCase() === cleanQuery ||
-        t.teamName.toLowerCase().includes(cleanQuery) ||
-        t.leaderEmail.toLowerCase() === cleanQuery
+        t.teamId.toLowerCase() === lower ||
+        t.teamName.toLowerCase().includes(lower) ||
+        t.leaderEmail.toLowerCase() === lower
     );
 
     setResult(found || null);
     setHasSearched(true);
+    setIsSearching(false);
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    sound.playClick();
+    performLookup(query);
   };
 
   const handleSampleClick = (sampleId: string) => {
     sound.playHover();
     setQuery(sampleId);
-    const cleanQuery = sampleId.trim().toLowerCase();
-    const found = teams.find(t => t.teamId.toLowerCase() === cleanQuery);
-    setResult(found || null);
-    setHasSearched(true);
+    performLookup(sampleId);
   };
 
   return (

@@ -264,12 +264,6 @@ export const HOSPITALITY_SYSTEMS = [
     detail: "Full multi-cuisine meals provided inside the air-conditioned campus arena."
   },
   {
-    icon: "Moon",
-    title: "1 GRAND DINNER",
-    subtitle: "Plus midnight energy packs",
-    detail: "Hot dinner served along with midnight caffeine, snacks, and booster kits."
-  },
-  {
     icon: "Shirt",
     title: "OFFICIAL SWAG KIT",
     subtitle: "Tees, stickers & badges",
@@ -340,7 +334,7 @@ export const TIMELINE_PHASES: TimelinePhase[] = [
     status: "upcoming",
     highlights: [
       "₹200 per head finalist confirmation fee",
-      "Locks in 2 Breakfasts, 2 Lunches, 1 Dinner, Swag Kits & Arena access",
+      "Locks in 2 Breakfasts, 2 Lunches, Swag Kits & Arena access",
       "Free campus hostel accommodation booking for outstation teams"
     ]
   },
@@ -539,7 +533,7 @@ export const FAQ_DATA: FAQItem[] = [
   {
     category: "Finale & Logistics",
     question: "What about meals, accommodation, and travel logistics?",
-    answer: "All confirmed finalist teams receive 2 Breakfasts, 2 Lunches, 1 Dinner, and midnight booster packs. Free hostel accommodation on the Sathyabama campus is provided for teams traveling from outside Chennai. Participants manage their own travel to Chennai."
+    answer: "All confirmed finalist teams receive 2 Breakfasts, 2 Lunches, and midnight booster packs. Free hostel accommodation on the Sathyabama campus is provided for teams traveling from outside Chennai. Participants manage their own travel to Chennai."
   }
 ];
 
@@ -586,12 +580,12 @@ export const CHIEF_PATRONS: PatronProfile[] = [
   }
 ];
 
-export const CONVENORS: PatronProfile[] = [
+export const ACADEMIC_PATRONS: PatronProfile[] = [
   {
     name: "Dr. L. Lakshmanan",
     title: "Dean",
     organization: "School of Computing, SIST",
-    roleType: "Convenor",
+    roleType: "Academic Patron",
     initials: "LL",
     avatarColor: "from-blue-600 to-cyan-800",
     bio: "Visionary academic leader driving cutting-edge computing initiatives and student research excellence."
@@ -600,7 +594,7 @@ export const CONVENORS: PatronProfile[] = [
     name: "Dr. P. Ajitha",
     title: "Head of Department",
     organization: "CSE - AI, BCT, CS, CSBS, IoT",
-    roleType: "Convenor",
+    roleType: "Academic Patron",
     initials: "PA",
     avatarColor: "from-indigo-600 to-purple-800",
     bio: "Pioneering curriculum innovation across emerging computing domains and hackathon ecosystems."
@@ -609,12 +603,14 @@ export const CONVENORS: PatronProfile[] = [
     name: "Dr. Senduru Srinivasulu",
     title: "Head of Department",
     organization: "CSE - AIML, DS, AIR",
-    roleType: "Convenor",
+    roleType: "Academic Patron",
     initials: "SS",
     avatarColor: "from-violet-600 to-blue-900",
     bio: "Leading advanced research in Artificial Intelligence, Machine Learning, Data Science, and Robotics."
   }
 ];
+
+export const CONVENORS: PatronProfile[] = ACADEMIC_PATRONS;
 
 export const CLUB_LEADERSHIP: PatronProfile[] = [
   {
@@ -646,7 +642,7 @@ export const CLUB_LEADERSHIP: PatronProfile[] = [
   }
 ];
 
-export const MICROSOFT_OFFICE_BEARERS: OfficeBearer[] = [
+export const EVENT_ORGANIZERS: OfficeBearer[] = [
   {
     name: "Nihitha Juliet A",
     title: "President",
@@ -672,6 +668,8 @@ export const MICROSOFT_OFFICE_BEARERS: OfficeBearer[] = [
     organization: "Microsoft Club SIST"
   }
 ];
+
+export const MICROSOFT_OFFICE_BEARERS: OfficeBearer[] = EVENT_ORGANIZERS;
 
 export const INITIAL_REGISTERED_TEAMS: RegisteredTeam[] = [
   {
