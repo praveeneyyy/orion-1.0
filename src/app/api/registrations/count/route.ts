@@ -20,20 +20,18 @@ export async function GET() {
         .select('*', { count: 'exact', head: true });
 
       if (!paidErr && !totalErr && paidCount !== null && totalCount !== null) {
-        // Add baseline national demo squad offset for display if freshly initialized
-        const baseOffset = 180;
         return NextResponse.json({
-          registeredTeams: totalCount + baseOffset,
-          paymentConfirmed: paidCount + baseOffset
+          registeredTeams: totalCount,
+          paymentConfirmed: paidCount
         });
       }
     }
 
-    // Default fallback baseline count when database is in local mode
-    const baseline = INITIAL_REGISTERED_TEAMS.length + 180;
+    // Default fallback count when database has no records or in local mode
+    const paidFallback = INITIAL_REGISTERED_TEAMS.length;
     return NextResponse.json({
-      registeredTeams: baseline + 14,
-      paymentConfirmed: baseline
+      registeredTeams: paidFallback,
+      paymentConfirmed: paidFallback
     });
 
   } catch (err: unknown) {

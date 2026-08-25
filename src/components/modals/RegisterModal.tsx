@@ -45,7 +45,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
   isOpen, 
   onClose, 
   onSuccessRegister,
-  totalTeamsCount = 231,
+  totalTeamsCount = 0,
   initialProblemStatement
 }) => {
   // Step state (1: Info, 2: Members, 3: Declarations, 4: Review, 5: Payment, 6: Confirmed)
@@ -979,7 +979,7 @@ NEXT STEPS:
                   <div className="text-[9px] font-mono-hud text-[#7DD3FC]">CONFIRMED REGISTERED SQUAD #</div>
                   <div className="text-xl font-mono-hud font-black text-white flex items-center gap-1">
                     <span className="text-[#00BCF2]">#</span>
-                    <CountUp to={totalTeamsCount + 1} from={Math.max(1, totalTeamsCount - 25)} duration={2.2} separator="," />
+                    <CountUp to={totalTeamsCount > 0 ? totalTeamsCount : 1} from={0} duration={1.5} separator="," />
                   </div>
                 </div>
                 <div className="text-right">

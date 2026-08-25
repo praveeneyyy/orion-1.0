@@ -24,14 +24,17 @@ interface HeroSectionProps {
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenRegister, onOpenStatus, onExplorePrizes }) => {
-  const [liveCounts, setLiveCounts] = useState({ registeredTeams: 247, paymentConfirmed: 231 });
+  const [liveCounts, setLiveCounts] = useState({ registeredTeams: 0, paymentConfirmed: 0 });
 
   useEffect(() => {
     fetch('/api/registrations/count')
       .then((res) => res.json())
       .then((data) => {
-        if (data.registeredTeams) {
-          setLiveCounts(data);
+        if (typeof data.registeredTeams === 'number') {
+          setLiveCounts({
+            registeredTeams: data.registeredTeams,
+            paymentConfirmed: data.paymentConfirmed || 0
+          });
         }
       })
       .catch(() => {});
@@ -175,14 +178,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenRegister, onOpen
           <div>
             <div className="text-[10px] font-mono-hud text-slate-400 uppercase tracking-wider">TEAMS REGISTERED</div>
             <div className="text-xl sm:text-2xl font-mono-hud font-black text-white flex items-center justify-center gap-1">
-              <CountUp to={liveCounts.registeredTeams} from={Math.max(1, liveCounts.registeredTeams - 25)} duration={2} separator="," />
+              <CountUp to={liveCounts.registeredTeams} from={0} duration={1.5} separator="," />
             </div>
           </div>
           <div className="h-8 w-px bg-white/10" />
           <div>
             <div className="text-[10px] font-mono-hud text-emerald-400 font-bold uppercase tracking-wider">PAYMENT CONFIRMED</div>
             <div className="text-xl sm:text-2xl font-mono-hud font-black text-emerald-400 flex items-center justify-center gap-1">
-              <CountUp to={liveCounts.paymentConfirmed} from={Math.max(1, liveCounts.paymentConfirmed - 25)} duration={2} separator="," />
+              <CountUp to={liveCounts.paymentConfirmed} from={0} duration={1.5} separator="," />
             </div>
           </div>
         </div>

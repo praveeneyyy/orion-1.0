@@ -32,9 +32,26 @@ export default function Home() {
   const [selectedProblem, setSelectedProblem] = useState<ProblemStatement | null>(null);
 
   const [teams, setTeams] = useState<RegisteredTeam[]>(INITIAL_REGISTERED_TEAMS);
+  const [registeredCount, setRegisteredCount] = useState<number>(0);
+
+  const fetchLiveCount = () => {
+    fetch('/api/registrations/count')
+      .then((res) => res.json())
+      .then((data) => {
+        if (typeof data.registeredTeams === 'number') {
+          setRegisteredCount(data.registeredTeams);
+        }
+      })
+      .catch(() => {});
+  };
+
+  useEffect(() => {
+    fetchLiveCount();
+  }, []);
 
   const handleRegisterSuccess = (newTeam: RegisteredTeam) => {
     setTeams((prev) => [newTeam, ...prev]);
+    setRegisteredCount((prev) => prev + 1);
   };
 
   const handleSelectTrackFromModal = () => {
@@ -109,7 +126,7 @@ export default function Home() {
           isOpen={isRegisterOpen}
           onClose={() => setIsRegisterOpen(false)}
           onSuccessRegister={handleRegisterSuccess}
-          totalTeamsCount={teams.length + 140}
+          totalTeamsCount={registeredCount}
         />
 
         <TeamStatusModal 

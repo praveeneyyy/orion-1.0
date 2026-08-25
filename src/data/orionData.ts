@@ -671,52 +671,7 @@ export const EVENT_ORGANIZERS: OfficeBearer[] = [
 
 export const MICROSOFT_OFFICE_BEARERS: OfficeBearer[] = EVENT_ORGANIZERS;
 
-export const INITIAL_REGISTERED_TEAMS: RegisteredTeam[] = [
-  {
-    teamId: "ORION-9012",
-    teamName: "Aether Dynamics",
-    leaderName: "Kavya Ramesh",
-    leaderEmail: "kavya.ramesh@sathyabama.ac.in",
-    institution: "Sathyabama Institute of Science and Technology",
-    track: "FloatChat (ARGO 4D)",
-    membersCount: 4,
-    status: "Qualified - Top 70 Finalist",
-    registrationDate: "2026-08-10"
-  },
-  {
-    teamId: "ORION-8421",
-    teamName: "CipherNova",
-    leaderName: "Aditya Verma",
-    leaderEmail: "aditya.v@iitm.ac.in",
-    institution: "IIT Madras",
-    track: "LexVault (ZK eVault)",
-    membersCount: 5,
-    status: "Qualified - Top 70 Finalist",
-    registrationDate: "2026-08-12"
-  },
-  {
-    teamId: "ORION-7733",
-    teamName: "BioCanopy Labs",
-    leaderName: "Sneha Mukherjee",
-    leaderEmail: "sneha.m@bits-pilani.ac.in",
-    institution: "BITS Pilani",
-    track: "SylvaSense (SAR Forestry)",
-    membersCount: 4,
-    status: "Qualified - Top 70 Finalist",
-    registrationDate: "2026-08-14"
-  },
-  {
-    teamId: "ORION-6590",
-    teamName: "QuantumVortex",
-    leaderName: "Rohit Nambiar",
-    leaderEmail: "rohit.n@nitc.ac.in",
-    institution: "NIT Calicut",
-    track: "Open Innovation - AI & Systems",
-    membersCount: 3,
-    status: "Round 1 Pending Review",
-    registrationDate: "2026-08-16"
-  }
-];
+export const INITIAL_REGISTERED_TEAMS: RegisteredTeam[] = [];
 
 export const ORION_STARS: StarNodeData[] = [
   {

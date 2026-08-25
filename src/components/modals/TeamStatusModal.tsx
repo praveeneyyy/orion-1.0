@@ -122,7 +122,7 @@ export const TeamStatusModal: React.FC<TeamStatusModalProps> = ({ isOpen, onClos
                 required
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="e.g. ORION-9012 or Aether Dynamics"
+                placeholder="e.g. ORN-R1-1024, Leader Email, or Team Name"
                 className="flex-1 px-3.5 py-2.5 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.14)] text-white text-xs font-mono-hud focus:outline-none focus:border-[#38BDF8] transition-colors"
               />
               <button
@@ -135,30 +135,12 @@ export const TeamStatusModal: React.FC<TeamStatusModalProps> = ({ isOpen, onClos
             </div>
 
             <div className="flex items-center gap-2 mt-2.5 text-[10px] font-mono-hud text-[#7DD3FC]">
-              <span className="text-[#38BDF8]">SAMPLE IDS:</span>
-              <button
-                type="button"
-                onClick={() => handleSampleClick('ORION-9012')}
-                className="text-white hover:text-[#38BDF8] underline font-bold"
-              >
-                ORION-9012
-              </button>
+              <span className="text-[#38BDF8]">LOOKUP BY:</span>
+              <span className="text-slate-300">Registration ID (ORN-R1-XXXX)</span>
               <span>•</span>
-              <button
-                type="button"
-                onClick={() => handleSampleClick('ORION-8421')}
-                className="text-white hover:text-[#38BDF8] underline font-bold"
-              >
-                ORION-8421
-              </button>
+              <span className="text-slate-300">Leader Email</span>
               <span>•</span>
-              <button
-                type="button"
-                onClick={() => handleSampleClick('ORION-6590')}
-                className="text-white hover:text-[#38BDF8] underline font-bold"
-              >
-                ORION-6590
-              </button>
+              <span className="text-slate-300">Team Name</span>
             </div>
           </form>
 
