@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { 
   Rocket, 
   Menu, 
@@ -108,6 +109,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenRegister }) => {
 
           {/* Desktop Action Controls */}
           <div className="hidden lg:flex items-center gap-3 shrink-0">
+            <Link
+              href="/portal"
+              className="px-3.5 py-2 rounded-none font-mono-hud font-bold text-xs text-[#BAE6FD] hover:text-white bg-[#07193D] border border-[#38BDF8]/40 hover:border-[#38BDF8] transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+            >
+              <span>TEAM PORTAL</span>
+            </Link>
+
             {/* Primary CTA */}
             <button
               onClick={() => {
@@ -122,6 +130,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenRegister }) => {
 
           {/* Mobile Navigation Toggle */}
           <div className="flex items-center gap-2 lg:hidden">
+            <Link
+              href="/portal"
+              className="px-2.5 py-2 rounded-none font-mono-hud text-[11px] text-[#BAE6FD] bg-[#07193D] border border-[#38BDF8]/40"
+            >
+              Portal
+            </Link>
             <button
               onClick={() => {
                 onOpenRegister();
@@ -165,6 +179,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenRegister }) => {
                   </a>
                 );
               })}
+            </div>
+            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/10">
+              <Link
+                href="/portal"
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2.5 text-center text-xs font-mono-hud font-bold text-[#BAE6FD] bg-[#07193D] border border-[#38BDF8]/40"
+              >
+                TEAM PORTAL
+              </Link>
+              <Link
+                href="/admin"
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2.5 text-center text-xs font-mono-hud text-rose-300 bg-rose-950/40 border border-rose-500/40"
+              >
+                ADMIN
+              </Link>
             </div>
           </div>
         )}

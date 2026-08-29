@@ -1,17 +1,18 @@
 'use client';
 
 import React, { useState } from 'react';
-import { HelpCircle, ChevronDown, Sparkles } from 'lucide-react';
-import { GlassCard } from '../common/GlassCard';
+import { HelpCircle, ChevronDown } from 'lucide-react';
 import { ScrollReveal } from '../common/ScrollReveal';
 import { FAQ_DATA } from '../../data/orionData';
 import { sound } from '../../audio/soundEffects';
 
+type FAQCategory = 'all' | 'eligibility' | 'submission' | 'finale' | 'accommodation';
+
 export const FAQSection: React.FC = () => {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
-  const [categoryFilter, setCategoryFilter] = useState<'all' | 'eligibility' | 'submission' | 'finale' | 'accommodation'>('all');
+  const [categoryFilter, setCategoryFilter] = useState<FAQCategory>('all');
 
-  const categories = [
+  const categories: { id: FAQCategory; label: string }[] = [
     { id: 'all', label: 'ALL QUESTIONS' },
     { id: 'eligibility', label: 'ELIGIBILITY & SQUADS' },
     { id: 'submission', label: 'ROUND 1 & PPT TEMPLATE' },
@@ -37,7 +38,7 @@ export const FAQSection: React.FC = () => {
         <ScrollReveal direction="up" delay={50} duration={600} className="text-center max-w-2xl mx-auto mb-12 select-none">
           <div className="inline-flex items-center gap-2.5 px-4 py-1 bg-gradient-to-r from-transparent via-[#00BCF2]/10 to-transparent border-y border-[#00BCF2]/25 text-xs font-mono font-bold tracking-[0.18em] text-[#BAE6FD] uppercase mb-4 shadow-sm">
             <HelpCircle className="w-3.5 h-3.5 text-[#00BCF2]" />
-            <span>KNOWLEDGE BASE // FREQUENTLY ASKED QUESTIONS</span>
+            <span>KNOWLEDGE BASE • FREQUENTLY ASKED QUESTIONS</span>
           </div>
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-black text-white tracking-tight">
             Frequently Asked <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Questions</span>
@@ -54,7 +55,7 @@ export const FAQSection: React.FC = () => {
               key={cat.id}
               onClick={() => {
                 sound.playClick();
-                setCategoryFilter(cat.id as any);
+                setCategoryFilter(cat.id);
               }}
               className={`px-4 py-2 rounded-full text-xs font-sans font-semibold transition-all cursor-pointer ${
                 categoryFilter === cat.id
@@ -73,65 +74,46 @@ export const FAQSection: React.FC = () => {
             const isOpen = openIdx === idx;
 
             return (
-              <ScrollReveal
+              <div 
                 key={idx}
-                direction="up"
-                delay={idx * 60}
-                duration={500}
+                className={`border transition-all duration-300 ${
+                  isOpen 
+                    ? 'bg-[#0B1220]/95 border-[#00BCF2]/50 shadow-[0_0_25px_rgba(0,188,242,0.12)]' 
+                    : 'bg-[#0B1220]/60 border-white/10 hover:border-white/20'
+                }`}
               >
-                <GlassCard
-                  glowColor="cyan"
-                  className={`transition-all duration-200 border border-[rgba(212,233,255,0.14)] bg-[#07193D]/90 rounded-none shadow-md ${
-                    isOpen ? 'border-[#38BDF8]/70 bg-[#0B2556] shadow-[0_0_20px_rgba(56,189,248,0.15)]' : 'hover:border-[#38BDF8]/40'
-                  }`}
+                <button
+                  onClick={() => toggleAccordion(idx)}
+                  className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer"
+                  aria-expanded={isOpen}
                 >
-                  <button
-                    onClick={() => toggleAccordion(idx)}
-                    className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer focus:outline-none"
-                    aria-expanded={isOpen}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs font-mono-hud text-[#38BDF8] font-bold">
-                        0{idx + 1}
-                      </span>
-                      <h3 className="text-sm sm:text-base font-display font-bold text-white">
-                        {faq.question}
-                      </h3>
-                    </div>
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-xs text-[#00BCF2] font-bold">
+                      0{idx + 1}.
+                    </span>
+                    <h3 className="font-display font-bold text-base sm:text-lg text-white leading-snug">
+                      {faq.question}
+                    </h3>
+                  </div>
 
-                    <div className={`p-1.5 rounded-none bg-[#040E24] border border-[#38BDF8]/30 text-[#38BDF8] transition-transform duration-200 shrink-0 ${
-                      isOpen ? 'rotate-180 text-white border-[#38BDF8]' : ''
-                    }`}>
-                      <ChevronDown className="w-4 h-4" />
-                    </div>
-                  </button>
+                  <div className={`p-1.5 rounded-full border transition-transform duration-300 shrink-0 ${
+                    isOpen 
+                      ? 'bg-[#00BCF2]/20 border-[#00BCF2] text-[#00BCF2] rotate-180' 
+                      : 'bg-white/5 border-white/10 text-slate-400'
+                  }`}>
+                    <ChevronDown className="w-4 h-4" />
+                  </div>
+                </button>
 
-                  {isOpen && (
-                    <div className="px-5 sm:px-6 pb-5 sm:pb-6 pt-0 text-xs sm:text-sm text-[#BAE6FD] font-sans leading-relaxed border-t border-[rgba(212,233,255,0.1)] mt-1 animate-in fade-in duration-200 font-normal">
-                      {faq.answer}
-                    </div>
-                  )}
-                </GlassCard>
-              </ScrollReveal>
+                {isOpen && (
+                  <div className="px-5 sm:px-6 pb-6 pt-1 border-t border-white/5 text-sm text-slate-300 font-sans leading-relaxed">
+                    <p>{faq.answer}</p>
+                  </div>
+                )}
+              </div>
             );
           })}
         </div>
-
-        {/* Support Help Banner */}
-        <ScrollReveal direction="up" delay={200} duration={500} className="mt-8">
-          <div className="p-4 rounded-none bg-[#07193D] border border-[rgba(212,233,255,0.14)] hover:border-[#38BDF8]/40 transition-colors flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono-hud text-[#BAE6FD] shadow-lg">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#38BDF8]" />
-              <span>Have additional queries? Contact Microsoft Club SIST coordinators.</span>
-            </div>
-            <a
-              href="mailto:microsoftclub@sathyabama.ac.in"
-              className="text-[#38BDF8] hover:text-white hover:underline shrink-0 font-bold"
-            >
-              microsoftclub@sathyabama.ac.in
-            </a>
-          </div>
-        </ScrollReveal>
 
       </div>
     </section>

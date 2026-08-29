@@ -223,7 +223,7 @@ export const OrionConstellation3D: React.FC = () => {
     ro.observe(container);
 
     let animId: number;
-    let clock = new THREE.Clock();
+    const clock = new THREE.Clock();
 
     const animate = () => {
       animId = requestAnimationFrame(animate);

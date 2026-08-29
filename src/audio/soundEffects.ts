@@ -1,7 +1,7 @@
 // Silent Audio Controller (Sound Effects Disabled)
 
 class SoundSynthesizer {
-  public setEnabled(_enabled: boolean): void {}
+  public setEnabled(): void {}
   public toggleMute(): boolean { return true; }
   public getMutedState(): boolean { return true; }
   public playHover(): void {}
@@ -10,6 +10,7 @@ class SoundSynthesizer {
   public playModalClose(): void {}
   public playLaunchWarp(): void {}
   public playSuccessFanfare(): void {}
+  public playSuccessCelebration(): void {}
 }
 
 export const sound = new SoundSynthesizer();

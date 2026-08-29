@@ -8,12 +8,8 @@ import {
   TreePine, 
   Cpu, 
   CheckCircle2,
-  Sparkles,
-  Database,
-  ExternalLink,
-  Layers
+  Sparkles
 } from 'lucide-react';
-import { GlassCard } from '../common/GlassCard';
 import { ScrollReveal } from '../common/ScrollReveal';
 import { PROBLEM_STATEMENTS } from '../../data/orionData';
 import type { ProblemStatement } from '../../types/orion';
@@ -76,7 +72,7 @@ export const ChallengeArena: React.FC<ChallengeArenaProps> = ({ onOpenProblemMod
                   <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#00BCF2]/10 border border-[#00BCF2]/30 text-xs font-mono font-bold text-[#BAE6FD]">
                       <Waves className="w-3.5 h-3.5 text-[#00BCF2]" />
-                      <span>{ps1.code} // OCEAN INFORMATICS</span>
+                      <span>{ps1.code} • OCEAN INFORMATICS</span>
                     </div>
                     <span className="text-[10px] font-mono text-emerald-400 font-semibold px-2 py-0.5 bg-emerald-400/10 border border-emerald-400/25">
                       FLAGSHIP TRACK
@@ -153,7 +149,7 @@ export const ChallengeArena: React.FC<ChallengeArenaProps> = ({ onOpenProblemMod
                   <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-violet-500/10 border border-violet-500/30 text-xs font-mono font-bold text-violet-300">
                       <ShieldCheck className="w-3.5 h-3.5 text-violet-400" />
-                      <span>{ps2.code} // APPLIED ZK CRYPTO</span>
+                      <span>{ps2.code} • APPLIED ZK CRYPTO</span>
                     </div>
                   </div>
 
@@ -225,7 +221,7 @@ export const ChallengeArena: React.FC<ChallengeArenaProps> = ({ onOpenProblemMod
                   <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 text-xs font-mono font-bold text-emerald-300">
                       <TreePine className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>{ps3.code} // EARTH OBSERVATION AI</span>
+                      <span>{ps3.code} • EARTH OBSERVATION AI</span>
                     </div>
                   </div>
 
@@ -297,7 +293,7 @@ export const ChallengeArena: React.FC<ChallengeArenaProps> = ({ onOpenProblemMod
                   <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#00BCF2]/10 border border-[#00BCF2]/30 text-xs font-mono font-bold text-[#BAE6FD]">
                       <Sparkles className="w-3.5 h-3.5 text-[#00BCF2]" />
-                      <span>{ps4.code} // OPEN INNOVATION ARCHITECTURE</span>
+                      <span>{ps4.code} • OPEN INNOVATION ARCHITECTURE</span>
                     </div>
                     <span className="text-[10px] font-mono text-cyan-400 font-semibold px-2 py-0.5 bg-cyan-400/10 border border-cyan-400/25">
                       ALL DOMAINS WELCOME

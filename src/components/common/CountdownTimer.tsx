@@ -12,11 +12,10 @@ interface TimeLeft {
 }
 
 export const CountdownTimer: React.FC = () => {
+  const isClient = React.useSyncExternalStore(() => () => {}, () => true, () => false);
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
     const target = new Date(EVENT_METRICS.deadlineIso).getTime();
 
     const calculate = () => {

@@ -21,15 +21,16 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
   threshold = 0.15,
   once = true,
 }) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
+    return false;
+  });
   const domRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Immediate show for reduced motion or SSR
-    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setIsVisible(true);
-      return;
-    }
+    if (isVisible && once) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
