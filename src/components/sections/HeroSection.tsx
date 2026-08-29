@@ -5,11 +5,7 @@ import {
   Rocket, 
   Search, 
   ChevronRight,
-  Sparkles,
-  MapPin,
-  Flame,
-  Users,
-  CheckCircle2
+  MapPin
 } from 'lucide-react';
 import { CountdownTimer } from '../common/CountdownTimer';
 import { ScrollReveal } from '../common/ScrollReveal';

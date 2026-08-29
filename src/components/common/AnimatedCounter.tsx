@@ -18,9 +18,8 @@ export const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
   const elementRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    // If reduced motion is preferred, display static value
+    // If reduced motion is preferred, display static value (already initialized to value)
     if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setDisplayValue(value);
       return;
     }
 
@@ -30,7 +29,6 @@ export const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
     // Extract numeric components and prefix/suffix
     const match = value.match(/^([^0-9]*)([\d,]+)(.*)$/);
     if (!match) {
-      setDisplayValue(value);
       return;
     }
 
@@ -40,7 +38,6 @@ export const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
     const suffix = match[3] || '';
 
     if (isNaN(targetNumber)) {
-      setDisplayValue(value);
       return;
     }
 

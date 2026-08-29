@@ -4,20 +4,15 @@ import React, { useState } from 'react';
 import { 
   X, 
   Search, 
-  ShieldCheck, 
-  Clock, 
   AlertCircle, 
-  Users, 
-  FileText,
-  Sparkles,
   CheckCircle2,
-  Terminal,
-  Database
+  ArrowRight
 } from 'lucide-react';
 import { GlassCard } from '../common/GlassCard';
 import { INITIAL_REGISTERED_TEAMS } from '../../data/orionData';
 import type { RegisteredTeam } from '../../types/orion';
 import { sound } from '../../audio/soundEffects';
+import Link from 'next/link';
 
 interface TeamStatusModalProps {
   isOpen: boolean;
@@ -47,6 +42,7 @@ export const TeamStatusModal: React.FC<TeamStatusModalProps> = ({ isOpen, onClos
         if (json.found && json.data) {
           setResult(json.data);
           setHasSearched(true);
+          setIsSearching(false);
           return;
         }
       }
@@ -72,12 +68,6 @@ export const TeamStatusModal: React.FC<TeamStatusModalProps> = ({ isOpen, onClos
     e.preventDefault();
     sound.playClick();
     performLookup(query);
-  };
-
-  const handleSampleClick = (sampleId: string) => {
-    sound.playHover();
-    setQuery(sampleId);
-    performLookup(sampleId);
   };
 
   return (
@@ -122,21 +112,22 @@ export const TeamStatusModal: React.FC<TeamStatusModalProps> = ({ isOpen, onClos
                 required
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="e.g. ORN-R1-1024, Leader Email, or Team Name"
+                placeholder="e.g. ORION-2026-0147, Leader Email, or Team Name"
                 className="flex-1 px-3.5 py-2.5 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.14)] text-white text-xs font-mono-hud focus:outline-none focus:border-[#38BDF8] transition-colors"
               />
               <button
                 type="submit"
-                className="btn-sheen btn-glow-cyan px-5 py-2.5 rounded-none font-display font-bold text-xs tracking-wider text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] hover:opacity-95 transition-all shadow-md flex items-center gap-1.5 cursor-pointer active:scale-95"
+                disabled={isSearching}
+                className="btn-sheen btn-glow-cyan px-5 py-2.5 rounded-none font-display font-bold text-xs tracking-wider text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] hover:opacity-95 transition-all shadow-md flex items-center gap-1.5 cursor-pointer active:scale-95 disabled:opacity-50"
               >
                 <Search className="w-3.5 h-3.5 text-[#040E24]" />
-                <span>QUERY</span>
+                <span>{isSearching ? 'LOOKING UP...' : 'QUERY'}</span>
               </button>
             </div>
 
             <div className="flex items-center gap-2 mt-2.5 text-[10px] font-mono-hud text-[#7DD3FC]">
               <span className="text-[#38BDF8]">LOOKUP BY:</span>
-              <span className="text-slate-300">Registration ID (ORN-R1-XXXX)</span>
+              <span className="text-slate-300">Team ID (ORION-2026-XXXX)</span>
               <span>•</span>
               <span className="text-slate-300">Leader Email</span>
               <span>•</span>
@@ -187,12 +178,23 @@ export const TeamStatusModal: React.FC<TeamStatusModalProps> = ({ isOpen, onClos
                     </div>
                   </div>
 
-                  <div className="pt-2 text-[10px] font-mono-hud text-[#7DD3FC] border-t border-[rgba(212,233,255,0.1)] flex items-center justify-between">
+                  <div className="pt-3 text-[10px] font-mono-hud text-[#7DD3FC] border-t border-[rgba(212,233,255,0.1)] flex items-center justify-between">
                     <span>INSTITUTE: {result.institution}</span>
                     <span className="text-emerald-400 flex items-center gap-1 font-semibold">
                       <CheckCircle2 className="w-3 h-3" />
                       RECORD VALIDATED
                     </span>
+                  </div>
+
+                  <div className="pt-2">
+                    <Link
+                      href={`/portal?teamId=${result.teamId}`}
+                      onClick={onClose}
+                      className="btn-glow-cyan w-full py-2.5 font-display font-bold text-xs text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                    >
+                      <span>OPEN FULL SQUAD PORTAL</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
                   </div>
                 </div>
               ) : (

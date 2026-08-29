@@ -4,12 +4,7 @@ import React from 'react';
 import { 
   X, 
   Terminal, 
-  Layers, 
-  Cpu, 
   CheckCircle2, 
-  Database, 
-  ShieldCheck, 
-  FileText,
   Rocket,
   Sparkles
 } from 'lucide-react';
@@ -27,7 +22,6 @@ interface ChallengeModalProps {
 
 export const ChallengeModal: React.FC<ChallengeModalProps> = ({
   problem,
-  isOpen,
   onClose,
   onSelectTrack,
   onSelectForRegister
@@ -57,7 +51,7 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
               </div>
               <div>
                 <span className="text-[10px] font-mono-hud text-[#22D3EE] font-bold">
-                  {problem.code} // CLASSIFIED ENGINEERING DOSSIER
+                  {problem.code} • CLASSIFIED ENGINEERING DOSSIER
                 </span>
                 <h3 className="text-2xl font-display font-black text-white">
                   {problem.code}: {problem.title}

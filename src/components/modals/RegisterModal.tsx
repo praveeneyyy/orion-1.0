@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
 import { 
   X, 
@@ -9,29 +9,21 @@ import {
   ShieldAlert, 
   CreditCard, 
   Users, 
-  Sparkles, 
   Copy, 
   Check, 
   ChevronRight, 
   ChevronLeft, 
-  Edit3, 
-  Download, 
-  MessageSquare, 
-  FileText, 
   AlertCircle,
-  ExternalLink,
-  Lock,
-  Phone,
-  Mail,
-  Building,
+  QrCode,
+  ArrowRight,
   Layers,
   UserCheck
 } from 'lucide-react';
 import { GlassCard } from '../common/GlassCard';
-import { PROBLEM_STATEMENTS, EVENT_METRICS } from '../../data/orionData';
+import { PROBLEM_STATEMENTS } from '../../data/orionData';
 import type { RegisteredTeam, TeamRegistrationPayload } from '../../types/orion';
 import { sound } from '../../audio/soundEffects';
-import CountUp from '../common/CountUp';
+import Link from 'next/link';
 
 interface RegisterModalProps {
   isOpen: boolean;
@@ -45,10 +37,9 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
   isOpen, 
   onClose, 
   onSuccessRegister,
-  totalTeamsCount = 0,
   initialProblemStatement
 }) => {
-  // Step state (1: Info, 2: Members, 3: Declarations, 4: Review, 5: Payment, 6: Confirmed)
+  // Steps: 1: Team & Leader, 2: Members, 3: Declarations, 4: Review, 5: UPI Payment & UTR, 6: Confirmed Dossier
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4 | 5 | 6>(1);
 
   // Section 1: Team & Leader
@@ -57,19 +48,19 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
   const [leaderPhone, setLeaderPhone] = useState('');
   const [leaderEmail, setLeaderEmail] = useState('');
   const [institution, setInstitution] = useState('');
-  const [problemStatement, setProblemStatement] = useState('ORION-PS-01');
+  const [department, setDepartment] = useState('');
+  const [year, setYear] = useState('3rd Year');
+  const [problemStatement, setProblemStatement] = useState(() => {
+    if (initialProblemStatement) {
+      const match = PROBLEM_STATEMENTS.find(p => p.id === initialProblemStatement || p.code === initialProblemStatement);
+      return match ? match.code : 'ORION-PS-01';
+    }
+    return 'ORION-PS-01';
+  });
 
-  // Section 2: 4 Team Members (Name + Phone)
-  const [members, setMembers] = useState<[
-    { name: string; phone: string },
-    { name: string; phone: string },
-    { name: string; phone: string },
-    { name: string; phone: string }
-  ]>([
-    { name: '', phone: '' },
-    { name: '', phone: '' },
-    { name: '', phone: '' },
-    { name: '', phone: '' }
+  // Section 2: Team Members (1 to 5 additional members, total squad 2 to 6)
+  const [members, setMembers] = useState<Array<{ name: string; phone: string; email: string; department: string; year: string }>>([
+    { name: '', phone: '', email: '', department: '', year: '3rd Year' }
   ]);
 
   // Section 3: Declarations
@@ -81,59 +72,51 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
     qualifierUnderstood: false
   });
 
+  // Payment State (Step 5)
+  const [utrNumber, setUtrNumber] = useState('');
+  const [payerName, setPayerName] = useState('');
+
   // Processing & Confirmation State
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [generatedRegId, setGeneratedRegId] = useState('');
-  const [confirmedOrderId, setConfirmedOrderId] = useState('');
-  const [confirmedPaymentId, setConfirmedPaymentId] = useState('');
+  const [registeredTeamData, setRegisteredTeamData] = useState<{
+    teamId: string;
+    accessToken: string;
+    teamName: string;
+  } | null>(null);
   const [copiedId, setCopiedId] = useState(false);
-  const [isSandboxMode, setIsSandboxMode] = useState(false);
-
-  // Set initial problem statement if provided
-  useEffect(() => {
-    if (initialProblemStatement) {
-      const match = PROBLEM_STATEMENTS.find(p => p.id === initialProblemStatement || p.code === initialProblemStatement);
-      if (match) {
-        setProblemStatement(match.code);
-      }
-    }
-  }, [initialProblemStatement]);
+  const [copiedPass, setCopiedPass] = useState(false);
 
   if (!isOpen) return null;
 
-  // Validation helper for Indian Phone Number
   const isValidPhone = (p: string) => {
     const clean = p.replace(/[\s\-()]/g, '');
     return /^(\+91|91|0)?[6-9]\d{9}$/.test(clean);
   };
 
-  // Validation helper for Email
   const isValidEmail = (e: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim());
   };
 
-  // Step 1 Validation
   const validateStep1 = () => {
     if (!teamName.trim()) return 'Please enter a Squad / Team Name';
     if (!leaderName.trim()) return 'Please enter the Team Leader Name';
-    if (!isValidPhone(leaderPhone)) return 'Please enter a valid 10-digit Indian WhatsApp Phone Number for Team Leader';
+    if (!isValidPhone(leaderPhone)) return 'Please enter a valid 10-digit Indian phone number for Team Leader';
     if (!isValidEmail(leaderEmail)) return 'Please enter a valid Team Leader Email Address';
     if (!institution.trim()) return 'Please enter your Institution / College Name';
     if (!problemStatement) return 'Please select a Problem Statement';
     return null;
   };
 
-  // Step 2 Validation
   const validateStep2 = () => {
-    for (let i = 0; i < 4; i++) {
+    if (members.length < 1) return 'At least 1 team member is required (Total 2+ squad members)';
+    for (let i = 0; i < members.length; i++) {
       if (!members[i].name.trim()) return `Please enter Member ${i + 1} Name`;
       if (!isValidPhone(members[i].phone)) return `Please enter a valid 10-digit phone number for Member ${i + 1}`;
     }
     return null;
   };
 
-  // Step 3 Validation
   const validateStep3 = () => {
     if (
       !declarations.accurateInfo ||
@@ -142,7 +125,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
       !declarations.feeUnderstood ||
       !declarations.qualifierUnderstood
     ) {
-      return 'Please agree to all 5 declaration checkboxes to proceed';
+      return 'Please accept all 5 declaration checkboxes to proceed';
     }
     return null;
   };
@@ -153,24 +136,15 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
 
     if (currentStep === 1) {
       const err = validateStep1();
-      if (err) {
-        setErrorMessage(err);
-        return;
-      }
+      if (err) { setErrorMessage(err); return; }
       setCurrentStep(2);
     } else if (currentStep === 2) {
       const err = validateStep2();
-      if (err) {
-        setErrorMessage(err);
-        return;
-      }
+      if (err) { setErrorMessage(err); return; }
       setCurrentStep(3);
     } else if (currentStep === 3) {
       const err = validateStep3();
-      if (err) {
-        setErrorMessage(err);
-        return;
-      }
+      if (err) { setErrorMessage(err); return; }
       setCurrentStep(4);
     }
   };
@@ -183,19 +157,27 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
     }
   };
 
-  // Update member field
-  const updateMember = (index: number, field: 'name' | 'phone', value: string) => {
-    const updated = [...members] as typeof members;
-    updated[index][field] = value;
+  const addMember = () => {
+    if (members.length >= 5) return;
+    setMembers([...members, { name: '', phone: '', email: '', department: '', year: '3rd Year' }]);
+  };
+
+  const removeMember = (index: number) => {
+    if (members.length <= 1) return;
+    setMembers(members.filter((_, idx) => idx !== index));
+  };
+
+  const updateMember = (index: number, field: string, value: string) => {
+    const updated = [...members];
+    updated[index] = { ...updated[index], [field]: value };
     setMembers(updated);
   };
 
-  // Section 5: Initiate Payment Checkout
-  const handleProceedToPayment = async () => {
+  // Submit Registration and proceed to UPI Payment step
+  const handleProceedToRegistration = async () => {
     sound.playClick();
     setIsProcessing(true);
     setErrorMessage('');
-    setCurrentStep(5);
 
     const payload: TeamRegistrationPayload = {
       teamName: teamName.trim(),
@@ -203,248 +185,143 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
       leaderPhone: leaderPhone.trim(),
       leaderEmail: leaderEmail.trim().toLowerCase(),
       institution: institution.trim(),
+      department: department.trim(),
+      year,
       problemStatement,
-      members,
+      members: members.map(m => ({
+        name: m.name.trim(),
+        phone: m.phone.trim(),
+        email: m.email.trim(),
+        department: m.department.trim(),
+        year: m.year
+      })),
       declarations
     };
 
     try {
-      // 1. Create Razorpay Order Server-Side
-      const orderRes = await fetch('/api/payment/create-order', {
+      const res = await fetch('/api/registrations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
 
-      const orderData = await orderRes.json();
-      if (!orderRes.ok) {
-        throw new Error(orderData.error || 'Failed to initialize order');
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Registration failed');
       }
 
-      setGeneratedRegId(orderData.registrationId);
-      setConfirmedOrderId(orderData.orderId);
-      setIsSandboxMode(orderData.isSandbox);
-
-      // 2. Check if Razorpay Checkout script can be opened
-      const hasRzpKey = orderData.keyId && orderData.keyId.startsWith('rzp_') && !orderData.isSandbox;
-
-      if (hasRzpKey && typeof window !== 'undefined') {
-        // Load Razorpay Script dynamically if needed
-        const loadScript = (src: string) => {
-          return new Promise((resolve) => {
-            const script = document.createElement('script');
-            script.src = src;
-            script.onload = () => resolve(true);
-            script.onerror = () => resolve(false);
-            document.body.appendChild(script);
-          });
-        };
-
-        const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js');
-        if (res && (window as unknown as { Razorpay: any }).Razorpay) {
-          const Razorpay = (window as unknown as { Razorpay: any }).Razorpay;
-          const options = {
-            key: orderData.keyId,
-            amount: 10000, // ₹100
-            currency: 'INR',
-            name: 'ORION 1.0 — SIST Hackathon',
-            description: `Round 1 Squad Registration (${orderData.registrationId})`,
-            image: '/logo.png',
-            order_id: orderData.orderId,
-            handler: async function (response: { razorpay_payment_id: string; razorpay_order_id: string; razorpay_signature: string }) {
-              await verifyPaymentServer(
-                response.razorpay_order_id,
-                response.razorpay_payment_id,
-                response.razorpay_signature,
-                orderData.registrationId,
-                false
-              );
-            },
-            prefill: {
-              name: leaderName,
-              email: leaderEmail,
-              contact: leaderPhone
-            },
-            theme: {
-              color: '#00BCF2'
-            },
-            modal: {
-              ondismiss: function () {
-                setIsProcessing(false);
-                setCurrentStep(4);
-              }
-            }
-          };
-
-          const rzpInstance = new Razorpay(options);
-          rzpInstance.open();
-          return;
-        }
-      }
-
-      // If Razorpay live credentials not configured or script unavailable, use Sandbox Simulator
-      setIsProcessing(false);
-
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Error starting payment';
-      setErrorMessage(msg);
-      setIsProcessing(false);
-      setCurrentStep(4);
-    }
-  };
-
-  // Complete Payment Verification
-  const verifyPaymentServer = async (
-    orderId: string, 
-    paymentId: string, 
-    signature: string, 
-    registrationId: string,
-    isSandbox: boolean
-  ) => {
-    setIsProcessing(true);
-    try {
-      const verifyRes = await fetch('/api/payment/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          orderId,
-          paymentId,
-          signature,
-          registrationId,
-          isSandbox
-        })
+      setRegisteredTeamData({
+        teamId: data.team.teamId,
+        accessToken: data.team.accessToken,
+        teamName: data.team.teamName
       });
 
-      const verifyData = await verifyRes.json();
-      if (!verifyRes.ok) {
-        throw new Error(verifyData.error || 'Payment verification failed');
-      }
-
-      setConfirmedPaymentId(verifyData.receipt?.paymentId || paymentId);
-      sound.playSuccessFanfare();
-      setCurrentStep(6);
-
-      try {
-        confetti({
-          particleCount: 110,
-          spread: 80,
-          origin: { y: 0.55 },
-          colors: ['#00BCF2', '#5227FF', '#FFFFFF', '#38BDF8', '#34D399']
-        });
-      } catch {
-        // Confetti fallback
-      }
+      setPayerName(leaderName.trim());
+      setCurrentStep(5); // Proceed to Payment instructions & UTR submission
 
       if (onSuccessRegister) {
         onSuccessRegister({
-          teamId: registrationId,
-          teamName,
-          leaderName,
-          leaderEmail,
-          institution,
-          track: problemStatement,
-          membersCount: 5,
-          status: 'Round 1 Pending Review',
-          registrationDate: new Date().toISOString().split('T')[0],
-          paymentStatus: 'SUCCESS',
-          paymentId,
-          orderId
+          teamId: data.team.teamId,
+          teamName: data.team.teamName,
+          leaderName: data.team.leaderName,
+          leaderEmail: data.team.leaderEmail,
+          institution: data.team.institution,
+          track: data.team.track,
+          membersCount: data.team.membersCount,
+          status: 'Round 1 Registered • Payment Pending',
+          registrationDate: new Date().toISOString().split('T')[0]
         });
       }
-
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Verification failed';
+      const msg = err instanceof Error ? err.message : 'Registration error occurred';
       setErrorMessage(msg);
     } finally {
       setIsProcessing(false);
     }
   };
 
-  // Handle Copy ID
-  const handleCopyId = () => {
+  // Submit Payment UTR
+  const handleSubmitPaymentUTR = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!registeredTeamData?.teamId) return;
+
+    if (!utrNumber.trim() || utrNumber.trim().length < 6) {
+      setErrorMessage('Please enter a valid 12-digit UPI UTR / Transaction ID.');
+      return;
+    }
+
     sound.playClick();
-    navigator.clipboard.writeText(generatedRegId);
-    setCopiedId(true);
-    setTimeout(() => setCopiedId(false), 2500);
+    setIsProcessing(true);
+    setErrorMessage('');
+
+    try {
+      const res = await fetch('/api/team/payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          teamId: registeredTeamData.teamId,
+          utrNumber: utrNumber.trim().toUpperCase(),
+          payerName: (payerName || leaderName).trim(),
+          amount: 100
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to submit payment details');
+      }
+
+      // Trigger Celebration Confetti
+      confetti({
+        particleCount: 100,
+        spread: 80,
+        origin: { y: 0.6 }
+      });
+      sound.playSuccessCelebration();
+
+      setCurrentStep(6); // Go to Final Dossier
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Payment submission failed';
+      setErrorMessage(msg);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
-  // Download printable styled receipt
-  const handleDownloadReceipt = () => {
+  const handleCopy = (text: string, type: 'id' | 'pass') => {
     sound.playClick();
-    const receiptContent = `
-================================================================
-                    ORION 1.0 — ROUND 1 RECEIPT
-          24-Hour National Hackathon • Microsoft Club SIST
-================================================================
-REGISTRATION ID   : ${generatedRegId}
-TEAM NAME         : ${teamName}
-PROBLEM STATEMENT : ${problemStatement}
-TEAM LEADER       : ${leaderName} (${leaderPhone})
-EMAIL             : ${leaderEmail}
-INSTITUTION       : ${institution}
-TOTAL SQUAD SIZE  : 5 Participants (1 Leader + 4 Members)
-----------------------------------------------------------------
-TEAM MEMBERS:
-  1. ${members[0].name} — ${members[0].phone}
-  2. ${members[1].name} — ${members[1].phone}
-  3. ${members[2].name} — ${members[2].phone}
-  4. ${members[3].name} — ${members[3].phone}
-----------------------------------------------------------------
-TRANSACTION DETAILS:
-  ENTRY FEE       : ₹100 FLAT PER TEAM
-  PAYMENT STATUS  : SUCCESS ✓
-  ORDER ID        : ${confirmedOrderId}
-  PAYMENT ID      : ${confirmedPaymentId}
-  TIMESTAMP       : ${new Date().toLocaleString('en-IN')}
-================================================================
-NEXT STEPS:
-1. Join the Official WhatsApp Dossier Group: ${process.env.NEXT_PUBLIC_WHATSAPP_GROUP_URL || 'https://chat.whatsapp.com/orion1point0'}
-2. Download the Standardized 5-Slide PPT Blueprint from the portal.
-3. Submit before Round 1 Deadline: Sep 08, 2026.
-================================================================
-`;
-    const blob = new Blob([receiptContent], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `ORION_${generatedRegId}_Receipt.txt`;
-    link.click();
-    URL.revokeObjectURL(url);
+    navigator.clipboard.writeText(text);
+    if (type === 'id') {
+      setCopiedId(true);
+      setTimeout(() => setCopiedId(false), 2000);
+    } else {
+      setCopiedPass(true);
+      setTimeout(() => setCopiedPass(false), 2000);
+    }
   };
-
-  const stepsList = [
-    { num: 1, label: 'TEAM INFO' },
-    { num: 2, label: 'MEMBERS' },
-    { num: 3, label: 'DECLARATION' },
-    { num: 4, label: 'REVIEW' },
-    { num: 5, label: 'PAYMENT' },
-    { num: 6, label: 'CONFIRMED' }
-  ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/90 backdrop-blur-lg animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
       <div className="relative w-full max-w-3xl max-h-[92vh] overflow-y-auto">
         <GlassCard
           glowColor="cyan"
-          className="p-5 sm:p-8 border border-[#00BCF2]/40 bg-[#07193D] shadow-[0_20px_60px_rgba(2,8,24,0.95)] rounded-none text-left relative"
+          className="p-6 sm:p-8 border border-[#38BDF8]/50 bg-[#07193D] shadow-[0_20px_60px_rgba(2,8,24,0.9)] rounded-none text-left"
           withHudCorners={true}
         >
-          {/* Header Title Lockup */}
-          <div className="flex items-start justify-between pb-4 mb-5 border-b border-[rgba(212,233,255,0.12)]">
-            <div className="flex items-start gap-3">
-              <div className="p-2.5 bg-[#0B2556] border border-[#00BCF2]/40 text-[#00BCF2] shadow-sm shrink-0">
+          {/* Header */}
+          <div className="flex items-center justify-between pb-4 mb-6 border-b border-[rgba(212,233,255,0.12)]">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-[#0B2556] border border-[#38BDF8]/40 text-[#38BDF8] shadow-sm">
                 <Rocket className="w-5 h-5" />
               </div>
               <div>
-                <div className="text-[10px] font-mono-hud text-[#00BCF2] flex items-center gap-1.5 font-bold uppercase tracking-wider">
-                  <span>ORION 1.0 • 24H NATIONAL HACKATHON</span>
+                <div className="text-[10px] font-mono-hud text-[#38BDF8] font-bold uppercase tracking-wider flex items-center gap-2">
+                  <span>ORION 1.0 MISSION SQUAD ENROLLMENT</span>
+                  <span className="text-slate-400">• ₹100 Flat Fee</span>
                 </div>
-                <h3 className="text-lg sm:text-2xl font-display font-black text-white">
-                  ROUND 1 SQUAD REGISTRATION
+                <h3 className="text-xl sm:text-2xl font-display font-black text-white">
+                  SQUAD REGISTRATION PORTAL
                 </h3>
-                <p className="text-[11px] font-mono-hud text-[#BAE6FD] mt-0.5">
-                  ONLINE QUALIFIER • <strong className="text-white">FLAT ₹100 PER TEAM</strong> (5 PARTICIPANTS)
-                </p>
               </div>
             </div>
 
@@ -453,222 +330,280 @@ NEXT STEPS:
                 sound.playModalClose();
                 onClose();
               }}
-              className="p-1.5 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.12)] hover:border-[#00BCF2]/60 text-[#BAE6FD] hover:text-white transition-colors cursor-pointer active:scale-95 shrink-0"
-              title="Close modal"
+              className="p-1.5 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.12)] hover:border-[#38BDF8]/50 text-[#BAE6FD] hover:text-white transition-colors cursor-pointer active:scale-95"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Multi-Step Progress Indicator */}
+          {/* Stepper HUD Indicator */}
           {currentStep < 6 && (
-            <div className="mb-6">
-              <div className="grid grid-cols-5 gap-1 sm:gap-2">
-                {stepsList.slice(0, 5).map((s) => {
-                  const isActive = currentStep === s.num;
-                  const isPassed = currentStep > s.num;
-                  return (
-                    <div 
-                      key={s.num}
-                      className={`p-2 border text-center transition-all ${
-                        isActive 
-                          ? 'bg-[#00BCF2]/15 border-[#00BCF2] text-white shadow-[0_0_10px_rgba(0,188,242,0.3)]' 
-                          : isPassed 
-                            ? 'bg-[#040E24] border-emerald-500/50 text-emerald-400' 
-                            : 'bg-[#040E24]/60 border-white/10 text-slate-500'
-                      }`}
-                    >
-                      <div className="text-[9px] font-mono-hud font-bold">
-                        {isPassed ? '✓' : `0${s.num}`}
-                      </div>
-                      <div className="text-[10px] font-mono-hud font-bold truncate">
-                        {s.label}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+            <div className="mb-6 grid grid-cols-5 gap-1.5">
+              {[
+                { num: 1, label: 'LEADER' },
+                { num: 2, label: 'MEMBERS' },
+                { num: 3, label: 'TERMS' },
+                { num: 4, label: 'REVIEW' },
+                { num: 5, label: 'PAYMENT' }
+              ].map((s) => (
+                <div 
+                  key={s.num}
+                  className={`p-2 text-center border text-[10px] font-mono-hud transition-all ${
+                    currentStep === s.num
+                      ? 'bg-[#38BDF8]/20 border-[#38BDF8] text-white font-bold shadow-[0_0_10px_rgba(56,189,248,0.3)]'
+                      : currentStep > s.num
+                      ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300'
+                      : 'bg-[#040E24]/60 border-white/5 text-slate-500'
+                  }`}
+                >
+                  <span className="block text-[8px] opacity-75">STEP 0{s.num}</span>
+                  <span>{s.label}</span>
+                </div>
+              ))}
             </div>
           )}
 
           {/* Error Banner */}
           {errorMessage && (
-            <div className="mb-5 p-3.5 bg-red-950/70 border border-red-500/60 text-red-200 text-xs font-mono-hud flex items-center gap-2.5 animate-in fade-in">
-              <ShieldAlert className="w-4 h-4 text-red-400 shrink-0" />
-              <span>{errorMessage}</span>
+            <div className="mb-6 p-3.5 bg-rose-950/60 border border-rose-500/50 rounded-none text-rose-200 text-xs font-mono flex items-start gap-2.5">
+              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+              <div>
+                <strong className="font-bold">Validation Alert: </strong>
+                <span>{errorMessage}</span>
+              </div>
             </div>
           )}
 
-          {/* ========================================================================= */}
-          {/* STEP 1: TEAM INFORMATION */}
-          {/* ========================================================================= */}
+          {/* STEP 1: Squad & Leader Info */}
           {currentStep === 1 && (
-            <div className="space-y-4 animate-in fade-in">
-              <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                <span className="text-xs font-mono-hud font-bold text-[#00BCF2] flex items-center gap-1.5">
-                  <Users className="w-3.5 h-3.5" />
-                  SECTION 1 — TEAM & LEADER INFORMATION
-                </span>
-                <span className="text-[10px] font-mono-hud text-slate-400">
-                  Fixed Structure: 1 Leader + 4 Members
-                </span>
+            <div className="space-y-4">
+              <div className="text-xs font-mono-hud text-[#38BDF8] font-bold flex items-center gap-2">
+                <Users className="w-4 h-4" />
+                <span>SECTION 01: SQUAD IDENTITY & TEAM LEADER</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-mono-hud text-[#BAE6FD] block mb-1">
-                    TEAM NAME *
+                <div className="sm:col-span-2">
+                  <label className="block text-[11px] font-mono-hud text-[#BAE6FD] mb-1">
+                    SQUAD / TEAM NAME <span className="text-[#38BDF8]">*</span>
                   </label>
                   <input
                     type="text"
                     required
                     value={teamName}
                     onChange={(e) => setTeamName(e.target.value)}
-                    placeholder="e.g. Aether Dynamics"
-                    className="w-full px-3.5 py-2.5 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.14)] text-white text-xs font-sans focus:outline-none focus:border-[#00BCF2] transition-colors"
+                    placeholder="e.g. CyberVanguard, NeuralKnights"
+                    className="w-full px-3.5 py-2.5 bg-[#040E24] border border-[rgba(212,233,255,0.15)] text-white text-xs font-mono-hud focus:border-[#38BDF8] focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-mono-hud text-[#BAE6FD] block mb-1">
-                    TEAM LEADER NAME *
+                  <label className="block text-[11px] font-mono-hud text-[#BAE6FD] mb-1">
+                    TEAM LEADER FULL NAME <span className="text-[#38BDF8]">*</span>
                   </label>
                   <input
                     type="text"
                     required
                     value={leaderName}
                     onChange={(e) => setLeaderName(e.target.value)}
-                    placeholder="e.g. Kavya Ramesh"
-                    className="w-full px-3.5 py-2.5 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.14)] text-white text-xs font-sans focus:outline-none focus:border-[#00BCF2] transition-colors"
+                    placeholder="Full Legal Name"
+                    className="w-full px-3.5 py-2.5 bg-[#040E24] border border-[rgba(212,233,255,0.15)] text-white text-xs font-mono-hud focus:border-[#38BDF8] focus:outline-none"
                   />
                 </div>
-              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-mono-hud text-[#BAE6FD] block mb-1">
-                    LEADER WHATSAPP PHONE NUMBER *
+                  <label className="block text-[11px] font-mono-hud text-[#BAE6FD] mb-1">
+                    LEADER WHATSAPP PHONE <span className="text-[#38BDF8]">*</span>
                   </label>
                   <input
                     type="tel"
                     required
                     value={leaderPhone}
                     onChange={(e) => setLeaderPhone(e.target.value)}
-                    placeholder="+91 98765 43210"
-                    className="w-full px-3.5 py-2.5 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.14)] text-white text-xs font-mono-hud focus:outline-none focus:border-[#00BCF2] transition-colors"
+                    placeholder="10-digit mobile (e.g. 9876543210)"
+                    className="w-full px-3.5 py-2.5 bg-[#040E24] border border-[rgba(212,233,255,0.15)] text-white text-xs font-mono-hud focus:border-[#38BDF8] focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-mono-hud text-[#BAE6FD] block mb-1">
-                    LEADER EMAIL ID *
+                  <label className="block text-[11px] font-mono-hud text-[#BAE6FD] mb-1">
+                    LEADER EMAIL ADDRESS <span className="text-[#38BDF8]">*</span>
                   </label>
                   <input
                     type="email"
                     required
                     value={leaderEmail}
                     onChange={(e) => setLeaderEmail(e.target.value)}
-                    placeholder="kavya@university.edu"
-                    className="w-full px-3.5 py-2.5 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.14)] text-white text-xs font-sans focus:outline-none focus:border-[#00BCF2] transition-colors"
+                    placeholder="leader@college.edu or gmail.com"
+                    className="w-full px-3.5 py-2.5 bg-[#040E24] border border-[rgba(212,233,255,0.15)] text-white text-xs font-mono-hud focus:border-[#38BDF8] focus:outline-none"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-mono-hud text-[#BAE6FD] mb-1">
+                    INSTITUTION / COLLEGE NAME <span className="text-[#38BDF8]">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={institution}
+                    onChange={(e) => setInstitution(e.target.value)}
+                    placeholder="e.g. Sathyabama Institute of Science and Tech"
+                    className="w-full px-3.5 py-2.5 bg-[#040E24] border border-[rgba(212,233,255,0.15)] text-white text-xs font-mono-hud focus:border-[#38BDF8] focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-mono-hud text-[#BAE6FD] mb-1">
+                    DEPARTMENT / BRANCH
+                  </label>
+                  <input
+                    type="text"
+                    value={department}
+                    onChange={(e) => setDepartment(e.target.value)}
+                    placeholder="e.g. CSE, IT, AI&DS, ECE"
+                    className="w-full px-3.5 py-2.5 bg-[#040E24] border border-[rgba(212,233,255,0.15)] text-white text-xs font-mono-hud focus:border-[#38BDF8] focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-mono-hud text-[#BAE6FD] mb-1">
+                    ACADEMIC YEAR
+                  </label>
+                  <select
+                    value={year}
+                    onChange={(e) => setYear(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-[#040E24] border border-[rgba(212,233,255,0.15)] text-white text-xs font-mono-hud focus:border-[#38BDF8] focus:outline-none cursor-pointer"
+                  >
+                    <option value="1st Year">1st Year Undergraduate</option>
+                    <option value="2nd Year">2nd Year Undergraduate</option>
+                    <option value="3rd Year">3rd Year Undergraduate</option>
+                    <option value="4th Year">4th Year Undergraduate</option>
+                    <option value="Postgraduate / Masters">Postgraduate / Masters</option>
+                    <option value="Working Professional">Working Professional</option>
+                  </select>
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-[11px] font-mono-hud text-[#BAE6FD] mb-1">
+                    SELECT CHALLENGE TRACK / PROBLEM STATEMENT <span className="text-[#38BDF8]">*</span>
+                  </label>
+                  <select
+                    value={problemStatement}
+                    onChange={(e) => setProblemStatement(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-[#040E24] border border-[#38BDF8]/40 text-white text-xs font-mono-hud focus:border-[#38BDF8] focus:outline-none cursor-pointer"
+                  >
+                    {PROBLEM_STATEMENTS.map((ps) => (
+                      <option key={ps.code} value={ps.code}>
+                        {ps.code}: {ps.title} — ({ps.domain})
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
-              <div>
-                <label className="text-xs font-mono-hud text-[#BAE6FD] block mb-1">
-                  INSTITUTION / COLLEGE NAME *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={institution}
-                  onChange={(e) => setInstitution(e.target.value)}
-                  placeholder="e.g. Sathyabama Institute of Science and Technology"
-                  className="w-full px-3.5 py-2.5 rounded-none bg-[#040E24] border border-[rgba(212,233,255,0.14)] text-white text-xs font-sans focus:outline-none focus:border-[#00BCF2] transition-colors"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-mono-hud text-[#BAE6FD] block mb-1">
-                  PROBLEM STATEMENT NUMBER *
-                </label>
-                <select
-                  value={problemStatement}
-                  onChange={(e) => setProblemStatement(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-none bg-[#071426] border border-[#00BCF2]/40 text-white text-xs font-mono-hud focus:outline-none focus:border-[#22D3EE] transition-colors"
-                >
-                  <option value="ORION-PS-01">ORION-PS-01: FloatChat (Oceanic Telemetry AI)</option>
-                  <option value="ORION-PS-02">ORION-PS-02: LexVault (Zero-Knowledge Legal Tech)</option>
-                  <option value="ORION-PS-03">ORION-PS-03: SylvaSense (Ecological Acoustic Edge)</option>
-                  <option value="ORION-PS-04">ORION-PS-04: Open Innovation Track</option>
-                </select>
-              </div>
-
-              <div className="pt-3 flex justify-end">
+              <div className="pt-4 flex justify-end">
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="btn-sheen btn-glow-cyan py-3 px-6 rounded-none font-display font-bold text-xs tracking-wider text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#00BCF2] hover:opacity-95 transition-all shadow-md flex items-center gap-2 cursor-pointer active:scale-95"
+                  className="btn-glow-cyan px-6 py-2.5 font-display font-bold text-xs text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] flex items-center gap-2 cursor-pointer active:scale-95"
                 >
-                  <span>CONTINUE TO TEAM MEMBERS</span>
+                  <span>NEXT: SQUAD MEMBERS</span>
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
           )}
 
-          {/* ========================================================================= */}
-          {/* STEP 2: TEAM MEMBERS (4 PARTICIPANTS) */}
-          {/* ========================================================================= */}
+          {/* STEP 2: Members Info */}
           {currentStep === 2 && (
-            <div className="space-y-4 animate-in fade-in">
-              <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                <span className="text-xs font-mono-hud font-bold text-[#00BCF2] flex items-center gap-1.5">
-                  <UserCheck className="w-3.5 h-3.5" />
-                  SECTION 2 — 4 TEAM MEMBERS (LEADER EXCLUDED)
-                </span>
-                <span className="text-[10px] font-mono-hud text-emerald-400">
-                  Total Team Size: 5
-                </span>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="text-xs font-mono-hud text-[#38BDF8] font-bold flex items-center gap-2">
+                  <UserCheck className="w-4 h-4" />
+                  <span>SECTION 02: SQUAD MEMBERS ({members.length} Members + Leader)</span>
+                </div>
+                {members.length < 5 && (
+                  <button
+                    type="button"
+                    onClick={addMember}
+                    className="px-2.5 py-1 text-[10px] font-mono-hud bg-[#0B2556] border border-[#38BDF8]/40 text-[#38BDF8] hover:bg-[#38BDF8]/20 transition-colors"
+                  >
+                    + ADD MEMBER
+                  </button>
+                )}
               </div>
 
-              <p className="text-xs text-slate-300 font-sans">
-                Please enter the Name and Phone Number for each of the 4 team members. (Do not repeat the team leader).
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                {[0, 1, 2, 3].map((idx) => (
-                  <div key={idx} className="p-3.5 bg-[#040E24] border border-[rgba(212,233,255,0.12)]">
-                    <div className="text-[10px] font-mono-hud text-[#00BCF2] font-bold mb-2">
-                      TEAM MEMBER 0{idx + 1}
+              <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-1">
+                {members.map((member, idx) => (
+                  <div key={idx} className="p-3.5 bg-[#040E24] border border-[rgba(212,233,255,0.1)] space-y-3 relative">
+                    <div className="flex items-center justify-between border-b border-white/5 pb-2">
+                      <span className="text-[10px] font-mono-hud text-[#38BDF8] font-bold">
+                        MEMBER 0{idx + 1}
+                      </span>
+                      {members.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeMember(idx)}
+                          className="text-[10px] font-mono text-rose-400 hover:underline"
+                        >
+                          Remove
+                        </button>
+                      )}
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="text-[10px] font-mono-hud text-slate-400 block mb-0.5">
-                          MEMBER {idx + 1} NAME *
+                        <label className="block text-[10px] font-mono-hud text-slate-300 mb-0.5">
+                          FULL NAME <span className="text-[#38BDF8]">*</span>
                         </label>
                         <input
                           type="text"
                           required
-                          value={members[idx].name}
+                          value={member.name}
                           onChange={(e) => updateMember(idx, 'name', e.target.value)}
-                          placeholder={`e.g. Member ${idx + 1} Full Name`}
-                          className="w-full px-3 py-1.5 rounded-none bg-[#071426] border border-white/10 text-white text-xs font-sans focus:outline-none focus:border-[#00BCF2]"
+                          placeholder={`Member ${idx + 1} Name`}
+                          className="w-full px-3 py-2 bg-[#020817] border border-white/10 text-white text-xs font-mono-hud focus:border-[#38BDF8] focus:outline-none"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-mono-hud text-slate-400 block mb-0.5">
-                          MEMBER {idx + 1} PHONE NUMBER *
+                        <label className="block text-[10px] font-mono-hud text-slate-300 mb-0.5">
+                          PHONE NUMBER <span className="text-[#38BDF8]">*</span>
                         </label>
                         <input
                           type="tel"
                           required
-                          value={members[idx].phone}
+                          value={member.phone}
                           onChange={(e) => updateMember(idx, 'phone', e.target.value)}
-                          placeholder="+91 98765 43210"
-                          className="w-full px-3 py-1.5 rounded-none bg-[#071426] border border-white/10 text-white text-xs font-mono-hud focus:outline-none focus:border-[#00BCF2]"
+                          placeholder="10-digit mobile"
+                          className="w-full px-3 py-2 bg-[#020817] border border-white/10 text-white text-xs font-mono-hud focus:border-[#38BDF8] focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-mono-hud text-slate-300 mb-0.5">
+                          EMAIL (OPTIONAL)
+                        </label>
+                        <input
+                          type="email"
+                          value={member.email}
+                          onChange={(e) => updateMember(idx, 'email', e.target.value)}
+                          placeholder="member@email.com"
+                          className="w-full px-3 py-2 bg-[#020817] border border-white/10 text-white text-xs font-mono-hud focus:border-[#38BDF8] focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-mono-hud text-slate-300 mb-0.5">
+                          DEPARTMENT (OPTIONAL)
+                        </label>
+                        <input
+                          type="text"
+                          value={member.department}
+                          onChange={(e) => updateMember(idx, 'department', e.target.value)}
+                          placeholder="e.g. CSE / IT"
+                          className="w-full px-3 py-2 bg-[#020817] border border-white/10 text-white text-xs font-mono-hud focus:border-[#38BDF8] focus:outline-none"
                         />
                       </div>
                     </div>
@@ -676,348 +611,370 @@ NEXT STEPS:
                 ))}
               </div>
 
-              <div className="pt-3 flex items-center justify-between">
+              <div className="pt-4 flex justify-between">
                 <button
                   type="button"
                   onClick={handleBack}
-                  className="px-4 py-2.5 bg-[#040E24] border border-white/15 text-slate-300 text-xs font-mono-hud hover:text-white flex items-center gap-1.5 cursor-pointer"
+                  className="px-5 py-2.5 border border-white/15 text-slate-300 hover:text-white font-mono-hud text-xs flex items-center gap-1.5 cursor-pointer"
                 >
                   <ChevronLeft className="w-4 h-4" />
                   <span>BACK</span>
                 </button>
-
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="btn-sheen btn-glow-cyan py-3 px-6 rounded-none font-display font-bold text-xs tracking-wider text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#00BCF2] hover:opacity-95 transition-all shadow-md flex items-center gap-2 cursor-pointer active:scale-95"
+                  className="btn-glow-cyan px-6 py-2.5 font-display font-bold text-xs text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] flex items-center gap-2 cursor-pointer active:scale-95"
                 >
-                  <span>CONTINUE TO DECLARATION</span>
+                  <span>NEXT: DECLARATIONS</span>
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
           )}
 
-          {/* ========================================================================= */}
-          {/* STEP 3: DECLARATION AND CONSENT */}
-          {/* ========================================================================= */}
+          {/* STEP 3: Declarations */}
           {currentStep === 3 && (
-            <div className="space-y-4 animate-in fade-in">
-              <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                <span className="text-xs font-mono-hud font-bold text-[#00BCF2] flex items-center gap-1.5">
-                  <FileText className="w-3.5 h-3.5" />
-                  SECTION 3 — DECLARATION & CONSENT
-                </span>
-                <span className="text-[10px] font-mono-hud text-amber-400">
-                  All 5 Checkboxes Required
-                </span>
+            <div className="space-y-4">
+              <div className="text-xs font-mono-hud text-[#38BDF8] font-bold flex items-center gap-2">
+                <ShieldAlert className="w-4 h-4" />
+                <span>SECTION 03: MISSION RULES & DECLARATIONS</span>
               </div>
 
-              <p className="text-xs text-slate-300 font-sans">
-                Please review and accept all mandatory declarations before reviewing your squad submission:
-              </p>
-
-              <div className="space-y-3 bg-[#040E24] p-4 border border-[rgba(212,233,255,0.12)]">
+              <div className="space-y-2.5 p-4 bg-[#040E24] border border-[rgba(212,233,255,0.1)] text-xs font-sans">
                 {[
-                  { key: 'accurateInfo', text: 'I confirm that all the information provided above is accurate.' },
-                  { key: 'membersBelong', text: 'I confirm that all the listed members belong to this team.' },
-                  { key: 'rulesAgreed', text: 'I agree to follow the ORION 1.0 Round 1 rules and guidelines.' },
-                  { key: 'feeUnderstood', text: 'I understand that the ₹100 registration fee is a team entry fee.' },
-                  { key: 'qualifierUnderstood', text: 'I understand that Round 1 registration does not automatically guarantee selection for the 24-hour hackathon.' }
+                  {
+                    key: 'accurateInfo' as const,
+                    label: 'Accurate Information: I declare that all squad member names, emails, contact numbers, and institutional affiliations provided are authentic and accurate.'
+                  },
+                  {
+                    key: 'membersBelong' as const,
+                    label: 'Team Integrity: All listed members belong to our registered squad and have given explicit consent for their enrollment in ORION 1.0.'
+                  },
+                  {
+                    key: 'rulesAgreed' as const,
+                    label: 'Hackathon Code of Conduct: We agree to abide by all ORION 1.0 code of conduct rules, academic integrity standards, and intellectual property requirements.'
+                  },
+                  {
+                    key: 'feeUnderstood' as const,
+                    label: 'Round 1 Fee Policy: We understand the ₹100 registration fee is non-refundable and covers full Round 1 online PPT evaluation by the expert technical panel.'
+                  },
+                  {
+                    key: 'qualifierUnderstood' as const,
+                    label: 'Offline Finale Qualification: We understand that only the Top 70 selected squads will advance to the 24-hour physical offline sprint at Sathyabama University, Chennai.'
+                  }
                 ].map((item) => (
                   <label 
                     key={item.key} 
-                    className="flex items-start gap-3 cursor-pointer select-none group p-2 hover:bg-[#071426] transition-colors"
+                    className="flex items-start gap-3 p-2.5 border border-white/5 hover:border-[#38BDF8]/40 transition-colors bg-[#07193D]/40 cursor-pointer"
                   >
                     <input
                       type="checkbox"
-                      checked={declarations[item.key as keyof typeof declarations]}
-                      onChange={(e) => setDeclarations({
-                        ...declarations,
-                        [item.key]: e.target.checked
-                      })}
-                      className="mt-0.5 w-4 h-4 rounded-none accent-[#00BCF2] cursor-pointer shrink-0"
+                      checked={declarations[item.key]}
+                      onChange={(e) => setDeclarations({ ...declarations, [item.key]: e.target.checked })}
+                      className="mt-0.5 accent-[#38BDF8] w-4 h-4 shrink-0 cursor-pointer"
                     />
-                    <span className="text-xs font-sans text-slate-200 group-hover:text-white leading-relaxed">
-                      {item.text}
+                    <span className="text-slate-200 leading-relaxed text-[11px]">
+                      {item.label}
                     </span>
                   </label>
                 ))}
               </div>
 
-              <div className="pt-3 flex items-center justify-between">
+              <div className="pt-4 flex justify-between">
                 <button
                   type="button"
                   onClick={handleBack}
-                  className="px-4 py-2.5 bg-[#040E24] border border-white/15 text-slate-300 text-xs font-mono-hud hover:text-white flex items-center gap-1.5 cursor-pointer"
+                  className="px-5 py-2.5 border border-white/15 text-slate-300 hover:text-white font-mono-hud text-xs flex items-center gap-1.5 cursor-pointer"
                 >
                   <ChevronLeft className="w-4 h-4" />
                   <span>BACK</span>
                 </button>
-
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="btn-sheen btn-glow-cyan py-3 px-6 rounded-none font-display font-bold text-xs tracking-wider text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#00BCF2] hover:opacity-95 transition-all shadow-md flex items-center gap-2 cursor-pointer active:scale-95"
+                  className="btn-glow-cyan px-6 py-2.5 font-display font-bold text-xs text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] flex items-center gap-2 cursor-pointer active:scale-95"
                 >
-                  <span>REVIEW BEFORE PAYMENT</span>
+                  <span>NEXT: REVIEW DOSSIER</span>
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
           )}
 
-          {/* ========================================================================= */}
-          {/* STEP 4: REVIEW BEFORE PAYMENT */}
-          {/* ========================================================================= */}
+          {/* STEP 4: Review Summary */}
           {currentStep === 4 && (
-            <div className="space-y-4 animate-in fade-in">
-              <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                <span className="text-xs font-mono-hud font-bold text-[#00BCF2] flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  SECTION 4 — REVIEW BEFORE PAYMENT
-                </span>
-                <span className="text-[10px] font-mono-hud text-emerald-400">
-                  Ready for Checkout
-                </span>
+            <div className="space-y-4">
+              <div className="text-xs font-mono-hud text-[#38BDF8] font-bold flex items-center gap-2">
+                <Layers className="w-4 h-4" />
+                <span>SECTION 04: DOSSIER REVIEW & CONFIRMATION</span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Team & Leader Summary */}
-                <div className="p-4 bg-[#040E24] border border-[rgba(212,233,255,0.14)] space-y-2">
-                  <div className="text-[10px] font-mono-hud text-[#00BCF2] font-bold border-b border-white/10 pb-1 flex items-center justify-between">
-                    <span>TEAM & LEADER SUMMARY</span>
-                    <button 
-                      onClick={() => setCurrentStep(1)} 
-                      className="text-[9px] text-[#BAE6FD] hover:text-white flex items-center gap-1"
-                    >
-                      <Edit3 className="w-3 h-3" /> EDIT
-                    </button>
+              <div className="p-4 bg-[#040E24] border border-[#38BDF8]/40 space-y-4 text-xs">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 border-b border-white/10 pb-3">
+                  <div>
+                    <span className="text-[10px] font-mono-hud text-[#7DD3FC] block">SQUAD NAME</span>
+                    <strong className="text-white font-display text-sm">{teamName}</strong>
                   </div>
-                  <div className="text-xs font-sans space-y-1">
-                    <div><span className="text-slate-400">Team Name:</span> <strong className="text-white">{teamName}</strong></div>
-                    <div><span className="text-slate-400">Team Leader:</span> <strong className="text-white">{leaderName}</strong></div>
-                    <div><span className="text-slate-400">Leader Phone:</span> <span className="font-mono-hud text-[#BAE6FD]">{leaderPhone}</span></div>
-                    <div><span className="text-slate-400">Leader Email:</span> <span className="text-white">{leaderEmail}</span></div>
-                    <div><span className="text-slate-400">Institution:</span> <span className="text-slate-200">{institution}</span></div>
-                    <div><span className="text-slate-400">Track:</span> <span className="font-mono-hud font-bold text-[#00BCF2]">{problemStatement}</span></div>
+                  <div>
+                    <span className="text-[10px] font-mono-hud text-[#7DD3FC] block">TRACK</span>
+                    <strong className="text-[#38BDF8] font-mono">{problemStatement}</strong>
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-mono-hud text-[#7DD3FC] block">FEE</span>
+                    <strong className="text-emerald-400 font-mono">₹100 Flat</strong>
                   </div>
                 </div>
 
-                {/* 4 Team Members Summary */}
-                <div className="p-4 bg-[#040E24] border border-[rgba(212,233,255,0.14)] space-y-2">
-                  <div className="text-[10px] font-mono-hud text-[#00BCF2] font-bold border-b border-white/10 pb-1 flex items-center justify-between">
-                    <span>TEAM MEMBERS (4)</span>
-                    <button 
-                      onClick={() => setCurrentStep(2)} 
-                      className="text-[9px] text-[#BAE6FD] hover:text-white flex items-center gap-1"
-                    >
-                      <Edit3 className="w-3 h-3" /> EDIT
-                    </button>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 border-b border-white/10 pb-3">
+                  <div>
+                    <span className="text-[10px] font-mono-hud text-[#7DD3FC] block">LEADER</span>
+                    <div className="text-white">{leaderName} ({leaderPhone})</div>
+                    <div className="text-slate-400 text-[11px]">{leaderEmail}</div>
                   </div>
-                  <div className="text-xs font-sans space-y-1.5">
-                    {members.map((m, i) => (
-                      <div key={i} className="flex items-center justify-between text-[11px] border-b border-white/5 pb-1">
-                        <span className="text-white font-medium">0{i + 1}. {m.name}</span>
-                        <span className="font-mono-hud text-[#BAE6FD]">{m.phone}</span>
+                  <div>
+                    <span className="text-[10px] font-mono-hud text-[#7DD3FC] block">INSTITUTION</span>
+                    <div className="text-white">{institution}</div>
+                    <div className="text-slate-400 text-[11px]">{department} • {year}</div>
+                  </div>
+                </div>
+
+                <div>
+                  <span className="text-[10px] font-mono-hud text-[#7DD3FC] block mb-1.5">
+                    ENROLLED SQUAD MEMBERS ({members.length})
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {members.map((m, idx) => (
+                      <div key={idx} className="p-2 bg-[#020817] border border-white/5 text-[11px]">
+                        <span className="text-[#38BDF8] font-mono mr-1.5">0{idx + 1}.</span>
+                        <strong className="text-white">{m.name}</strong>
+                        <span className="text-slate-400 ml-1">({m.phone})</span>
                       </div>
                     ))}
-                    <div className="pt-1 text-[10px] font-mono-hud text-slate-400 text-right">
-                      Total Squad Size: <strong className="text-white">5 Participants</strong>
-                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Pricing Box */}
-              <div className="p-4 bg-gradient-to-r from-[#0B2556] to-[#040E24] border border-[#00BCF2]/40 flex items-center justify-between">
-                <div>
-                  <div className="text-[10px] font-mono-hud text-[#00BCF2] font-bold">ROUND 1 ENTRY FEE</div>
-                  <div className="text-xs font-sans text-slate-300">Single transaction for full 5-member team</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-2xl font-mono-hud font-black text-white">₹100</div>
-                  <div className="text-[9px] font-mono-hud text-emerald-400 font-bold">FLAT PER TEAM</div>
-                </div>
-              </div>
-
-              <div className="pt-3 flex items-center justify-between">
+              <div className="pt-4 flex justify-between">
                 <button
                   type="button"
                   onClick={handleBack}
-                  className="px-4 py-2.5 bg-[#040E24] border border-white/15 text-slate-300 text-xs font-mono-hud hover:text-white flex items-center gap-1.5 cursor-pointer"
+                  className="px-5 py-2.5 border border-white/15 text-slate-300 hover:text-white font-mono-hud text-xs flex items-center gap-1.5 cursor-pointer"
                 >
                   <ChevronLeft className="w-4 h-4" />
-                  <span>EDIT DETAILS</span>
+                  <span>BACK</span>
                 </button>
-
                 <button
                   type="button"
-                  onClick={handleProceedToPayment}
-                  className="btn-sheen btn-glow-cyan py-3.5 px-8 rounded-none font-display font-bold text-xs tracking-wider text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#00BCF2] hover:opacity-95 transition-all shadow-md flex items-center gap-2 cursor-pointer active:scale-95"
+                  disabled={isProcessing}
+                  onClick={handleProceedToRegistration}
+                  className="btn-glow-cyan px-7 py-3 font-display font-black text-xs sm:text-sm text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] flex items-center gap-2 cursor-pointer active:scale-95 disabled:opacity-50"
                 >
-                  <CreditCard className="w-4 h-4 text-[#040E24]" />
-                  <span>PROCEED TO CHECKOUT — ₹100</span>
+                  {isProcessing ? (
+                    <span>GENERATING SQUAD ID...</span>
+                  ) : (
+                    <>
+                      <span>PROCEED TO PAYMENT (₹100)</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
                 </button>
               </div>
             </div>
           )}
 
-          {/* ========================================================================= */}
-          {/* STEP 5: PAYMENT GATEWAY (SANDBOX / SIMULATION FALLBACK) */}
-          {/* ========================================================================= */}
-          {currentStep === 5 && (
-            <div className="space-y-5 text-center py-6 animate-in fade-in">
-              <div className="p-3 bg-[#0B2556] border border-[#00BCF2]/40 inline-flex items-center justify-center text-[#00BCF2] shadow-md">
-                <CreditCard className="w-8 h-8 animate-pulse" />
+          {/* STEP 5: Official UPI Payment & UTR Submission */}
+          {currentStep === 5 && registeredTeamData && (
+            <div className="space-y-4">
+              <div className="text-xs font-mono-hud text-emerald-400 font-bold flex items-center gap-2">
+                <CreditCard className="w-4 h-4" />
+                <span>SECTION 05: OFFICIAL UPI PAYMENT & UTR SUBMISSION</span>
               </div>
 
-              <div>
-                <h4 className="text-xl font-display font-black text-white">
-                  {isProcessing ? 'COMMUNICATING WITH RAZORPAY GATEWAY...' : 'ORION 1.0 CHECKOUT GATEWAY'}
-                </h4>
-                <p className="text-xs font-mono-hud text-slate-400 mt-1">
-                  ORDER ID: <span className="text-[#00BCF2]">{confirmedOrderId}</span> • TOTAL: ₹100 FLAT
-                </p>
-              </div>
-
-              {isSandboxMode && (
-                <div className="p-4 bg-[#040E24] border border-[#00BCF2]/40 max-w-md mx-auto text-left space-y-3">
-                  <div className="flex items-center justify-between text-xs font-mono-hud text-amber-400 font-bold border-b border-white/10 pb-1">
-                    <span>SANDBOX SIMULATION MODE</span>
-                    <span>FLAT ₹100</span>
+              <div className="p-4 bg-[#040E24] border border-[#38BDF8]/40 space-y-4">
+                <div className="flex items-center justify-between p-3 bg-[#0B2556] border border-[#38BDF8]/30">
+                  <div>
+                    <span className="text-[10px] font-mono-hud text-[#BAE6FD] block">REGISTERED SQUAD ID</span>
+                    <strong className="text-white font-mono text-base">{registeredTeamData.teamId}</strong>
                   </div>
-                  <p className="text-xs font-sans text-slate-300">
-                    Live Razorpay keys are not yet added in <code className="text-[#00BCF2]">.env.local</code>. You can simulate the transaction flow to test server-side database insertion and registration receipt generation:
-                  </p>
-
-                  <div className="pt-2 flex flex-col sm:flex-row gap-2">
-                    <button
-                      onClick={() => verifyPaymentServer(confirmedOrderId, `pay_sim_${Date.now()}`, 'sim_signature', generatedRegId, true)}
-                      disabled={isProcessing}
-                      className="btn-sheen btn-glow-cyan flex-1 py-2.5 px-4 bg-gradient-to-r from-emerald-400 to-teal-500 text-[#040E24] font-mono-hud font-bold text-xs text-center cursor-pointer hover:opacity-95 active:scale-95"
-                    >
-                      {isProcessing ? 'VERIFYING...' : '✓ SIMULATE SUCCESSFUL PAYMENT'}
-                    </button>
-                    <button
-                      onClick={() => {
-                        setCurrentStep(4);
-                        setErrorMessage('Payment cancelled or rejected.');
-                      }}
-                      className="py-2.5 px-4 bg-[#071426] border border-red-500/40 text-red-300 font-mono-hud text-xs cursor-pointer hover:bg-red-950/40"
-                    >
-                      SIMULATE FAILURE
-                    </button>
+                  <div className="text-right">
+                    <span className="text-[10px] font-mono-hud text-emerald-300 block">FEE PAYABLE</span>
+                    <strong className="text-emerald-400 font-mono text-lg">₹100</strong>
                   </div>
                 </div>
-              )}
+
+                {/* UPI Instructions & QR Card */}
+                <div className="p-4 bg-[#020817] border border-white/10 space-y-4">
+                  <div className="flex items-center gap-2 text-white font-mono-hud text-xs font-bold">
+                    <QrCode className="w-4 h-4 text-[#38BDF8]" />
+                    <span>OFFICIAL UPI SCANNER & TRANSFER INSTRUCTIONS</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                    {/* QR Code Frame */}
+                    <div className="md:col-span-4 flex flex-col items-center justify-center p-3 bg-[#040E24] border border-[#38BDF8]/40 shadow-[0_0_20px_rgba(56,189,248,0.15)] relative">
+                      <div className="w-full max-w-[170px] aspect-square bg-white p-2 rounded-sm relative flex items-center justify-center">
+                        <img 
+                          src="/orion_payment_qr.jpg" 
+                          alt="Official Orion 1.0 Round 1 UPI QR Code" 
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                      <span className="text-[10px] font-mono-hud text-[#38BDF8] mt-2 font-bold tracking-wider uppercase">
+                        SCAN VIA ANY UPI APP
+                      </span>
+                    </div>
+
+                    {/* Instructions & Copyable UPI */}
+                    <div className="md:col-span-8 space-y-3">
+                      <div className="p-3 bg-[#07193D] border border-dashed border-[#38BDF8]/40 flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div>
+                          <span className="text-[10px] font-mono-hud text-[#7DD3FC] block">OFFICIAL UPI ID</span>
+                          <strong className="text-white font-mono text-sm select-all">orion.sathyabama@upi</strong>
+                          <div className="text-[10px] text-slate-300 mt-0.5">Payee: ORION 1.0 — Microsoft Club SIST</div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleCopy('orion.sathyabama@upi', 'id')}
+                          className="px-3 py-1.5 bg-[#0B2556] border border-[#38BDF8]/40 text-[#38BDF8] text-[11px] font-mono flex items-center gap-1.5 cursor-pointer hover:bg-[#0B2556]/80 transition-colors shrink-0"
+                        >
+                          {copiedId ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                          <span>{copiedId ? 'COPIED' : 'COPY UPI'}</span>
+                        </button>
+                      </div>
+
+                      <p className="text-[11px] text-slate-300 leading-relaxed font-sans">
+                        1. Scan the QR code above or transfer flat <strong>₹100</strong> to <code>orion.sathyabama@upi</code> via GPay, PhonePe, Paytm, BHIM, or Cred.<br />
+                        2. After payment, copy the <strong>12-digit UPI Reference / UTR Number</strong>.<br />
+                        3. Enter the UTR and Payer Name below to lock your registration.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* UTR Submission Form */}
+                <form onSubmit={handleSubmitPaymentUTR} className="space-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-mono-hud text-[#BAE6FD] mb-1">
+                        12-DIGIT UPI UTR / TRANSACTION ID <span className="text-[#38BDF8]">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={utrNumber}
+                        onChange={(e) => setUtrNumber(e.target.value)}
+                        placeholder="e.g. 423984920194"
+                        className="w-full px-3.5 py-2.5 bg-[#020817] border border-[#38BDF8]/60 text-white text-xs font-mono-hud focus:outline-none uppercase"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-mono-hud text-[#BAE6FD] mb-1">
+                        PAYER NAME AS IN BANK ACCOUNT <span className="text-[#38BDF8]">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={payerName}
+                        onChange={(e) => setPayerName(e.target.value)}
+                        placeholder="Name on UPI / Bank Account"
+                        className="w-full px-3.5 py-2.5 bg-[#020817] border border-white/15 text-white text-xs font-mono-hud focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isProcessing}
+                    className="w-full py-3 font-display font-black text-xs sm:text-sm text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-xl disabled:opacity-50"
+                  >
+                    {isProcessing ? (
+                      <span>VERIFYING UTR INTEGRITY...</span>
+                    ) : (
+                      <>
+                        <CheckCircle2 className="w-4 h-4 text-[#040E24]" />
+                        <span>SUBMIT PAYMENT UTR REFERENCE</span>
+                      </>
+                    )}
+                  </button>
+                </form>
+              </div>
             </div>
           )}
 
-          {/* ========================================================================= */}
-          {/* STEP 6: REGISTRATION CONFIRMED */}
-          {/* ========================================================================= */}
-          {currentStep === 6 && (
-            <div className="text-center py-4 space-y-5 animate-in fade-in zoom-in-95 duration-200">
-              <div className="w-16 h-16 rounded-none bg-[#040E24] border border-emerald-400 flex items-center justify-center text-emerald-400 mx-auto shadow-[0_0_25px_rgba(52,211,153,0.4)]">
+          {/* STEP 6: Final Confirmed Dossier */}
+          {currentStep === 6 && registeredTeamData && (
+            <div className="space-y-5 text-center">
+              <div className="w-16 h-16 bg-emerald-950/80 border border-emerald-400 rounded-none mx-auto flex items-center justify-center text-emerald-400 shadow-[0_0_25px_rgba(52,211,153,0.4)]">
                 <CheckCircle2 className="w-8 h-8" />
               </div>
 
               <div>
-                <span className="text-xs font-mono-hud text-emerald-400 font-bold tracking-widest uppercase">
-                  [STATUS: SQUAD_COMMISSIONED_NOMINAL]
+                <span className="text-[10px] font-mono-hud text-emerald-400 font-bold tracking-widest uppercase">
+                  MISSION REGISTRATION CONFIRMED
                 </span>
-                <h4 className="text-2xl sm:text-3xl font-display font-black text-white mt-1">
-                  REGISTRATION SUCCESSFUL
-                </h4>
-                <p className="text-xs font-sans text-slate-300 mt-1">
-                  Welcome to ORION 1.0, <strong className="text-white">{teamName.toUpperCase()}</strong>!
+                <h3 className="text-2xl sm:text-3xl font-display font-black text-white mt-1">
+                  WELCOME ABOARD, {registeredTeamData.teamName.toUpperCase()}
+                </h3>
+                <p className="text-xs text-[#BAE6FD] max-w-md mx-auto mt-2">
+                  Your squad has been enrolled for ORION 1.0. Your payment UTR has been logged for administrative verification.
                 </p>
               </div>
 
-              {/* Dossier ID Badge */}
-              <div className="p-4 rounded-none bg-[#040E24] border border-[#00BCF2]/50 max-w-sm mx-auto shadow-xl relative">
-                <span className="absolute top-1 left-2 font-mono-hud text-[7px] text-[#00BCF2]/50">[SECURITY_HASH: OK]</span>
-                <div className="text-[10px] font-mono-hud text-[#7DD3FC] mb-1">ASSIGNED MISSION REGISTRATION ID</div>
-                <div className="flex items-center justify-center gap-2">
-                  <span className="text-2xl sm:text-3xl font-mono-hud font-black text-[#00BCF2] tracking-widest">
-                    {generatedRegId}
-                  </span>
+              {/* Credentials Box */}
+              <div className="p-5 bg-[#040E24] border border-[#38BDF8]/50 text-left space-y-4 max-w-lg mx-auto">
+                <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                  <div>
+                    <span className="text-[9px] font-mono-hud text-[#7DD3FC] block">IMMUTABLE TEAM ID</span>
+                    <strong className="text-white font-mono text-lg font-bold">{registeredTeamData.teamId}</strong>
+                  </div>
                   <button
-                    onClick={handleCopyId}
-                    className="p-1.5 rounded-none bg-[#0B2556] border border-[#00BCF2]/40 text-[#BAE6FD] hover:text-white hover:border-[#00BCF2] transition-colors cursor-pointer"
-                    title="Copy Registration ID"
+                    type="button"
+                    onClick={() => handleCopy(registeredTeamData.teamId, 'id')}
+                    className="px-3 py-1.5 bg-[#0B2556] border border-[#38BDF8]/40 text-[#38BDF8] text-xs font-mono flex items-center gap-1.5 cursor-pointer"
                   >
-                    {copiedId ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-[#00BCF2]" />}
+                    {copiedId ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedId ? 'COPIED' : 'COPY'}</span>
                   </button>
                 </div>
-              </div>
 
-              {/* Confirmed Summary Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 max-w-xl mx-auto text-left text-xs font-sans">
-                <div className="p-2.5 bg-[#040E24] border border-white/10">
-                  <span className="text-[9px] font-mono-hud text-slate-400 block">TEAM LEADER</span>
-                  <strong className="text-white truncate block">{leaderName}</strong>
-                </div>
-                <div className="p-2.5 bg-[#040E24] border border-white/10">
-                  <span className="text-[9px] font-mono-hud text-slate-400 block">TRACK</span>
-                  <strong className="text-[#00BCF2] font-mono-hud block">{problemStatement}</strong>
-                </div>
-                <div className="p-2.5 bg-[#040E24] border border-white/10">
-                  <span className="text-[9px] font-mono-hud text-slate-400 block">TEAM SIZE</span>
-                  <strong className="text-white block">5 Participants</strong>
-                </div>
-                <div className="p-2.5 bg-[#040E24] border border-white/10">
-                  <span className="text-[9px] font-mono-hud text-slate-400 block">PAYMENT</span>
-                  <strong className="text-emerald-400 font-mono-hud block">₹100 ✓ PAID</strong>
-                </div>
-              </div>
-
-              {/* Live CountUp Badge */}
-              <div className="p-3 bg-[#040E24] border border-[#00BCF2]/30 max-w-sm mx-auto flex items-center justify-between shadow-md">
-                <div className="text-left">
-                  <div className="text-[9px] font-mono-hud text-[#7DD3FC]">CONFIRMED REGISTERED SQUAD #</div>
-                  <div className="text-xl font-mono-hud font-black text-white flex items-center gap-1">
-                    <span className="text-[#00BCF2]">#</span>
-                    <CountUp to={totalTeamsCount > 0 ? totalTeamsCount : 1} from={0} duration={1.5} separator="," />
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-[9px] font-mono-hud text-[#7DD3FC] block">TEAM ACCESS PASSCODE</span>
+                    <strong className="text-amber-300 font-mono text-lg font-bold">{registeredTeamData.accessToken}</strong>
                   </div>
+                  <button
+                    type="button"
+                    onClick={() => handleCopy(registeredTeamData.accessToken, 'pass')}
+                    className="px-3 py-1.5 bg-[#0B2556] border border-amber-400/40 text-amber-300 text-xs font-mono flex items-center gap-1.5 cursor-pointer"
+                  >
+                    {copiedPass ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedPass ? 'COPIED' : 'COPY'}</span>
+                  </button>
                 </div>
-                <div className="text-right">
-                  <div className="text-[9px] font-mono-hud text-slate-400">ROUND 1 QUALIFIER</div>
-                  <div className="text-xs font-mono-hud font-bold text-emerald-400">ACTIVE</div>
+
+                <div className="p-2.5 bg-[#020817] border border-white/5 text-[10px] font-mono text-slate-300">
+                  ⚠️ Save your Team ID and Passcode. You will use these to log in to the <strong>Team Portal</strong> to submit your Round 1 PPT and check Round 2 Selection.
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2 max-w-lg mx-auto">
-                <a
-                  href={process.env.NEXT_PUBLIC_WHATSAPP_GROUP_URL || 'https://chat.whatsapp.com/orion1point0'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full sm:w-auto py-2.5 px-5 bg-emerald-600 hover:bg-emerald-500 text-white font-mono-hud text-xs font-bold flex items-center justify-center gap-2 shadow-lg transition-colors cursor-pointer"
+              <div className="pt-3 flex flex-col sm:flex-row items-center justify-center gap-3">
+                <Link
+                  href={`/portal?teamId=${registeredTeamData.teamId}&token=${registeredTeamData.accessToken}`}
+                  onClick={onClose}
+                  className="btn-glow-cyan w-full sm:w-auto px-7 py-3 font-display font-black text-xs text-[#040E24] bg-gradient-to-r from-[#FFFFFF] via-[#BAE6FD] to-[#38BDF8] flex items-center justify-center gap-2 cursor-pointer shadow-lg active:scale-95"
                 >
-                  <MessageSquare className="w-4 h-4" />
-                  <span>JOIN WHATSAPP GROUP</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
+                  <span>LAUNCH TEAM PORTAL</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
 
                 <button
-                  onClick={handleDownloadReceipt}
-                  className="w-full sm:w-auto py-2.5 px-5 bg-[#0B2556] border border-[#00BCF2]/50 text-white hover:bg-[#00BCF2]/20 font-mono-hud text-xs font-bold flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                  type="button"
+                  onClick={onClose}
+                  className="w-full sm:w-auto px-6 py-3 border border-white/20 text-slate-300 hover:text-white font-mono-hud text-xs cursor-pointer"
                 >
-                  <Download className="w-4 h-4 text-[#00BCF2]" />
-                  <span>DOWNLOAD RECEIPT</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    sound.playClick();
-                    onClose();
-                    setCurrentStep(1);
-                  }}
-                  className="w-full sm:w-auto py-2.5 px-4 bg-[#040E24] border border-white/20 text-slate-300 hover:text-white font-mono-hud text-xs font-bold transition-colors cursor-pointer"
-                >
-                  RETURN TO DASHBOARD
+                  CLOSE WINDOW
                 </button>
               </div>
             </div>
